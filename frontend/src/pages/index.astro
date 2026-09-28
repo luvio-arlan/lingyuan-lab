@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import Manifesto from '../components/home/Manifesto.astro';
+import Orbit from '../components/home/Orbit.astro';
+import Entries from '../components/home/Entries.astro';
+import PathRail from '../components/home/PathRail.astro';
+import Evidence from '../components/home/Evidence.astro';
+import Questions from '../components/home/Questions.astro';
+import Start from '../components/home/Start.astro';
+---
+
+<BaseLayout>
+  <Hero />
+  <Manifesto />
+  <Orbit />
+  <Entries />
+  <PathRail />
+  <Evidence />
+  <Questions />
+  <Start />
+</BaseLayout>
+
+<script>
+  import '../scripts/home.ts';
+</script>

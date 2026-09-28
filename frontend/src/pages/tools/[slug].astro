@@ -1,0 +1,661 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { lessonBySlug } from '../../data/path';
+import { contentStatus } from '../../data/site';
+import { formatDate, isoDate } from '../../lib/format';
+import '../../styles/prose.css';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('tools');
+  return tools.map((tool) => ({ params: { slug: tool.id }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+const { data } = tool;
+const { Content } = await render(tool);
+const lesson = lessonBySlug(data.lesson);
+const article = lesson?.article ? await getEntry('articles', lesson.article) : undefined;
+const total = data.sections.reduce((n, s) => n + s.items.length, 0);
+---
+
+<BaseLayout title={data.title} description={data.summary}>
+  <div class="tool-page" data-accent={data.accent}>
+    <header class="head container">
+      <nav class="crumbs" aria-label="面包屑">
+        <a href="/tools">工具箱</a>
+        <span aria-hidden="true">/</span>
+        <span>{data.format}</span>
+      </nav>
+      <h1 class="display">{data.title}</h1>
+      <p class="lead">{data.summary}</p>
+      <div class="meta">
+        {lesson && <a class="chip" href={`/learn/${lesson.slug}`}>配合第 {lesson.no} 课</a>}
+        <span class="chip chip-outline">{total} 个问题 · 约 {data.minutes} 分钟</span>
+        <span class="chip chip-outline">{contentStatus[data.status].label}</span>
+        <span class="chip chip-outline mono">
+          修订 <time datetime={isoDate(data.revised)}>{formatDate(data.revised)}</time>
+        </span>
+      </div>
+    </header>
+
+    <div class="container layout">
+      <aside class="guide">
+        <div class="guide-inner">
+          <div class="prose small"><Content /></div>
+          {
+            article && (
+              <a class="related card is-interactive" href={`/library/${article.id}`}>
+                <span class="mono k">相关文章</span>
+                <span class="t">{article.data.title}</span>
+                <Icon name="arrow-right" size={16} />
+              </a>
+            )
+          }
+        </div>
+      </aside>
+
+      <form class="sheet card" data-worksheet={tool.id} aria-label={data.title}>
+        <div class="sheet-bar">
+          <div class="done">
+            <span class="ring" aria-hidden="true">
+              <svg viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" class="r-bg"></circle>
+                <circle cx="18" cy="18" r="15" class="r-fg" pathLength="1" data-ring></circle>
+              </svg>
+            </span>
+            <span><span class="mono" data-done>0</span> / {total} 已完成</span>
+            <span class="saved" data-saved aria-live="polite"></span>
+          </div>
+          <div class="acts">
+            <button type="button" class="btn btn-ghost btn-sm" data-copy>
+              <Icon name="copy" size={16} /><span>复制为 Markdown</span>
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" data-print>
+              <Icon name="printer" size={16} /><span>打印</span>
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm icon-only" data-reset aria-label="清空答案" title="清空答案">
+              <Icon name="refresh" size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div class="print-title">
+          <p class="mono">Lingyuan Lab · 灵鸢实验室 · {data.format}</p>
+          <h2>{data.title}</h2>
+          <p>填写日期：＿＿＿＿＿＿　　观察对象：＿＿＿＿＿＿＿＿</p>
+        </div>
+
+        {
+          data.sections.map((s, si) => (
+            <fieldset class="sec">
+              <legend>
+                <span class="mono sn">{String(si + 1).padStart(2, '0')}</span>
+                <span class="st">{s.title}</span>
+              </legend>
+              {s.intro && <p class="intro">{s.intro}</p>}
+              <div class="items">
+                {s.items.map((it, ii) => {
+                  const id = `${tool.id}-${si}-${ii}`;
+                  return it.kind === 'check' ? (
+                    <label class="item check" for={id}>
+                      <input type="checkbox" id={id} name={id} data-field data-prompt={it.prompt} />
+                      <span class="box" aria-hidden="true">
+                        <Icon name="check" size={13} stroke={2.6} />
+                      </span>
+                      <span class="p">{it.prompt}</span>
+                    </label>
+                  ) : (
+                    <div class="item text">
+                      <label for={id} class="p">
+                        {it.prompt}
+                      </label>
+                      {it.hint && <p class="hint">{it.hint}</p>}
+                      <textarea id={id} name={id} rows="2" data-field data-prompt={it.prompt} placeholder="写下你的回答…" />
+                    </div>
+                  );
+                })}
+              </div>
+            </fieldset>
+          ))
+        }
+      </form>
+    </div>
+  </div>
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid;
+    gap: 1.25rem;
+    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 4vw, 6rem));
+    padding-bottom: 3rem;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 0.6rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--a-ink);
+  }
+
+  .lead {
+    max-width: 44rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 3vw, 4rem);
+    align-items: start;
+  }
+
+  .guide-inner {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .prose.small {
+    font-size: 0.9375rem;
+    line-height: 1.85;
+    text-align: left;
+  }
+
+  .prose.small :global(h2) {
+    margin-top: 0;
+    font-size: 1.125rem;
+  }
+
+  .related {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem 1rem;
+    align-items: center;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .related .k {
+    grid-column: 1 / -1;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    color: var(--c-blue-ink);
+  }
+
+  .related .t {
+    font-family: var(--f-display);
+    font-weight: 600;
+  }
+
+  .sheet {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    border-radius: var(--r-xl);
+    overflow: clip;
+  }
+
+  .sheet-bar {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--c-line);
+    background: rgb(255 255 255 / 0.85);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    transition: top 520ms var(--ease-out);
+  }
+
+  :global(html.header-hidden) .sheet-bar {
+    top: 0;
+  }
+
+  .done {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.875rem;
+    color: var(--c-ink-2);
+  }
+
+  .ring svg {
+    width: 28px;
+    height: 28px;
+    transform: rotate(-90deg);
+  }
+
+  .r-bg,
+  .r-fg {
+    fill: none;
+    stroke-width: 3.5;
+  }
+
+  .r-bg {
+    stroke: var(--c-mist-3);
+  }
+
+  .r-fg {
+    stroke: var(--a);
+    stroke-linecap: round;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: calc(1 - var(--done, 0));
+    transition: stroke-dashoffset 600ms var(--ease-out);
+  }
+
+  .saved {
+    font-size: 0.75rem;
+    color: var(--c-teal-ink);
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  .saved.on {
+    opacity: 1;
+  }
+
+  .acts {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .icon-only {
+    width: 38px;
+    padding: 0;
+  }
+
+  .print-title {
+    display: none;
+  }
+
+  .sec {
+    margin: 0;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border: 0;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .sec:last-of-type {
+    border-bottom: 0;
+  }
+
+  legend {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    float: left;
+    width: 100%;
+    padding: 0;
+  }
+
+  legend + * {
+    clear: both;
+  }
+
+  .sn {
+    font-size: 0.75rem;
+    color: var(--a-ink);
+  }
+
+  .st {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.375rem;
+  }
+
+  .intro {
+    margin-top: 0.5rem;
+    padding-left: 1.9rem;
+    font-size: 0.875rem;
+    color: var(--c-ink-3);
+  }
+
+  .items {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1.25rem;
+    padding-left: 1.9rem;
+  }
+
+  .item.text {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .p {
+    font-size: 0.9375rem;
+    font-weight: 550;
+    line-height: 1.7;
+    color: var(--c-ink);
+  }
+
+  .hint {
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.8rem 1rem;
+    border: 0;
+    border-radius: var(--r-md);
+    background: var(--c-mist);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    resize: none;
+    field-sizing: content;
+    transition:
+      box-shadow var(--d-base) var(--ease-out),
+      background-color var(--d-base) var(--ease-out);
+  }
+
+  textarea::placeholder {
+    color: var(--c-ink-4);
+  }
+
+  textarea:hover {
+    box-shadow: 0 0 0 1px var(--c-line-3) inset;
+  }
+
+  textarea:focus {
+    outline: none;
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1.5px var(--a) inset,
+      0 0 0 5px color-mix(in srgb, var(--a) 14%, transparent);
+  }
+
+  .item.check {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--r-md);
+    background: var(--c-mist);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+    cursor: pointer;
+    transition:
+      background-color var(--d-base) var(--ease-out),
+      box-shadow var(--d-base) var(--ease-out);
+  }
+
+  .item.check:hover {
+    box-shadow: 0 0 0 1px var(--c-line-3) inset;
+  }
+
+  .item.check input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .box {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 0.2rem;
+    border-radius: 6px;
+    background: var(--c-bg);
+    box-shadow: 0 0 0 1.5px var(--c-line-3) inset;
+    color: #fff;
+    transition:
+      background-color 250ms var(--ease-out),
+      box-shadow 250ms var(--ease-out);
+  }
+
+  .box :global(svg) {
+    transform: scale(0);
+    transition: transform 400ms var(--ease-spring);
+  }
+
+  .check input:checked ~ .box {
+    background: var(--a);
+    box-shadow: none;
+  }
+
+  .check input:checked ~ .box :global(svg) {
+    transform: scale(1);
+  }
+
+  .check:has(input:checked) {
+    background: var(--a-soft);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--a) 30%, transparent) inset;
+  }
+
+  .check input:focus-visible ~ .box {
+    outline: 2px solid var(--c-blue);
+    outline-offset: 2px;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    z-index: 150;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--r-pill);
+    background: var(--c-ink);
+    color: #fff;
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-3);
+    translate: -50% 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      translate 500ms var(--ease-spring),
+      opacity 300ms var(--ease-out);
+  }
+
+  .toast.on {
+    translate: -50% 0;
+    opacity: 1;
+  }
+
+  @media (max-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .guide-inner {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .acts span:not(.arrow) {
+      display: none;
+    }
+    .acts .btn {
+      width: 38px;
+      padding: 0;
+    }
+    .items,
+    .intro {
+      padding-left: 0;
+    }
+  }
+
+  @media print {
+    :global(.site-header),
+    :global(.site-footer),
+    :global(.skip-link),
+    .head,
+    .guide,
+    .sheet-bar,
+    .toast {
+      display: none !important;
+    }
+
+    .layout {
+      display: block;
+      width: 100%;
+    }
+
+    .sheet {
+      box-shadow: none !important;
+      border-radius: 0;
+    }
+
+    .print-title {
+      display: block;
+      padding-bottom: 1rem;
+      border-bottom: 1.5px solid #000;
+    }
+
+    .print-title h2 {
+      font-family: var(--f-display);
+      font-size: 1.5rem;
+      margin: 0.25rem 0 0.5rem;
+    }
+
+    .print-title p {
+      font-size: 0.75rem;
+    }
+
+    .sec {
+      padding: 1rem 0;
+      break-inside: avoid;
+    }
+
+    textarea {
+      min-height: 5rem;
+      background: none;
+      box-shadow: none;
+      border-bottom: 1px solid #999;
+      border-radius: 0;
+    }
+
+    .item.check {
+      background: none;
+      box-shadow: none;
+      padding: 0.3rem 0;
+    }
+
+    .box {
+      box-shadow: 0 0 0 1px #000 inset;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-worksheet]');
+  if (form) {
+    const key = `lingyuan:tool:${form.dataset.worksheet}`;
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-field]')];
+    const doneEl = form.querySelector<HTMLElement>('[data-done]')!;
+    const ring = form.querySelector<SVGCircleElement>('[data-ring]')!;
+    const savedEl = form.querySelector<HTMLElement>('[data-saved]')!;
+    const toastEl = document.querySelector<HTMLElement>('[data-toast]')!;
+    let saveTimer = 0;
+    let toastTimer = 0;
+
+    const toast = (msg: string) => {
+      toastEl.textContent = msg;
+      toastEl.classList.add('on');
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toastEl.classList.remove('on'), 2200);
+    };
+
+    const isDone = (f: HTMLInputElement | HTMLTextAreaElement) =>
+      f instanceof HTMLInputElement && f.type === 'checkbox' ? f.checked : f.value.trim().length > 0;
+
+    const updateProgress = () => {
+      const n = fields.filter(isDone).length;
+      doneEl.textContent = String(n);
+      ring.style.setProperty('--done', String(n / fields.length));
+    };
+
+    const save = () => {
+      const state: Record<string, string | boolean> = {};
+      fields.forEach((f) => {
+        state[f.name] = f instanceof HTMLInputElement && f.type === 'checkbox' ? f.checked : f.value;
+      });
+      try {
+        localStorage.setItem(key, JSON.stringify(state));
+        savedEl.textContent = '已保存到本机';
+        savedEl.classList.add('on');
+        window.setTimeout(() => savedEl.classList.remove('on'), 1600);
+      } catch {
+        savedEl.textContent = '无法保存到本机';
+      }
+    };
+
+    try {
+      const state = JSON.parse(localStorage.getItem(key) ?? '{}');
+      fields.forEach((f) => {
+        if (!(f.name in state)) return;
+        if (f instanceof HTMLInputElement && f.type === 'checkbox') f.checked = Boolean(state[f.name]);
+        else f.value = String(state[f.name]);
+      });
+    } catch {
+      /* ignore malformed storage */
+    }
+    updateProgress();
+
+    form.addEventListener('input', () => {
+      updateProgress();
+      window.clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(save, 500);
+    });
+    form.addEventListener('submit', (e) => e.preventDefault());
+
+    const toMarkdown = () => {
+      const title = document.querySelector('h1')?.textContent?.trim() ?? '';
+      const lines = [`# ${title}`, ''];
+      form.querySelectorAll('fieldset').forEach((fs) => {
+        lines.push(`## ${fs.querySelector('.st')?.textContent?.trim()}`, '');
+        fs.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-field]').forEach((f) => {
+          const prompt = f.dataset.prompt;
+          if (f instanceof HTMLInputElement && f.type === 'checkbox') lines.push(`- [${f.checked ? 'x' : ' '}] ${prompt}`);
+          else lines.push(`**${prompt}**`, '', f.value.trim() || '（未填写）', '');
+        });
+        lines.push('');
+      });
+      lines.push('—— 来自 Lingyuan Lab 灵鸢实验室工具箱');
+      return lines.join('\n');
+    };
+
+    form.querySelector('[data-copy]')?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(toMarkdown());
+        toast('已复制为 Markdown');
+      } catch {
+        toast('复制失败，请手动选择文本复制');
+      }
+    });
+    form.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+    form.querySelector('[data-reset]')?.addEventListener('click', () => {
+      if (!window.confirm('确定清空这份工具中的全部答案吗？')) return;
+      fields.forEach((f) => {
+        if (f instanceof HTMLInputElement && f.type === 'checkbox') f.checked = false;
+        else f.value = '';
+      });
+      localStorage.removeItem(key);
+      updateProgress();
+      toast('已清空');
+    });
+  }
+</script>

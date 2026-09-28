@@ -1,0 +1,707 @@
+---
+import { getCollection, getEntries, getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import TermCard from '../../components/TermCard.astro';
+import Claim from '../../components/mdx/Claim.astro';
+import KeyIdea from '../../components/mdx/KeyIdea.astro';
+import OdCycle from '../../components/diagrams/OdCycle.astro';
+import StarModel from '../../components/diagrams/StarModel.astro';
+import { contentStatus, evidenceTypes } from '../../data/site';
+import { lessonBySlug } from '../../data/path';
+import { formatDate, isoDate, readingMinutes } from '../../lib/format';
+import '../../styles/prose.css';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const { data } = article;
+const { Content, headings } = await render(article);
+const toc = headings.filter((h) => h.depth === 2);
+const terms = await getEntries(data.terms);
+const tool = data.tool ? await getEntry(data.tool) : undefined;
+const discussion = data.discussion ? await getEntry(data.discussion) : undefined;
+const lesson = data.lesson ? lessonBySlug(data.lesson) : undefined;
+const status = contentStatus[data.status];
+const minutes = readingMinutes(article.body);
+const pending = data.sources.filter((s) => !s.verified).length;
+---
+
+<BaseLayout title={data.title} description={data.dek}>
+  <div class="progress" aria-hidden="true"><span data-progress></span></div>
+
+  <article class="article" data-accent={data.accent}>
+    <header class="head container">
+      <nav class="crumbs" aria-label="面包屑">
+        <a href="/library">知识库</a>
+        <span aria-hidden="true">/</span>
+        <span>{data.kind === 'concept' ? '概念文' : '研究文章'}</span>
+        {
+          lesson && (
+            <>
+              <span aria-hidden="true">/</span>
+              <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a>
+            </>
+          )
+        }
+      </nav>
+      <h1 class="display title" style={`view-transition-name: article-${article.id}`}>{data.title}</h1>
+      <p class="dek lead">{data.dek}</p>
+
+      <dl class="meta">
+        <div>
+          <dt>发布</dt>
+          <dd class="mono"><time datetime={isoDate(data.published)}>{formatDate(data.published)}</time></dd>
+        </div>
+        <div>
+          <dt>最近修订</dt>
+          <dd class="mono"><time datetime={isoDate(data.revised)}>{formatDate(data.revised)}</time></dd>
+        </div>
+        <div>
+          <dt>阅读</dt>
+          <dd>约 {minutes} 分钟</dd>
+        </div>
+        <div>
+          <dt>内容状态</dt>
+          <dd class="status" data-accent={status.accent}><span class="dot"></span>{status.label}</dd>
+        </div>
+      </dl>
+
+      <div class="frame">
+        <div>
+          <p class="frame-k mono">研究问题</p>
+          <p class="frame-v">{data.question}</p>
+        </div>
+        <div>
+          <p class="frame-k mono">适用边界</p>
+          <p class="frame-v small">{data.scope}</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="body container">
+      <aside class="rail">
+        <div class="rail-inner">
+          {
+            toc.length > 0 && (
+              <nav class="toc" aria-label="文章目录" data-toc>
+                <p class="rail-k mono">目录</p>
+                <ol role="list">
+                  {toc.map((h, i) => (
+                    <li>
+                      <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                        <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )
+          }
+          <div class="legend">
+            <p class="rail-k mono">证据标注</p>
+            <ul role="list">
+              {
+                Object.entries(evidenceTypes).map(([key, t]) => (
+                  <li data-accent={t.accent} data-type={key} title={t.note}>
+                    <span class="bar" />
+                    {t.label}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <div class="prose" data-prose>
+        <Content components={{ Claim, KeyIdea, OdCycle, StarModel }} />
+      </div>
+    </div>
+
+    <footer class="after container">
+      <section class="block" aria-labelledby="sources-title">
+        <div class="block-head">
+          <h2 class="h3" id="sources-title">来源</h2>
+          {
+            pending > 0 && (
+              <p class="note">
+                <Icon name="info" size={16} />
+                {pending} 条来源尚待人工逐条核对，核对完成前请以原始文献为准。
+              </p>
+            )
+          }
+        </div>
+        <ol class="sources" role="list">
+          {
+            data.sources.map((s, i) => (
+              <li id={`source-${i + 1}`}>
+                <span class="n mono">{i + 1}</span>
+                <div>
+                  <p class="s-title">
+                    {s.authors}（{s.year}）. <cite>{s.title}</cite>
+                    {s.edition && <>, {s.edition}</>}
+                    {s.venue && <>. {s.venue}</>}
+                  </p>
+                  <p class="s-meta">
+                    <span class:list={['v', s.verified ? 'ok' : 'todo']}>
+                      {s.verified ? '已核对' : '待核对'}
+                    </span>
+                    {s.doi && <span class="mono">DOI {s.doi}</span>}
+                    {s.note && <span>{s.note}</span>}
+                    {s.url && (
+                      <a href={s.url} rel="noopener noreferrer" target="_blank">
+                        查看来源 <Icon name="arrow-up-right" size={14} />
+                      </a>
+                    )}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="block" aria-labelledby="rev-title">
+        <h2 class="h3" id="rev-title">修订记录</h2>
+        <ol class="revs" role="list">
+          {
+            data.revisions.map((r) => (
+              <li>
+                <time class="mono" datetime={isoDate(r.date)}>{formatDate(r.date)}</time>
+                <span>{r.note}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      {
+        terms.length > 0 && (
+          <section class="block" aria-labelledby="terms-title">
+            <h2 class="h3" id="terms-title">本文术语</h2>
+            <div class="terms">
+              {terms.map((t, i) => (
+                <TermCard term={t} index={i} compact />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <section class="block next" aria-labelledby="next-title">
+        <h2 class="h3" id="next-title">下一步</h2>
+        <div class="next-grid">
+          {
+            tool && (
+              <a class="card spotlight next-card" href={`/tools/${tool.id}`} data-accent="teal" data-reveal>
+                <span class="chip">
+                  <Icon name="clipboard" size={14} />
+                  完成一份练习
+                </span>
+                <h3 class="h3">{tool.data.title}</h3>
+                <p>{tool.data.summary}</p>
+                <span class="link-arrow">
+                  打开工具 <Icon name="arrow-right" />
+                </span>
+              </a>
+            )
+          }
+          {
+            discussion && (
+              <a
+                class="card spotlight next-card"
+                href={`/questions/${discussion.id}`}
+                data-accent="orange"
+                data-reveal
+                style="--i:1"
+              >
+                <span class="chip">
+                  <Icon name="message" size={14} />
+                  提出一个观点
+                </span>
+                <h3 class="h3">{discussion.data.title}</h3>
+                <span class="link-arrow">
+                  参与讨论 <Icon name="arrow-right" />
+                </span>
+              </a>
+            )
+          }
+        </div>
+      </section>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 120;
+    height: 2px;
+    pointer-events: none;
+  }
+
+  .progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--c-blue), var(--c-violet), var(--c-teal));
+    transform-origin: left;
+    transform: scaleX(var(--p, 0));
+  }
+
+  .head {
+    display: grid;
+    gap: 1.5rem;
+    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 4vw, 6rem));
+    max-width: 62rem;
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+    animation: fade 0.8s var(--ease-out) both;
+  }
+
+  .crumbs a {
+    color: var(--c-ink-2);
+    transition: color var(--d-fast) var(--ease-out);
+  }
+
+  .crumbs a:hover {
+    color: var(--a-ink);
+  }
+
+  .title {
+    max-width: 14em;
+  }
+
+  .dek {
+    max-width: 44rem;
+    animation: fade 1s 0.15s var(--ease-out) both;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin: 0.5rem 0 0;
+    padding: 1.25rem 0;
+    border-block: 1px solid var(--c-line);
+    animation: fade 1s 0.25s var(--ease-out) both;
+  }
+
+  .meta dt {
+    font-size: 0.75rem;
+    color: var(--c-ink-4);
+  }
+
+  .meta dd {
+    margin: 0.2rem 0 0;
+    font-size: 0.875rem;
+    font-weight: 550;
+    color: var(--c-ink);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--a-ink) !important;
+  }
+
+  .status .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--a);
+    box-shadow: 0 0 0 4px var(--a-soft);
+  }
+
+  .frame {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1px;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--c-line);
+    box-shadow: 0 0 0 1px var(--c-line);
+    animation: fade 1s 0.35s var(--ease-out) both;
+  }
+
+  .frame > div {
+    padding: 1.35rem 1.5rem;
+    background: var(--c-mist);
+  }
+
+  .frame > div:first-child {
+    background: linear-gradient(135deg, var(--a-soft), var(--c-mist));
+  }
+
+  .frame-k {
+    margin-bottom: 0.4rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    color: var(--a-ink);
+  }
+
+  .frame-v {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    color: var(--c-ink);
+  }
+
+  .frame-v.small {
+    font-family: var(--f-sans);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--c-ink-2);
+    line-height: 1.75;
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  /* Body */
+  .body {
+    display: grid;
+    grid-template-columns: 220px minmax(0, var(--max-prose)) 1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  .rail-inner {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .rail-k {
+    margin-bottom: 0.9rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    color: var(--c-ink-4);
+  }
+
+  .toc ol {
+    position: relative;
+    display: grid;
+    margin: 0;
+    border-left: 1px solid var(--c-line-2);
+  }
+
+  .toc a {
+    position: relative;
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.45rem 0 0.45rem 1rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--c-ink-3);
+    transition: color var(--d-base) var(--ease-out);
+  }
+
+  .toc a .mono {
+    font-size: 0.6875rem;
+    padding-top: 0.15em;
+    color: var(--c-ink-4);
+  }
+
+  .toc a::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--a);
+    transform: scaleY(0);
+    transition: transform 400ms var(--ease-spring);
+  }
+
+  .toc a:hover {
+    color: var(--c-ink);
+  }
+
+  .toc a.is-active {
+    color: var(--c-ink);
+    font-weight: 550;
+  }
+
+  .toc a.is-active .mono {
+    color: var(--a-ink);
+  }
+
+  .toc a.is-active::before {
+    transform: scaleY(1);
+  }
+
+  .legend ul {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+  }
+
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-2);
+    cursor: help;
+  }
+
+  .legend .bar {
+    width: 2px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--a);
+  }
+
+  .legend [data-type='inference'] .bar {
+    background: repeating-linear-gradient(to bottom, var(--a) 0 4px, transparent 4px 6px);
+  }
+
+  .legend [data-type='hypothesis'] .bar {
+    background: repeating-linear-gradient(to bottom, var(--a) 0 2px, transparent 2px 4px);
+  }
+
+  /* After */
+  .after {
+    display: grid;
+    gap: clamp(3rem, 2rem + 3vw, 4.5rem);
+    max-width: 62rem;
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+    padding-top: clamp(3rem, 2rem + 3vw, 4.5rem);
+    border-top: 1px solid var(--c-line-2);
+  }
+
+  .block {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .block-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--r-pill);
+    background: var(--c-orange-soft);
+    font-size: 0.8125rem;
+    color: var(--c-orange-ink);
+  }
+
+  .sources {
+    display: grid;
+    margin: 0;
+  }
+
+  .sources li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.5rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--c-line);
+    scroll-margin-top: calc(var(--header-h) + 40px);
+    transition: background-color 600ms var(--ease-out);
+  }
+
+  .sources li:target {
+    background: var(--c-blue-soft);
+    border-radius: var(--r-sm);
+  }
+
+  .sources .n {
+    font-size: 0.8125rem;
+    color: var(--c-blue-ink);
+    padding: 0.1rem 0 0 0.5rem;
+  }
+
+  .s-title {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--c-ink);
+  }
+
+  .s-title cite {
+    font-style: italic;
+  }
+
+  .s-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 1rem;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+  }
+
+  .s-meta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--c-blue-ink);
+    font-weight: 550;
+  }
+
+  .v {
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--r-pill);
+    font-weight: 600;
+  }
+
+  .v.todo {
+    background: var(--c-orange-soft);
+    color: var(--c-orange-ink);
+  }
+
+  .v.ok {
+    background: var(--c-teal-soft);
+    color: var(--c-teal-ink);
+  }
+
+  .revs {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .revs li {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--c-ink-2);
+  }
+
+  .revs time {
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+    padding-top: 0.1rem;
+  }
+
+  .terms {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .next-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .next-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.85rem;
+    padding: 1.75rem;
+  }
+
+  .next-card p {
+    color: var(--c-ink-3);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+
+  .next-card .link-arrow {
+    margin-top: auto;
+  }
+
+  @media (max-width: 1100px) {
+    .body {
+      grid-template-columns: 200px minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .rail {
+      display: none;
+    }
+    .frame,
+    .next-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-progress]');
+  const prose = document.querySelector<HTMLElement>('[data-prose]');
+  if (bar && prose) {
+    let ticking = false;
+    const update = () => {
+      const rect = prose.getBoundingClientRect();
+      const total = rect.height - window.innerHeight * 0.6;
+      const p = Math.min(1, Math.max(0, -rect.top / Math.max(1, total)));
+      bar.style.setProperty('--p', p.toFixed(4));
+      ticking = false;
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+  if (links.length) {
+    const targets = links
+      .map((l) => document.getElementById(l.dataset.tocLink!))
+      .filter((el): el is HTMLElement => Boolean(el));
+    let pending = false;
+    const spy = () => {
+      pending = false;
+      const line = window.innerHeight * 0.3;
+      let current = targets[0]?.id;
+      for (const t of targets) if (t.getBoundingClientRect().top <= line) current = t.id;
+      links.forEach((l) => l.classList.toggle('is-active', l.dataset.tocLink === current));
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!pending) {
+          pending = true;
+          requestAnimationFrame(spy);
+        }
+      },
+      { passive: true },
+    );
+    spy();
+  }
+</script>

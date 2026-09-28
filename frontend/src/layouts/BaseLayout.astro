@@ -1,0 +1,71 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/noto-serif-sc/wght.css';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/geist-mono/wght.css';
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  bodyClass?: string;
+  footer?: boolean;
+}
+
+const { title, description = site.description, bodyClass, footer = true } = Astro.props;
+const fullTitle = title ? `${title} · ${site.nameZh}` : `${site.nameZh} · ${site.name}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    {footer && <SiteFooter />}
+    <script>
+      import '../scripts/core.ts';
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    padding: 0.6rem 1rem;
+    border-radius: var(--r-pill);
+    background: var(--c-ink);
+    color: #fff;
+    font-size: var(--t-small);
+    transform: translateY(-160%);
+    transition: transform var(--d-base) var(--ease-out);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+</style>

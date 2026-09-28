@@ -1,0 +1,264 @@
+---
+import { lessons, orbitOf } from '../../data/path';
+import Icon from '../Icon.astro';
+---
+
+<section class="rail-section" data-rail aria-labelledby="rail-title">
+  <div class="rail-stage" data-rail-stage>
+    <div class="container head">
+      <div>
+        <p class="eyebrow" data-accent="teal" data-reveal>第一阶段 · 学习路线</p>
+        <h2 class="h1" id="rail-title" data-reveal style="--i:1">从 OD 的基本问题，<br />走到 AI 的第一组假设。</h2>
+      </div>
+      <a class="btn btn-ghost" href="/learn" data-accent="teal" data-reveal style="--i:2">
+        完整路径
+        <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+
+    <div class="viewport" data-rail-viewport>
+      <ol class="track" role="list" data-rail-track>
+        <li class="line" aria-hidden="true"><span data-rail-fill></span></li>
+        {
+          lessons.map((l) => {
+            const o = orbitOf(l.orbit);
+            const inner = (
+              <>
+                <div class="top">
+                  <span class="num figure">{l.no}</span>
+                  <span class="node" aria-hidden="true" />
+                </div>
+                <span class="chip">
+                  <span class="dot" />
+                  {o.label}
+                </span>
+                <h3 class="q">{l.question}</h3>
+                <ul role="list" class="outs">
+                  {l.outputs.map((out) => (
+                    <li>{out}</li>
+                  ))}
+                </ul>
+                <span class:list={['state', `is-${l.status}`]}>
+                  {l.status === 'available' ? (
+                    <>
+                      开始阅读 <Icon name="arrow-right" size={16} />
+                    </>
+                  ) : (
+                    '筹备中'
+                  )}
+                </span>
+              </>
+            );
+            return (
+              <li class="stop" data-accent={o.accent}>
+                {l.status === 'available' ? (
+                  <a class="card spotlight item is-interactive" href={`/learn/${l.slug}`}>
+                    {inner}
+                  </a>
+                ) : (
+                  <div class="card item upcoming">{inner}</div>
+                )}
+              </li>
+            );
+          })
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rail-section {
+    position: relative;
+  }
+
+  .rail-stage {
+    padding-block: var(--section);
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 2rem;
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .head .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .viewport {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-block: 1rem 2rem;
+  }
+
+  .viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track {
+    position: relative;
+    display: flex;
+    gap: 1.25rem;
+    width: max-content;
+    margin: 0;
+    padding-inline: max(var(--gutter), (100vw - var(--max)) / 2);
+  }
+
+  .line {
+    position: absolute;
+    top: 48px;
+    left: max(var(--gutter), (100vw - var(--max)) / 2);
+    right: max(var(--gutter), (100vw - var(--max)) / 2);
+    height: 1px;
+    background: var(--c-line-2);
+    pointer-events: none;
+  }
+
+  .line span {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--c-blue), var(--c-teal) 35%, var(--c-violet) 65%, var(--c-orange));
+    transform-origin: left;
+    transform: scaleX(var(--rail, 0.25));
+  }
+
+  .stop {
+    scroll-snap-align: start;
+    scroll-margin-inline: var(--gutter);
+  }
+
+  .item {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    width: clamp(280px, 24vw, 340px);
+    min-height: 400px;
+    padding: 1.75rem;
+    border-radius: var(--r-xl);
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    margin-bottom: 0.75rem;
+  }
+
+  .num {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--c-ink);
+  }
+
+  .upcoming .num {
+    color: var(--c-ink-faint);
+  }
+
+  .node {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1.5px var(--a) inset,
+      0 0 0 6px var(--c-bg);
+  }
+
+  a .node {
+    background: var(--a);
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--a) 18%, var(--c-bg)),
+      0 0 0 12px var(--c-bg);
+  }
+
+  .item .chip {
+    justify-self: start;
+  }
+
+  .q {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .upcoming .q {
+    color: var(--c-ink-2);
+  }
+
+  .outs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .outs li {
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--r-xs);
+    background: var(--c-mist);
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+  }
+
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding-top: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 550;
+  }
+
+  .state.is-available {
+    color: var(--a-ink);
+  }
+
+  .state.is-upcoming {
+    color: var(--c-ink-4);
+  }
+
+  .state :global(svg) {
+    transition: transform var(--d-base) var(--ease-spring);
+  }
+
+  a:hover .state :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .upcoming {
+    background: color-mix(in srgb, var(--c-mist) 60%, var(--c-bg));
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+  }
+
+  /* Pinned mode: GSAP translates the track; native scroll is disabled. */
+  :global(.rail-pinned) .viewport {
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  :global(.rail-pinned) .rail-stage {
+    height: 100svh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    padding-block: calc(var(--header-h) + 1rem) 1rem;
+  }
+
+  @media (max-width: 720px) {
+    .head {
+      flex-direction: column;
+      align-items: start;
+    }
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/lingyuan-logo-trim.png';
+
+interface Props {
+  height?: number;
+  class?: string;
+  eager?: boolean;
+}
+
+const { height = 40, class: className, eager = false } = Astro.props;
+const width = Math.round((logo.width / logo.height) * height);
+---
+
+<Image
+  src={logo}
+  alt="Lingyuan Lab 灵鸢实验室"
+  width={width}
+  height={height}
+  densities={[1, 2, 3]}
+  format="webp"
+  quality={92}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : undefined}
+  class:list={['logo', className]}
+/>

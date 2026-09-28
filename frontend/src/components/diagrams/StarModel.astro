@@ -1,0 +1,226 @@
+---
+const S = 520;
+const c = S / 2;
+const R = 180;
+
+const elements = [
+  { id: 'strategy', label: '战略', en: 'Strategy', accent: 'blue', text: '决定组织的方向：要实现什么目标、为谁创造价值、在哪里竞争。它是其他要素的起点。' },
+  { id: 'structure', label: '结构', en: 'Structure', accent: 'violet', text: '决定权力与决策的位置：如何划分部门、设置层级与汇报关系。' },
+  { id: 'processes', label: '流程', en: 'Processes', accent: 'teal', text: '信息与决策如何在结构中流动，包括跨部门协作与横向协调的机制。' },
+  { id: 'rewards', label: '奖励', en: 'Rewards', accent: 'orange', text: '通过评价、激励与认可，使个人的目标和行为与组织的方向保持一致。' },
+  { id: 'people', label: '人员', en: 'People', accent: 'blue', text: '招聘、培养、轮岗等人力资源实践，塑造组织所需的能力与心态。' },
+] as const;
+
+const nodes = elements.map((e, i) => {
+  const a = ((-90 + i * 72) * Math.PI) / 180;
+  return { ...e, x: c + R * Math.cos(a), y: c + R * Math.sin(a) };
+});
+
+const edges: { a: number; b: number }[] = [];
+for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) edges.push({ a: i, b: j });
+const pentagon = nodes.map((n) => `${n.x.toFixed(1)},${n.y.toFixed(1)}`).join(' ');
+---
+
+<figure class="star" id="diagram" data-star>
+  <div class="canvas">
+    <svg viewBox={`0 0 ${S} ${S}`} aria-hidden="true">
+      <polygon points={pentagon} class="shape"></polygon>
+      {
+        edges.map((e) => (
+          <line
+            x1={nodes[e.a].x}
+            y1={nodes[e.a].y}
+            x2={nodes[e.b].x}
+            y2={nodes[e.b].y}
+            class="edge"
+            data-a={nodes[e.a].id}
+            data-b={nodes[e.b].id}
+          />
+        ))
+      }
+      <circle cx={c} cy={c} r="4" class="hub"></circle>
+    </svg>
+    {
+      nodes.map((n) => (
+        <button
+          type="button"
+          class="el"
+          data-el={n.id}
+          data-accent={n.accent}
+          aria-pressed="false"
+          style={`left:${((n.x / S) * 100).toFixed(2)}%;top:${((n.y / S) * 100).toFixed(2)}%`}
+        >
+          <span class="lbl">{n.label}</span>
+          <span class="en">{n.en}</span>
+        </button>
+      ))
+    }
+  </div>
+  <div class="panel" aria-live="polite">
+    <p data-text="default">
+      五个要素两两相连：任何一个发生变化，都会牵动其他四个。点击一个要素，查看它的作用与关联。
+    </p>
+    {
+      nodes.map((n) => (
+        <p data-text={n.id} data-accent={n.accent} hidden>
+          <strong>{n.label}</strong>
+          {n.text}
+        </p>
+      ))
+    }
+  </div>
+  <figcaption>图 · 星型模型的五个要素（依据 Galbraith 的框架整理，文字为本站概括）。</figcaption>
+</figure>
+
+<style>
+  .star {
+    margin: 2.75em 0;
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(60% 60% at 50% 45%, var(--c-violet-soft), transparent 70%),
+      var(--c-mist);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+  }
+
+  .canvas {
+    position: relative;
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  svg {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .shape {
+    fill: rgb(255 255 255 / 0.7);
+    stroke: var(--c-line-2);
+  }
+
+  .edge {
+    stroke: var(--c-line-3);
+    stroke-width: 1;
+    transition:
+      stroke 400ms var(--ease-out),
+      stroke-width 400ms var(--ease-out),
+      opacity 400ms var(--ease-out);
+  }
+
+  .hub {
+    fill: var(--c-ink-faint);
+  }
+
+  .has-active .edge {
+    opacity: 0.25;
+  }
+
+  .edge.on {
+    opacity: 1 !important;
+    stroke: var(--c-ink);
+    stroke-width: 1.6;
+    stroke-dasharray: 4 5;
+    animation: march 1.2s linear infinite;
+  }
+
+  @keyframes march {
+    to {
+      stroke-dashoffset: -18;
+    }
+  }
+
+  .el {
+    position: absolute;
+    display: grid;
+    justify-items: center;
+    min-width: 84px;
+    padding: 0.55rem 0.9rem;
+    translate: -50% -50%;
+    border-radius: var(--r-pill);
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1px var(--c-line-2) inset,
+      var(--shadow-2);
+    transition:
+      transform 500ms var(--ease-spring),
+      background-color 300ms var(--ease-out),
+      color 300ms var(--ease-out),
+      box-shadow 300ms var(--ease-out);
+  }
+
+  .el:hover {
+    transform: scale(1.05);
+  }
+
+  .el[aria-pressed='true'] {
+    background: var(--a);
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 14px 30px -12px var(--a);
+  }
+
+  .lbl {
+    font-family: var(--f-display);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .el .en {
+    font-size: 0.8125rem;
+    opacity: 0.65;
+    line-height: 1.1;
+  }
+
+  .panel {
+    max-width: 34rem;
+    min-height: 4.5em;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    color: var(--c-ink-2);
+    line-height: 1.85;
+  }
+
+  .panel p {
+    animation: in 500ms var(--ease-out);
+  }
+
+  .panel strong {
+    margin-right: 0.5em;
+    color: var(--a-ink);
+  }
+
+  @keyframes in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-star]').forEach((root) => {
+    const canvas = root.querySelector<HTMLElement>('.canvas')!;
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-el]');
+    const edges = root.querySelectorAll<SVGLineElement>('.edge');
+    const texts = root.querySelectorAll<HTMLElement>('[data-text]');
+
+    const select = (id: string | null) => {
+      canvas.classList.toggle('has-active', id !== null);
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.el === id)));
+      edges.forEach((e) => e.classList.toggle('on', id !== null && (e.dataset.a === id || e.dataset.b === id)));
+      texts.forEach((t) => (t.hidden = t.dataset.text !== (id ?? 'default')));
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => select(b.getAttribute('aria-pressed') === 'true' ? null : b.dataset.el!)),
+    );
+  });
+</script>

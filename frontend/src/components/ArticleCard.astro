@@ -1,0 +1,128 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { contentStatus } from '../data/site';
+import { lessonBySlug } from '../data/path';
+import { formatDate, isoDate, readingMinutes } from '../lib/format';
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+  index?: number;
+}
+
+const { article, index = 0 } = Astro.props;
+const { data } = article;
+const lesson = data.lesson ? lessonBySlug(data.lesson) : undefined;
+const status = contentStatus[data.status];
+---
+
+<a
+  class="card spotlight article-card"
+  href={`/library/${article.id}`}
+  data-accent={data.accent}
+  data-reveal
+  style={`--i:${index}`}
+  data-kind="article"
+  data-search={`${data.title} ${data.dek} ${data.question}`}
+>
+  <div class="meta">
+    <span class="chip"><span class="dot"></span>{data.kind === 'concept' ? '概念文' : '研究文章'}</span>
+    {lesson && <span class="mono no">LESSON {lesson.no}</span>}
+  </div>
+  <h3 class="h3 title" style={`view-transition-name: article-${article.id}`}>{data.title}</h3>
+  <p class="dek">{data.dek}</p>
+  <div class="foot">
+    <span class="status" data-accent={status.accent}><span class="dot"></span>{status.label}</span>
+    <span class="mono date">
+      <time datetime={isoDate(data.revised)}>{formatDate(data.revised)}</time> · {readingMinutes(article.body)} 分钟
+    </span>
+  </div>
+  <span class="go" aria-hidden="true"><Icon name="arrow-up-right" size={18} /></span>
+</a>
+
+<style>
+  .article-card {
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    padding: 1.75rem;
+    min-height: 300px;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .no {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--c-ink-4);
+  }
+
+  .title {
+    font-size: 1.625rem;
+    margin-top: 0.5rem;
+  }
+
+  .dek {
+    color: var(--c-ink-3);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-line);
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--a-ink);
+  }
+
+  .status .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--a);
+  }
+
+  .go {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--c-ink-3);
+    box-shadow: 0 0 0 1px var(--c-line-2) inset;
+    transition:
+      transform 500ms var(--ease-spring),
+      background-color 300ms var(--ease-out),
+      color 300ms var(--ease-out);
+  }
+
+  .article-card:hover .go {
+    background: var(--c-ink);
+    color: #fff;
+    transform: rotate(45deg);
+  }
+</style>

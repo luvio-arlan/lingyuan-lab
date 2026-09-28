@@ -1,0 +1,179 @@
+.prose {
+  font-size: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);
+  line-height: 1.95;
+  color: var(--c-ink-2);
+  text-wrap: pretty;
+  text-align: justify;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+.prose > * + * {
+  margin-top: 1.4em;
+}
+
+.prose h2 {
+  position: relative;
+  margin-top: 3.2em;
+  margin-bottom: -0.2em;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-synthesis: none;
+  font-size: clamp(1.5rem, 1.25rem + 0.9vw, 1.875rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
+  text-align: left;
+  text-wrap: balance;
+  scroll-margin-top: calc(var(--header-h) + 32px);
+}
+
+.prose h2 .anchor {
+  position: absolute;
+  left: -1.4em;
+  top: 0;
+  width: 1.2em;
+  color: var(--c-ink-faint);
+  font-family: var(--f-mono);
+  font-size: 0.6em;
+  line-height: 2.3;
+  text-align: right;
+  opacity: 0;
+  transition: opacity var(--d-base) var(--ease-out), color var(--d-base) var(--ease-out);
+}
+
+.prose h2:hover .anchor,
+.prose h2 .anchor:focus-visible {
+  opacity: 1;
+}
+
+.prose h2 .anchor:hover {
+  color: var(--c-blue-ink);
+}
+
+.prose h3 {
+  margin-top: 2.4em;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.45;
+  color: var(--c-ink);
+  text-align: left;
+}
+
+.prose strong {
+  font-weight: 650;
+  color: var(--c-ink);
+  background-image: linear-gradient(transparent 62%, color-mix(in srgb, var(--c-blue) 16%, transparent) 62%);
+}
+
+.prose a:not([class]) {
+  color: var(--c-blue-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: color-mix(in srgb, var(--c-blue) 40%, transparent);
+  transition: text-decoration-color var(--d-fast) var(--ease-out);
+}
+
+.prose a:not([class]):hover {
+  text-decoration-color: currentColor;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+  text-align: left;
+}
+
+.prose li + li {
+  margin-top: 0.5em;
+}
+
+.prose ul li::marker {
+  color: var(--c-blue);
+}
+
+.prose ol li::marker {
+  font-family: var(--f-mono);
+  font-size: 0.85em;
+  color: var(--c-blue-ink);
+}
+
+.prose blockquote {
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--c-line-3);
+  color: var(--c-ink-3);
+}
+
+.prose table {
+  width: 100%;
+  margin-block: 2em;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-align: left;
+  border-radius: var(--r-md);
+  box-shadow: 0 0 0 1px var(--c-line-2);
+  overflow: hidden;
+}
+
+.prose th,
+.prose td {
+  padding: 0.85rem 1.1rem;
+  vertical-align: top;
+}
+
+.prose thead th {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  color: var(--c-ink);
+  background: var(--c-mist);
+}
+
+.prose tbody tr + tr td,
+.prose tbody tr:first-child td {
+  border-top: 1px solid var(--c-line);
+}
+
+.prose tbody td:first-child {
+  font-weight: 600;
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+
+.prose tbody tr {
+  transition: background-color var(--d-fast) var(--ease-out);
+}
+
+.prose tbody tr:hover {
+  background: color-mix(in srgb, var(--c-blue-soft) 60%, transparent);
+}
+
+.prose code {
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  background: var(--c-mist-2);
+  font-family: var(--f-mono);
+  font-size: 0.85em;
+}
+
+.prose hr {
+  margin-block: 3em;
+  border: 0;
+  height: 1px;
+  background: var(--c-line-2);
+}
+
+@media (max-width: 640px) {
+  .prose {
+    text-align: left;
+  }
+
+  .prose table {
+    display: block;
+    overflow-x: auto;
+  }
+}

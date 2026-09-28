@@ -1,0 +1,289 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { lessons, orbits } from '../../data/path';
+
+const available = lessons.filter((l) => l.status === 'available').length;
+---
+
+<BaseLayout title="学习路径" description="从 OD 的基本问题，走到 AI 对工作结构的第一组可检验假设：八个连续主题。">
+  <PageHero
+    eyebrow="学习路径 · Learn"
+    title={'八个问题，\n一条循序的路。'}
+    lead="从 OD 的基本问题，走到 AI 对工作结构的第一组可检验假设。每一课只回答一个核心问题，并配有一份可以带回团队的练习。"
+    accent="blue"
+  >
+    <div class="stats">
+      <div><span class="figure big">{String(available).padStart(2, '0')}</span><span>课可阅读</span></div>
+      <div><span class="figure big">{String(lessons.length - available).padStart(2, '0')}</span><span>课筹备中</span></div>
+      <div><span class="figure big">04</span><span>条研究轨道</span></div>
+    </div>
+  </PageHero>
+
+  <div class="container path">
+    {
+      orbits.map((o, oi) => {
+        const ls = lessons.filter((l) => l.orbit === o.id);
+        return (
+          <section class="orbit" data-accent={o.accent} aria-labelledby={`orbit-${o.id}`}>
+            <header class="orbit-head">
+              <div class="sticky">
+                <p class="mono k">轨道 0{oi + 1}</p>
+                <h2 class="h2" id={`orbit-${o.id}`}>{o.label}</h2>
+                <p class="en">{o.en}</p>
+                <p class="sum">{o.summary}</p>
+              </div>
+            </header>
+            <ol class="lessons" role="list">
+              {ls.map((l, i) => {
+                const body = (
+                  <>
+                    <span class="node" aria-hidden="true" />
+                    <span class="no figure">{l.no}</span>
+                    <span class="main">
+                      <span class="t">{l.title}</span>
+                      <span class="q">{l.question}</span>
+                      <span class="outs">
+                        {l.outputs.map((out) => (
+                          <span>{out}</span>
+                        ))}
+                      </span>
+                    </span>
+                    <span class="state">
+                      {l.status === 'available' ? (
+                        <>
+                          开始学习 <Icon name="arrow-right" size={16} />
+                        </>
+                      ) : (
+                        '筹备中'
+                      )}
+                    </span>
+                  </>
+                );
+                return (
+                  <li data-reveal style={`--i:${i}`}>
+                    {l.status === 'available' ? (
+                      <a class="lesson card spotlight is-interactive" href={`/learn/${l.slug}`}>
+                        {body}
+                      </a>
+                    ) : (
+                      <div class="lesson upcoming">{body}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        );
+      })
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .stats div {
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  .big {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--c-ink);
+  }
+
+  .path {
+    display: grid;
+    gap: clamp(3rem, 2rem + 4vw, 6rem);
+    margin-top: 2rem;
+  }
+
+  .orbit {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    padding-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    border-top: 1px solid var(--c-line-2);
+  }
+
+  .sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .k {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--a-ink);
+  }
+
+  .orbit-head .en {
+    font-size: 1.25rem;
+    color: var(--c-ink-4);
+  }
+
+  .sum {
+    margin-top: 0.5rem;
+    max-width: 22rem;
+    color: var(--c-ink-3);
+    line-height: 1.8;
+  }
+
+  .lessons {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .lesson {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 1.25rem;
+    padding: 1.75rem 1.75rem 1.75rem 1.5rem;
+    border-radius: var(--r-lg);
+  }
+
+  .upcoming {
+    background: color-mix(in srgb, var(--c-mist) 70%, var(--c-bg));
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+  }
+
+  .node {
+    position: absolute;
+    left: -2.1rem;
+    top: 2.1rem;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--c-bg);
+    box-shadow: 0 0 0 1.5px var(--a);
+  }
+
+  a .node {
+    background: var(--a);
+    box-shadow: 0 0 0 5px var(--a-soft);
+  }
+
+  .no {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--c-ink);
+  }
+
+  .upcoming .no {
+    color: var(--c-ink-faint);
+  }
+
+  .main {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .t {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--a-ink);
+  }
+
+  .q {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    line-height: 1.4;
+    color: var(--c-ink);
+  }
+
+  .upcoming .q {
+    color: var(--c-ink-2);
+  }
+
+  .outs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .outs span {
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--r-xs);
+    background: var(--c-mist);
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+  }
+
+  .upcoming .outs span {
+    background: var(--c-bg);
+  }
+
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding-top: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 550;
+    white-space: nowrap;
+    color: var(--c-ink-4);
+  }
+
+  a .state {
+    color: var(--a-ink);
+  }
+
+  a .state :global(svg) {
+    transition: transform var(--d-base) var(--ease-spring);
+  }
+
+  a:hover .state :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .lessons::before {
+    content: '';
+    position: absolute;
+    left: -1.6rem;
+    top: 2rem;
+    bottom: 2rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--a), var(--c-line-2));
+  }
+
+  @media (max-width: 900px) {
+    .orbit {
+      grid-template-columns: 1fr;
+    }
+    .sticky {
+      position: static;
+    }
+    .lessons {
+      margin-left: 1.6rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .lesson {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+</style>

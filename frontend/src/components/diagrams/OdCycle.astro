@@ -1,0 +1,283 @@
+---
+const W = 600;
+const H = 510;
+const cx = 300;
+const cy = 276.9;
+const r = 206.9;
+const gap = 17;
+
+const stages = [
+  {
+    id: 'diagnosis',
+    label: '诊断',
+    en: 'Diagnosis',
+    angle: -90,
+    text: '与组织成员一起收集信息、理解现状，判断问题在哪里、变化应从哪里切入。',
+  },
+  {
+    id: 'intervention',
+    label: '干预',
+    en: 'Intervention',
+    angle: 14.9,
+    text: '基于诊断采取有计划的行动。它可能针对个人、团队、流程，也可能针对结构与制度。',
+  },
+  {
+    id: 'feedback',
+    label: '反馈与评估',
+    en: 'Feedback',
+    angle: 165.1,
+    text: '检验干预是否产生了预期效果，并把结果带回下一轮诊断。变化因此成为一个学习循环。',
+  },
+];
+
+const center = {
+  id: 'participation',
+  label: '参与',
+  en: 'Participation',
+  text: '受变化影响的人参与问题的定义与方案的形成。这是 OD 区别于“自上而下下达方案”的关键特征之一。',
+};
+
+const pt = (deg: number) => {
+  const a = (deg * Math.PI) / 180;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)] as const;
+};
+
+const arcs = stages.map((s, i) => {
+  const next = stages[(i + 1) % stages.length];
+  let end = next.angle;
+  if (end < s.angle) end += 360;
+  const [x1, y1] = pt(s.angle + gap);
+  const [x2, y2] = pt(end - gap);
+  return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+});
+
+const nodes = stages.map((s) => {
+  const [x, y] = pt(s.angle);
+  return { ...s, x, y };
+});
+
+const all = [...stages, center];
+const loop = `M${cx} ${cy - r} A${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r}`;
+---
+
+<figure class="diagram-od" id="diagram" data-od>
+  <div class="canvas">
+    <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+      <defs>
+        <marker id="od-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M1 1 L9 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </marker>
+      </defs>
+      <circle cx={cx} cy={cy} r={r} class="orbit"></circle>
+      {arcs.map((d) => <path d={d} class="arc" marker-end="url(#od-arrow)" />)}
+      {nodes.map((n) => <line x1={cx} y1={cy} x2={n.x} y2={n.y} class="spoke" />)}
+      <circle r="4" class="runner">
+        <animateMotion dur="9s" repeatCount="indefinite" path={loop}></animateMotion>
+      </circle>
+    </svg>
+
+    {
+      nodes.map((n) => (
+        <button
+          type="button"
+          class="node"
+          data-stage={n.id}
+          aria-pressed={n.id === 'diagnosis' ? 'true' : 'false'}
+          style={`left:${((n.x / W) * 100).toFixed(2)}%;top:${((n.y / H) * 100).toFixed(2)}%`}
+        >
+          <span class="n-label">{n.label}</span>
+          <span class="n-en en">{n.en}</span>
+        </button>
+      ))
+    }
+    <button
+      type="button"
+      class="node center"
+      data-stage={center.id}
+      aria-pressed="false"
+      style={`left:50%;top:${((cy / H) * 100).toFixed(2)}%`}
+    >
+      <span class="n-label">{center.label}</span>
+      <span class="n-en en">{center.en}</span>
+    </button>
+  </div>
+
+  <div class="panel" aria-live="polite">
+    {
+      all.map((s) => (
+        <p data-panel={s.id} hidden={s.id !== 'diagnosis'}>
+          <strong>{s.label}</strong>
+          {s.text}
+        </p>
+      ))
+    }
+  </div>
+  <figcaption>图 · OD 的计划变革循环（简化示意）。点击各节点查看说明。</figcaption>
+</figure>
+
+<style>
+  .diagram-od {
+    margin: 2.75em 0;
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, var(--c-mist), var(--c-bg));
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+  }
+
+  .canvas {
+    position: relative;
+    max-width: 560px;
+    margin-inline: auto;
+    color: var(--c-blue);
+  }
+
+  svg {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .orbit {
+    fill: none;
+    stroke: var(--c-line);
+    stroke-dasharray: 2 6;
+  }
+
+  .arc {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 6 6;
+    animation: flow 1.6s linear infinite;
+  }
+
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -12;
+    }
+  }
+
+  .spoke {
+    stroke: var(--c-line-2);
+    stroke-dasharray: 2 4;
+  }
+
+  .runner {
+    fill: var(--c-blue);
+  }
+
+  .node {
+    position: absolute;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    min-width: 108px;
+    padding: 0.7rem 1rem;
+    translate: -50% -50%;
+    border-radius: var(--r-md);
+    background: var(--c-bg);
+    color: var(--c-ink);
+    box-shadow:
+      0 0 0 1px var(--c-line-2) inset,
+      var(--shadow-2);
+    transition:
+      transform 500ms var(--ease-spring),
+      box-shadow 400ms var(--ease-out),
+      background-color 400ms var(--ease-out);
+  }
+
+  .node:hover {
+    transform: scale(1.04);
+  }
+
+  .node[aria-pressed='true'] {
+    background: var(--c-ink);
+    color: #fff;
+    box-shadow: 0 16px 34px -14px rgb(11 18 32 / 0.5);
+    transform: scale(1.06);
+  }
+
+  .node.center {
+    min-width: 92px;
+    border-radius: var(--r-pill);
+    color: var(--c-blue-ink);
+    background: var(--c-blue-soft);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-blue) 30%, transparent) inset;
+  }
+
+  .node.center[aria-pressed='true'] {
+    background: var(--c-blue);
+    color: #fff;
+  }
+
+  .n-label {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .n-en {
+    font-size: 0.875rem;
+    opacity: 0.6;
+    line-height: 1.2;
+  }
+
+  .panel {
+    max-width: 34rem;
+    min-height: 4.5em;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    color: var(--c-ink-2);
+    line-height: 1.85;
+  }
+
+  .panel p {
+    animation: panel-in 500ms var(--ease-out);
+  }
+
+  .panel strong {
+    margin-right: 0.5em;
+    color: var(--c-blue-ink);
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  @media (max-width: 520px) {
+    .node {
+      min-width: 0;
+      padding: 0.5rem 0.7rem;
+    }
+    .n-en {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-od]').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-stage]');
+    const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        panels.forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.stage));
+      }),
+    );
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      root.querySelector('.runner')?.remove();
+    }
+  });
+</script>

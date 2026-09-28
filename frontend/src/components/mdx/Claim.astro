@@ -1,0 +1,124 @@
+---
+import { evidenceTypes, type EvidenceType } from '../../data/site';
+
+interface Props {
+  type: EvidenceType;
+  /** Source numbers in the article's source list. */
+  n?: number | number[];
+}
+
+const { type, n } = Astro.props;
+const meta = evidenceTypes[type];
+const refs = n === undefined ? [] : Array.isArray(n) ? n : [n];
+---
+
+<div class="claim" data-type={type} data-accent={meta.accent}>
+  <span class="tag" title={meta.note}>
+    <span class="dot" aria-hidden="true"></span>
+    {meta.label}
+  </span>
+  <div class="body">
+    <slot />
+    {
+      refs.length > 0 && (
+        <span class="refs">
+          {refs.map((r) => (
+            <a href={`#source-${r}`} aria-label={`来源 ${r}`}>
+              {r}
+            </a>
+          ))}
+        </span>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .claim {
+    position: relative;
+    margin: 1.75em 0;
+    padding: 0.2em 0 0.2em 1.4rem;
+  }
+
+  .claim::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.35em;
+    bottom: 0.35em;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--a);
+  }
+
+  .claim[data-type='inference']::before {
+    background: repeating-linear-gradient(to bottom, var(--a) 0 6px, transparent 6px 10px);
+  }
+
+  .claim[data-type='hypothesis']::before {
+    background: repeating-linear-gradient(to bottom, var(--a) 0 2px, transparent 2px 6px);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    margin-bottom: 0.35rem;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--a-ink);
+    cursor: help;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--a);
+  }
+
+  .body :global(p) {
+    margin: 0;
+  }
+
+  .body :global(p + p) {
+    margin-top: 1em;
+  }
+
+  /* Keep citation badges on the last line of the claim instead of wrapping below it. */
+  .body:has(.refs) > :global(p:last-of-type) {
+    display: inline;
+  }
+
+  .refs {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 0.3em;
+    vertical-align: 0.35em;
+  }
+
+  .refs a {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.35em;
+    height: 1.35em;
+    padding: 0 0.3em;
+    border-radius: 4px;
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    color: var(--c-blue-ink);
+    background: var(--c-blue-soft);
+    text-decoration: none;
+    transition:
+      background-color var(--d-fast) var(--ease-out),
+      color var(--d-fast) var(--ease-out);
+  }
+
+  .refs a:hover {
+    background: var(--c-blue);
+    color: #fff;
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import QuestionRow from '../QuestionRow.astro';
+import Icon from '../Icon.astro';
+
+const questions = (await getCollection('questions')).sort(
+  (a, b) => Number(b.data.state === 'open') - Number(a.data.state === 'open'),
+);
+---
+
+<section class="section" aria-labelledby="questions-title">
+  <div class="container">
+    <header class="head">
+      <div class="section-head">
+        <p class="eyebrow" data-accent="orange" data-reveal>最新研究问题</p>
+        <h2 class="h1" id="questions-title" data-reveal style="--i:1">我们还不知道答案。<br />这正是邀请你的原因。</h2>
+      </div>
+      <a class="link-arrow" href="/questions" data-accent="orange" data-reveal style="--i:2">
+        全部研究问题 <Icon name="arrow-right" />
+      </a>
+    </header>
+    <ol role="list" class="list">
+      {questions.map((q, i) => <QuestionRow question={q} index={i} />)}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .head .link-arrow {
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+    white-space: nowrap;
+  }
+
+  .list {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .head {
+      display: block;
+    }
+    .head .link-arrow {
+      display: inline-flex;
+      margin: -1.5rem 0 2.5rem;
+    }
+  }
+</style>

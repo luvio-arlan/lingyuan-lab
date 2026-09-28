@@ -1,0 +1,465 @@
+---
+import Icon from '../Icon.astro';
+import { lessons } from '../../data/path';
+---
+
+<section class="section entries" aria-labelledby="entries-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow" data-accent="blue" data-reveal>四个入口</p>
+      <h2 class="h1" id="entries-title" data-reveal style="--i:1">学懂它，<br />然后拿去用。</h2>
+      <p class="lead" data-reveal style="--i:2">
+        读一篇解释，看一张关系图，完成一份练习，再对一个开放问题提出你的观点。这是每一课的最小闭环。
+      </p>
+    </header>
+
+    <div class="bento">
+      <a class="card spotlight tile t-learn" href="/learn" data-accent="blue" data-reveal style="--i:0">
+        <div class="tile-copy">
+          <span class="chip"><Icon name="route" size={14} />学习路径</span>
+          <h3 class="h2">八个问题，循序学懂。</h3>
+          <p>从“OD 到底在改变什么”走到“人才系统需要怎样响应”。每一步只回答一个问题。</p>
+          <span class="link-arrow">进入学习路径 <Icon name="arrow-right" /></span>
+        </div>
+        <div class="art art-path" aria-hidden="true">
+          <svg viewBox="0 0 520 180" fill="none">
+            <path
+              class="track"
+              d="M10 140 C 90 140, 110 50, 190 50 S 290 140, 350 120 S 450 30, 510 40"
+              pathLength="1"></path>
+            <path
+              class="trail"
+              d="M10 140 C 90 140, 110 50, 190 50 S 290 140, 350 120 S 450 30, 510 40"
+              pathLength="1"></path>
+          </svg>
+          <ol class="stops" role="list">
+            {
+              lessons.map((l, i) => (
+                <li class:list={[l.status === 'available' && 'on']} style={`--i:${i}`}>
+                  <span class="mono">{l.no}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </a>
+
+      <a class="card spotlight tile t-library" href="/library" data-accent="violet" data-reveal style="--i:1">
+        <div class="tile-copy">
+          <span class="chip"><Icon name="library" size={14} />知识库</span>
+          <h3 class="h3">文章与术语</h3>
+          <p>每篇都有来源、证据状态和修订记录。</p>
+          <span class="link-arrow">浏览知识库 <Icon name="arrow-right" /></span>
+        </div>
+        <div class="art art-cards" aria-hidden="true">
+          <div class="term c3"><span class="mono">TERM</span><b>社会技术系统</b></div>
+          <div class="term c2"><span class="mono">TERM</span><b>计划变革</b></div>
+          <div class="term c1"><span class="mono">TERM</span><b>组织发展 OD</b><i></i><i></i></div>
+        </div>
+      </a>
+
+      <a class="card spotlight tile t-tools" href="/tools" data-accent="teal" data-reveal style="--i:2">
+        <div class="tile-copy">
+          <span class="chip"><Icon name="clipboard" size={14} />工具箱</span>
+          <h3 class="h3">可打印的分析表</h3>
+          <p>把概念带回你的团队，用问题清单审视真实的工作。</p>
+          <span class="link-arrow">打开工具箱 <Icon name="arrow-right" /></span>
+        </div>
+        <div class="art art-sheet" aria-hidden="true">
+          <div class="sheet">
+            {
+              ['这次变化想解决什么问题？', '谁参与了诊断？', '怎样知道它起作用了？'].map((t, i) => (
+                <div class="row" style={`--i:${i}`}>
+                  <span class="box">
+                    <Icon name="check" size={12} stroke={2.4} />
+                  </span>
+                  <span class="txt">{t}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </a>
+
+      <a class="card spotlight tile t-talk" href="/questions" data-accent="orange" data-reveal style="--i:3">
+        <div class="tile-copy">
+          <span class="chip"><Icon name="message" size={14} />研究讨论</span>
+          <h3 class="h2">对开放问题，提出你的观点。</h3>
+          <p>无需注册。提交观点、匿名案例或反例，审核后公开展示，并区分实验室观点与读者投稿。</p>
+          <span class="link-arrow">参与研究讨论 <Icon name="arrow-right" /></span>
+        </div>
+        <div class="art art-talk" aria-hidden="true">
+          <div class="bubble b1"><span class="k">观点</span>AI 首先改变的是复核的位置。</div>
+          <div class="bubble b2"><span class="k">反例</span>在我们团队，先变的是交接方式。</div>
+          <div class="bubble b3"><span class="k">匿名案例</span>一家零售企业的排班……</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(1rem, 0.6rem + 1vw, 1.5rem);
+  }
+
+  .tile {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 420px;
+    overflow: hidden;
+    border-radius: var(--r-xl);
+  }
+
+  .t-learn {
+    grid-column: span 4;
+  }
+  .t-library {
+    grid-column: span 2;
+  }
+  .t-tools {
+    grid-column: span 2;
+  }
+  .t-talk {
+    grid-column: span 4;
+  }
+
+  .tile-copy {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    gap: 0.85rem;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    padding-bottom: 0;
+  }
+
+  .tile-copy p {
+    max-width: 30rem;
+    color: var(--c-ink-3);
+    line-height: 1.75;
+  }
+
+  .tile-copy .link-arrow {
+    margin-top: 0.35rem;
+    font-size: 0.9375rem;
+  }
+
+  .art {
+    position: relative;
+    min-height: 180px;
+  }
+
+  /* --- Path art --- */
+  .art-path {
+    min-height: 0;
+    aspect-ratio: 520 / 180;
+    margin: 1rem clamp(1.5rem, 1rem + 1.5vw, 2.25rem) 2rem;
+    align-self: end;
+  }
+
+  .art-path svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .art-path .track {
+    stroke: var(--c-line-2);
+    stroke-width: 1.5;
+    stroke-dasharray: 0.006 0.008;
+  }
+
+  .art-path .trail {
+    stroke: var(--a);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 0.157 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dasharray 1400ms var(--ease-in-out);
+  }
+
+  .t-learn:hover .trail {
+    stroke-dasharray: 1 1;
+  }
+
+  .stops {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+
+  .stops li {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin: -19px 0 0 -19px;
+    border-radius: 50%;
+    background: var(--c-bg);
+    box-shadow: 0 0 0 1px var(--c-line-2) inset;
+    font-size: 11px;
+    color: var(--c-ink-4);
+    transition:
+      transform 600ms var(--ease-spring),
+      background-color 500ms var(--ease-out),
+      color 500ms var(--ease-out),
+      box-shadow 500ms var(--ease-out);
+    transition-delay: calc(var(--i) * 70ms);
+  }
+
+  /* Positions follow the curve (percent of the 520×180 viewBox). */
+  .stops li:nth-child(1) { left: 4.1%; top: 77.4%; }
+  .stops li:nth-child(2) { left: 17.3%; top: 57.6%; }
+  .stops li:nth-child(3) { left: 29.4%; top: 31.8%; }
+  .stops li:nth-child(4) { left: 44.1%; top: 32.3%; }
+  .stops li:nth-child(5) { left: 56.1%; top: 58.2%; }
+  .stops li:nth-child(6) { left: 70%; top: 63.5%; }
+  .stops li:nth-child(7) { left: 82.4%; top: 38.8%; }
+  .stops li:nth-child(8) { left: 96%; top: 21.7%; }
+
+  .stops li.on {
+    background: var(--a);
+    color: #fff;
+    box-shadow: 0 8px 18px -8px var(--a);
+  }
+
+  .t-learn:hover .stops li {
+    transform: translateY(-4px);
+    color: var(--a-ink);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--a) 40%, transparent) inset,
+      0 10px 20px -12px var(--a);
+  }
+
+  .t-learn:hover .stops li.on {
+    color: #fff;
+  }
+
+  /* --- Term cards art --- */
+  .art-cards {
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+  }
+
+  .term {
+    position: absolute;
+    display: grid;
+    gap: 0.3rem;
+    width: min(220px, 70%);
+    padding: 1rem 1.1rem 1.1rem;
+    border-radius: var(--r-md);
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-2);
+    transition: transform 800ms var(--ease-spring);
+  }
+
+  .term .mono {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--a-ink);
+  }
+
+  .term b {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .term i {
+    display: block;
+    height: 5px;
+    border-radius: 4px;
+    background: var(--c-mist-2);
+  }
+
+  .term i:last-child {
+    width: 60%;
+  }
+
+  .c1 {
+    transform: translateY(34px) rotate(-2deg);
+  }
+  .c2 {
+    transform: translate(7%, -8px) rotate(4deg) scale(0.95);
+  }
+  .c3 {
+    transform: translate(-6%, -44px) rotate(-6deg) scale(0.9);
+    opacity: 0.85;
+  }
+
+  .t-library:hover .c1 {
+    transform: translate(-8%, 44px) rotate(-5deg);
+  }
+  .t-library:hover .c2 {
+    transform: translate(14%, -6px) rotate(8deg) scale(0.95);
+  }
+  .t-library:hover .c3 {
+    transform: translate(-10%, -60px) rotate(-9deg) scale(0.9);
+  }
+
+  /* --- Worksheet art --- */
+  .art-sheet {
+    display: grid;
+    align-items: end;
+    padding: 0 1.5rem;
+  }
+
+  .sheet {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.1rem;
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    background: var(--c-mist);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+    transform: translateY(12px);
+    transition: transform 700ms var(--ease-spring);
+  }
+
+  .t-tools:hover .sheet {
+    transform: translateY(0);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: var(--r-sm);
+    background: var(--c-bg);
+    box-shadow: var(--shadow-1);
+    font-size: 0.8125rem;
+    color: var(--c-ink-2);
+  }
+
+  .box {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1.5px var(--c-line-3) inset;
+    color: #fff;
+    transition:
+      background-color 300ms var(--ease-out),
+      box-shadow 300ms var(--ease-out);
+    transition-delay: calc(var(--i) * 180ms);
+  }
+
+  .box :global(svg) {
+    transform: scale(0);
+    transition: transform 400ms var(--ease-spring);
+    transition-delay: calc(var(--i) * 180ms + 60ms);
+  }
+
+  .t-tools:hover .box {
+    background: var(--a);
+    box-shadow: none;
+  }
+
+  .t-tools:hover .box :global(svg) {
+    transform: scale(1);
+  }
+
+  .txt {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* --- Discussion art --- */
+  .art-talk {
+    margin: 0 1.5rem 1.75rem;
+    min-height: 200px;
+  }
+
+  .bubble {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: 90%;
+    padding: 0.7rem 1rem;
+    border-radius: 18px;
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-2);
+    font-size: 0.875rem;
+    color: var(--c-ink-2);
+    white-space: nowrap;
+    transition: transform 900ms var(--ease-spring);
+  }
+
+  .bubble .k {
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--r-pill);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--a-ink);
+    background: var(--a-soft);
+  }
+
+  .b1 {
+    left: 0;
+    top: 8%;
+    border-bottom-left-radius: 6px;
+  }
+  .b2 {
+    right: 0;
+    top: 40%;
+    border-bottom-right-radius: 6px;
+    --a-ink: var(--c-violet-ink);
+    --a-soft: var(--c-violet-soft);
+  }
+  .b3 {
+    left: 12%;
+    top: 72%;
+    border-bottom-left-radius: 6px;
+    opacity: 0.8;
+    --a-ink: var(--c-teal-ink);
+    --a-soft: var(--c-teal-soft);
+  }
+
+  .t-talk:hover .b1 {
+    transform: translate(8px, -6px);
+  }
+  .t-talk:hover .b2 {
+    transform: translate(-10px, -4px);
+  }
+  .t-talk:hover .b3 {
+    transform: translate(12px, -8px);
+  }
+
+  @media (max-width: 980px) {
+    .t-learn,
+    .t-talk {
+      grid-column: span 6;
+    }
+    .t-library,
+    .t-tools {
+      grid-column: span 3;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .bento > .tile {
+      grid-column: span 6;
+      min-height: 360px;
+    }
+    .bubble {
+      font-size: 0.8125rem;
+    }
+    .b2 {
+      right: auto;
+      left: 4%;
+    }
+  }
+</style>

@@ -1,0 +1,334 @@
+---
+import { evidenceTypes, type EvidenceType } from '../../data/site';
+
+const types = Object.entries(evidenceTypes) as [EvidenceType, (typeof evidenceTypes)[EvidenceType]][];
+---
+
+<section class="section evidence" aria-labelledby="evidence-title" data-evidence>
+  <div class="container layout">
+    <div class="copy">
+      <p class="eyebrow" data-accent="violet" data-reveal>写作方法</p>
+      <h2 class="h1" id="evidence-title" data-reveal style="--i:1">每一个判断，<br />都说明它从哪里来。</h2>
+      <p class="lead" data-reveal style="--i:2">
+        经典理论不等于对当代 AI 组织效果的实证证明。每篇文章都为段落标注四种证据状态，让你看清哪些是事实，哪些是推想。
+      </p>
+
+      <div class="legend" role="group" aria-label="证据类型" data-reveal style="--i:3">
+        {
+          types.map(([key, t]) => (
+            <button type="button" class="key" data-accent={t.accent} data-key={key} aria-pressed="false">
+              <span class="swatch" aria-hidden="true" />
+              <span class="k-label">{t.label}</span>
+              <span class="k-en en">{t.en}</span>
+            </button>
+          ))
+        }
+      </div>
+      <div class="notes" aria-live="polite" data-reveal style="--i:4">
+        <p class="note is-on" data-note="none">选择一种证据类型，查看它在右侧示例中的位置。</p>
+        {
+          types.map(([key, t]) => (
+            <p class="note" data-note={key} data-accent={t.accent}>
+              <strong>{t.label}</strong>
+              {t.note}
+            </p>
+          ))
+        }
+      </div>
+    </div>
+
+    <figure class="card sample" data-reveal="scale" style="--i:2">
+      <div class="sample-bar" aria-hidden="true">
+        <span></span><span></span><span></span>
+        <p class="mono">library / 标注示意</p>
+      </div>
+      <div class="sample-body">
+        <p class="sample-kicker mono">EXCERPT · 标注方式示意</p>
+        <h3 class="h3">当技术改变，工作群体也在改变</h3>
+        <p class="para">
+          <mark class="ev" data-type="research" data-accent="blue"
+            >Trist 与 Bamforth 在 1951 年发表的煤矿研究中观察到，采煤技术的改变同时打乱了原有工作小组的协作与自我调节方式。</mark
+          >
+          <mark class="ev" data-type="inference" data-accent="violet"
+            >这提示我们：引入 AI 时，值得关注的也许不只是单个任务的效率，还有协作关系如何被重新安排。</mark
+          >
+        </p>
+        <p class="para">
+          <mark class="ev" data-type="case" data-accent="teal"
+            >（示意）某团队引入 AI 起草初稿后，资深成员更多的时间转向复核与处理例外情况。</mark
+          >
+          <mark class="ev" data-type="hypothesis" data-accent="orange"
+            >如果这一现象普遍存在，绩效评价也许需要让“复核质量”成为可见的产出。</mark
+          >
+        </p>
+      </div>
+      <figcaption class="caption">以上为标注方式示意，不代表实验室的研究结论。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .evidence {
+    background: linear-gradient(to bottom, var(--c-bg), var(--c-mist) 40%, var(--c-bg));
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+    align-items: center;
+  }
+
+  .copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .key {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'sw label'
+      'sw en';
+    align-items: center;
+    column-gap: 0.75rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--r-md);
+    text-align: left;
+    background: var(--c-bg);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+    transition:
+      box-shadow var(--d-base) var(--ease-out),
+      transform var(--d-base) var(--ease-spring),
+      background-color var(--d-base) var(--ease-out);
+  }
+
+  .key:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px var(--c-line-2) inset,
+      var(--shadow-2);
+  }
+
+  .key[aria-pressed='true'] {
+    background: var(--a-soft);
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, var(--a) 60%, transparent) inset,
+      0 12px 30px -18px var(--a);
+  }
+
+  .swatch {
+    grid-area: sw;
+    width: 10px;
+    height: 34px;
+    border-radius: 4px;
+    background: var(--a);
+    align-self: start;
+    margin-top: 4px;
+  }
+
+  .k-label {
+    grid-area: label;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .k-en {
+    grid-area: en;
+    font-size: 0.9375rem;
+    color: var(--c-ink-3);
+    line-height: 1.3;
+  }
+
+  .notes {
+    display: grid;
+    grid-template-areas: 'stack';
+    min-height: 3.6em;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--c-ink-2);
+  }
+
+  .note {
+    grid-area: stack;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 400ms var(--ease-out),
+      transform 500ms var(--ease-out);
+  }
+
+  .note.is-on {
+    opacity: 1;
+    transform: none;
+  }
+
+  .note strong {
+    margin-right: 0.5em;
+    color: var(--a-ink);
+  }
+
+  /* Sample card */
+  .sample {
+    overflow: hidden;
+    border-radius: var(--r-xl);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-3);
+  }
+
+  .sample-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 1.1rem;
+    border-bottom: 1px solid var(--c-line);
+    background: var(--c-mist);
+  }
+
+  .sample-bar span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c-mist-3);
+  }
+
+  .sample-bar p {
+    margin-left: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--c-ink-4);
+  }
+
+  .sample-body {
+    display: grid;
+    gap: 1.1rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .sample-kicker {
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    color: var(--c-ink-4);
+  }
+
+  .para {
+    font-size: 1.0625rem;
+    line-height: 2;
+    color: var(--c-ink-2);
+  }
+
+  .ev {
+    color: inherit;
+    background-color: transparent;
+    background-image: linear-gradient(var(--a-soft), var(--a-soft));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    border-bottom: 1.5px solid color-mix(in srgb, var(--a) 55%, transparent);
+    padding: 0.1em 0.05em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition:
+      background-size 700ms var(--ease-in-out),
+      opacity 400ms var(--ease-out),
+      color 400ms var(--ease-out);
+  }
+
+  .ev[data-type='inference'] {
+    border-bottom-style: dashed;
+  }
+  .ev[data-type='hypothesis'] {
+    border-bottom-style: dotted;
+    border-bottom-width: 2px;
+  }
+
+  .has-focus .ev {
+    opacity: 0.35;
+  }
+
+  .has-focus .ev.is-on {
+    opacity: 1;
+    color: var(--c-ink);
+    background-size: 100% 100%;
+  }
+
+  .caption {
+    padding: 0.9rem clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-top: 1px solid var(--c-line);
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+  }
+
+  @media (max-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .legend {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-evidence]');
+  if (root) {
+    const keys = [...root.querySelectorAll<HTMLButtonElement>('[data-key]')];
+    const body = root.querySelector<HTMLElement>('.sample-body')!;
+    const marks = [...root.querySelectorAll<HTMLElement>('.ev')];
+    const notes = [...root.querySelectorAll<HTMLElement>('[data-note]')];
+    let timer = 0;
+    let index = -1;
+    let userDriven = false;
+
+    const select = (key: string | null) => {
+      keys.forEach((k) => k.setAttribute('aria-pressed', String(k.dataset.key === key)));
+      body.classList.toggle('has-focus', key !== null);
+      marks.forEach((m) => m.classList.toggle('is-on', m.dataset.type === key));
+      notes.forEach((n) => n.classList.toggle('is-on', n.dataset.note === (key ?? 'none')));
+    };
+
+    const stopAuto = () => {
+      userDriven = true;
+      window.clearInterval(timer);
+    };
+
+    keys.forEach((k) => {
+      k.addEventListener('click', () => {
+        stopAuto();
+        select(k.getAttribute('aria-pressed') === 'true' ? null : k.dataset.key!);
+      });
+      k.addEventListener('pointerenter', () => {
+        stopAuto();
+        select(k.dataset.key!);
+      });
+    });
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) {
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          window.clearInterval(timer);
+          if (!entry.isIntersecting || userDriven) return;
+          const tick = () => {
+            index = (index + 1) % keys.length;
+            select(keys[index].dataset.key!);
+          };
+          tick();
+          timer = window.setInterval(tick, 3200);
+        },
+        { threshold: 0.45 },
+      );
+      io.observe(body);
+    }
+  }
+</script>

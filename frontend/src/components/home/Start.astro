@@ -1,0 +1,230 @@
+---
+import Icon, { type IconName } from '../Icon.astro';
+import Arrow from '../Arrow.astro';
+import type { Accent } from '../../data/site';
+import { getEntry } from 'astro:content';
+import { readingMinutes } from '../../lib/format';
+
+const article = await getEntry('articles', 'what-does-od-change');
+const tool = await getEntry('tools', 'od-diagnostic-questions');
+const timing = `约 ${readingMinutes(article?.body)} 分钟阅读 + ${tool?.data.minutes ?? 0} 分钟练习`;
+
+const steps: { icon: IconName; title: string; text: string; accent: Accent }[] = [
+  { icon: 'book', title: '读一篇解释', text: '一个问题，一篇有来源的概念文。', accent: 'blue' },
+  { icon: 'network', title: '看一张关系图', text: '把概念放进可点击的结构里。', accent: 'violet' },
+  { icon: 'clipboard', title: '完成一份练习', text: '用问题清单审视你熟悉的组织。', accent: 'teal' },
+  { icon: 'pen', title: '提出一个观点', text: '对开放问题分享观察或反例。', accent: 'orange' },
+];
+---
+
+<section class="section start" aria-labelledby="start-title">
+  <div class="container">
+    <header class="section-head center">
+      <p class="eyebrow" data-accent="blue" data-reveal>从哪里开始</p>
+      <h2 class="display" id="start-title" data-reveal style="--i:1">一课，四步，<br />一个完整的闭环。</h2>
+    </header>
+
+    <ol class="steps" role="list" data-steps>
+      <li class="rail" aria-hidden="true"><span></span></li>
+      {
+        steps.map((s, i) => (
+          <li class="step" data-accent={s.accent} data-reveal style={`--i:${i}`}>
+            <span class="ic">
+              <Icon name={s.icon} size={22} />
+            </span>
+            <span class="mono n">STEP 0{i + 1}</span>
+            <h3 class="t">{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="cta card" data-reveal="scale">
+      <div class="cta-bg" aria-hidden="true"></div>
+      <div class="cta-copy">
+        <p class="mono kicker">LESSON 01 · {timing}</p>
+        <h3 class="h1">OD 到底在改变什么？</h3>
+        <p class="lead">从组织发展的基本定义出发，理解“发展”与一次管理动作的区别，并带着一份诊断问题清单回到你的团队。</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn" href="/learn/od-foundations">开始第 01 课 <Arrow /></a>
+        <a class="btn btn-ghost" href="/about">了解研究方法</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0 0 clamp(4rem, 3rem + 4vw, 6rem);
+  }
+
+  .rail {
+    position: absolute;
+    top: 28px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 1px;
+    background: var(--c-line-2);
+  }
+
+  .rail span {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--c-blue), var(--c-violet), var(--c-teal), var(--c-orange));
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 2.2s 0.3s var(--ease-in-out);
+  }
+
+  .steps:has(.is-in) .rail span {
+    transform: scaleX(1);
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .ic {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 0.75rem;
+    border-radius: 18px;
+    background: var(--c-bg);
+    color: var(--a-ink);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--a) 25%, transparent) inset,
+      0 0 0 8px var(--c-bg),
+      0 14px 30px -14px var(--a);
+    transition: transform 600ms var(--ease-spring);
+  }
+
+  .step:hover .ic {
+    transform: translateY(-4px) rotate(-4deg);
+  }
+
+  .n {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    color: var(--a-ink);
+  }
+
+  .t {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  .step p {
+    max-width: 14rem;
+    font-size: 0.9375rem;
+    color: var(--c-ink-3);
+    line-height: 1.7;
+  }
+
+  /* CTA */
+  .cta {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) auto;
+    align-items: end;
+    gap: 2.5rem;
+    padding: clamp(2rem, 1.5rem + 3vw, 4rem);
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--c-ink);
+    color: #fff;
+    box-shadow: var(--shadow-3);
+  }
+
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(50% 80% at 100% 0%, rgb(124 92 255 / 0.45), transparent 70%),
+      radial-gradient(40% 70% at 70% 120%, rgb(20 167 156 / 0.35), transparent 70%),
+      radial-gradient(40% 60% at 0% 100%, rgb(59 108 255 / 0.35), transparent 70%);
+    animation: breathe 12s ease-in-out infinite alternate;
+  }
+
+  .cta-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(to left, #000, transparent 70%);
+  }
+
+  @keyframes breathe {
+    to {
+      transform: scale(1.15) translateX(-3%);
+    }
+  }
+
+  .cta-copy {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.62);
+  }
+
+  .cta .h1 {
+    color: #fff;
+  }
+
+  .cta .lead {
+    max-width: 36rem;
+    color: rgb(255 255 255 / 0.72);
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .cta .btn:not(.btn-ghost) {
+    --btn-bg: #fff;
+    --btn-fg: var(--c-ink);
+  }
+
+  .cta .btn:not(.btn-ghost)::before {
+    background: radial-gradient(120px circle at var(--mx, 50%) var(--my, 50%), rgb(59 108 255 / 0.18), transparent 70%);
+  }
+
+  .cta .btn-ghost {
+    --btn-bg: rgb(255 255 255 / 0.06);
+    --btn-fg: #fff;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.2) inset;
+  }
+
+  @media (max-width: 900px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 3rem;
+    }
+    .rail {
+      display: none;
+    }
+    .cta {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+  }
+</style>

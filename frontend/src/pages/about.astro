@@ -1,0 +1,260 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Logo from '../components/Logo.astro';
+import { evidenceTypes, site } from '../data/site';
+
+const standards = [
+  '写出具体研究问题、场景与适用边界。',
+  '定义关键术语，区分 OD、组织设计、工作设计，以及 AI 工具、Agent 等概念。',
+  '关键事实附原始来源：作者、标题、年份、版本、链接或 DOI、访问日期。',
+  '为段落或结论标注「研究证据 / 案例观察 / 作者推论 / 待验证假设」。经典理论不等于对当代 AI 组织效果的实证证明。',
+  '列出至少一个竞争性解释或反例，以及尚未解决的问题。',
+  '由人逐条核对 AI 辅助整理出的事实、引文和数据；不发布查不到原文的引用。',
+  '每次实质修订记录日期与变化；涉及企业实践时先获得授权并匿名化。',
+];
+
+const readers = [
+  { t: '正在学习或实践 OD、HR、组织设计的人', d: '需要一条循序的学习路径，以及能带回工作中的分析工具。' },
+  { t: '关心人机协作的业务负责人', d: '想知道 AI 进入团队后，哪些安排需要重新设计。' },
+  { t: 'AI 产品实践者', d: '想理解组织层面的约束，而不只是单个任务的效率。' },
+];
+---
+
+<BaseLayout title="关于" description="灵鸢实验室的项目定位、研究方法与写作标准。">
+  <PageHero
+    eyebrow="关于 · About"
+    title={'一间开放的\n研究工作室。'}
+    lead={site.description}
+    en={site.descriptionEn}
+    accent="blue"
+  />
+
+  <section class="container sec brand" data-reveal>
+    <div class="logo-card card">
+      <Logo height={140} />
+    </div>
+    <div class="brand-copy">
+      <h2 class="h2">Lingyuan Lab · 灵鸢实验室</h2>
+      <p>
+        “AI 原生组织”在这里是一个研究问题，而不是预设的标准答案。我们从组织发展（OD）的经典知识出发，研究 AI
+        如何改变任务、协作、决策、组织设计与人才系统，并邀请读者讨论这些做法可能出现的形态及其边界。
+      </p>
+    </div>
+  </section>
+
+  <section class="container sec" aria-labelledby="readers-title">
+    <h2 class="h2 sec-title" id="readers-title" data-reveal>写给谁</h2>
+    <div class="readers">
+      {
+        readers.map((r, i) => (
+          <div class="card reader" data-reveal style={`--i:${i}`}>
+            <span class="mono n">0{i + 1}</span>
+            <h3 class="h3">{r.t}</h3>
+            <p>{r.d}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container sec" aria-labelledby="evidence-title">
+    <h2 class="h2 sec-title" id="evidence-title" data-reveal>四种证据状态</h2>
+    <div class="ev-grid">
+      {
+        Object.values(evidenceTypes).map((t, i) => (
+          <div class="card ev" data-accent={t.accent} data-reveal style={`--i:${i}`}>
+            <span class="bar" />
+            <h3 class="h3">{t.label}</h3>
+            <p class="en">{t.en}</p>
+            <p class="note">{t.note}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container sec split" aria-labelledby="std-title">
+    <div>
+      <h2 class="h2 sec-title" id="std-title" data-reveal>每篇文章的发布标准</h2>
+      <p class="muted" data-reveal style="--i:1">在一篇文章被标记为“已核对发布”之前，它需要满足以下七条标准。</p>
+    </div>
+    <ol class="std" role="list">
+      {
+        standards.map((s, i) => (
+          <li data-reveal style={`--i:${i % 4}`}>
+            <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+            <p>{s}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="container sec split" aria-labelledby="license-title">
+    <h2 class="h2 sec-title" id="license-title" data-reveal>许可与署名</h2>
+    <div class="license" data-reveal style="--i:1">
+      <p>
+        本站文字内容未来公开使用时，计划保留 <strong>CC BY 4.0</strong> 署名原则。品牌名称“灵鸢实验室 / Lingyuan
+        Lab”与标志不在内容许可范围内。正式上线时，站点将提供完整的许可说明。
+      </p>
+      <p class="muted">作者介绍与联系方式将在正式上线前补充。</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sec {
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  .sec-title {
+    margin-bottom: 2rem;
+  }
+
+  .brand {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .logo-card {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(60% 60% at 50% 50%, var(--c-bg), var(--c-mist) 100%);
+  }
+
+  .logo-card :global(.logo) {
+    width: min(78%, 420px);
+    height: auto;
+  }
+
+  .brand-copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .brand-copy p {
+    color: var(--c-ink-2);
+    line-height: 1.95;
+    font-size: 1.0625rem;
+  }
+
+  .readers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .reader {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.75rem;
+  }
+
+  .reader .n {
+    font-size: 0.75rem;
+    color: var(--c-blue-ink);
+  }
+
+  .reader p {
+    color: var(--c-ink-3);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+
+  .ev-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .ev {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+
+  .ev .bar {
+    width: 28px;
+    height: 4px;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+    background: var(--a);
+  }
+
+  .ev .en {
+    color: var(--c-ink-3);
+  }
+
+  .ev .note {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--c-ink-2);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    border-top: 1px solid var(--c-line-2);
+  }
+
+  .std {
+    display: grid;
+    margin: 0;
+  }
+
+  .std li {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--c-line);
+    line-height: 1.8;
+    color: var(--c-ink-2);
+  }
+
+  .std li:first-child {
+    padding-top: 0;
+  }
+
+  .std .mono {
+    padding-top: 0.2rem;
+    font-size: 0.75rem;
+    color: var(--c-blue-ink);
+  }
+
+  .license {
+    display: grid;
+    gap: 1rem;
+    line-height: 1.9;
+    color: var(--c-ink-2);
+  }
+
+  @media (max-width: 960px) {
+    .brand,
+    .split {
+      grid-template-columns: 1fr;
+    }
+    .readers {
+      grid-template-columns: 1fr;
+    }
+    .ev-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 520px) {
+    .ev-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

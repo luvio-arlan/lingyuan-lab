@@ -1,0 +1,155 @@
+---
+import Logo from './Logo.astro';
+import { nav, site } from '../data/site';
+import { lessons } from '../data/path';
+
+const available = lessons.filter((l) => l.status === 'available');
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="brand-col">
+        <Logo height={72} />
+        <p class="about">
+          {site.description}
+        </p>
+        <p class="en-line en">{site.descriptionEn}</p>
+      </div>
+
+      <nav class="cols" aria-label="页脚导航">
+        <div>
+          <h2 class="col-title mono">站点</h2>
+          <ul role="list">
+            {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <h2 class="col-title mono">从这里开始</h2>
+          <ul role="list">
+            {
+              available.map((l) => (
+                <li>
+                  <a href={`/learn/${l.slug}`}>
+                    <span class="mono no">{l.no}</span>
+                    {l.question}
+                  </a>
+                </li>
+              ))
+            }
+            <li><a href="/questions">参与研究讨论</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <hr class="hairline" />
+
+    <div class="bottom">
+      <p>
+        © {new Date().getFullYear()} Lingyuan Lab · 灵鸢实验室 · v{site.version}
+      </p>
+      <p>
+        文字内容计划采用 CC BY 4.0 署名许可；品牌名称与标志不在内容许可范围内。完整许可说明将随正式上线提供。
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--section);
+    padding: clamp(4rem, 3rem + 4vw, 6rem) 0 3rem;
+    background: linear-gradient(to bottom, var(--c-bg), var(--c-mist));
+    border-top: 1px solid var(--c-line);
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 2rem + 4vw, 6rem);
+    padding-bottom: 3.5rem;
+  }
+
+  .brand-col :global(.logo) {
+    height: 64px;
+    width: auto;
+    margin-bottom: 1.75rem;
+  }
+
+  .about {
+    max-width: 30rem;
+    color: var(--c-ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+  }
+
+  .en-line {
+    margin-top: 0.75rem;
+    max-width: 30rem;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--c-ink-3);
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .col-title {
+    margin-bottom: 1rem;
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-4);
+  }
+
+  .cols ul {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+  }
+
+  .cols a {
+    display: inline-flex;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
+    font-size: 0.9375rem;
+    color: var(--c-ink-2);
+    transition: color var(--d-fast) var(--ease-out);
+  }
+
+  .cols a:hover {
+    color: var(--c-ink);
+  }
+
+  .no {
+    font-size: var(--t-micro);
+    color: var(--c-blue-ink);
+    padding-top: 0.2em;
+  }
+
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    padding-top: 1.75rem;
+    font-size: var(--t-micro);
+    color: var(--c-ink-3);
+    line-height: 1.7;
+  }
+
+  .bottom p:last-child {
+    max-width: 38rem;
+  }
+
+  @media (max-width: 760px) {
+    .top {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

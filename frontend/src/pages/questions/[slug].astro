@@ -1,0 +1,900 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { lessonBySlug } from '../../data/path';
+import { formatDate, isoDate } from '../../lib/format';
+import { BODY_MAX, BODY_MIN, kindLabels } from '../../lib/api';
+import '../../styles/prose.css';
+
+export async function getStaticPaths() {
+  const questions = await getCollection('questions');
+  return questions.map((question) => ({ params: { slug: question.id }, props: { question } }));
+}
+
+const { question } = Astro.props;
+const { data } = question;
+const { Content } = await render(question);
+const lesson = data.lesson ? lessonBySlug(data.lesson) : undefined;
+const open = data.state === 'open';
+const kinds = Object.entries(kindLabels);
+const kindHints: Record<string, string> = {
+  opinion: '你对这个问题的判断，以及支撑它的理由。',
+  case: '你观察到的真实场景。请去除组织名称、人名等可识别信息。',
+  counterexample: '与实验室当前看法相反、或无法被它解释的情况。',
+};
+---
+
+<BaseLayout title={data.title} description={data.summary}>
+  <div class="q-page" data-accent={data.accent}>
+    <header class="head container">
+      <nav class="crumbs" aria-label="面包屑">
+        <a href="/questions">研究讨论</a>
+        <span aria-hidden="true">/</span>
+        {lesson ? <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a> : <span>研究问题</span>}
+      </nav>
+      <div class="state">
+        <span class:list={['chip', !open && 'chip-outline']}>
+          {open && <span class="dot" />}
+          {open ? '征集观点中' : '即将开放'}
+        </span>
+        <span class="mono opened">
+          开放于 <time datetime={isoDate(data.opened)}>{formatDate(data.opened)}</time>
+        </span>
+      </div>
+      <h1 class="h1 title" style={`view-transition-name: q-${question.id}`}>{data.title}</h1>
+      <p class="lead">{data.summary}</p>
+    </header>
+
+    <div class="container layout">
+      <div class="main">
+        <section class="block">
+          <h2 class="block-title"><span class="mono">01</span>问题背景</h2>
+          <div class="prose"><Content /></div>
+        </section>
+
+        <section class="block">
+          <h2 class="block-title"><span class="mono">02</span>可以从这些角度思考</h2>
+          <ol class="angles" role="list">
+            {
+              data.angles.map((a, i) => (
+                <li data-reveal style={`--i:${i}`}>
+                  <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+                  {a}
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="block lab" aria-labelledby="lab-title">
+          <div class="lab-card">
+            <div class="lab-head">
+              <span class="badge">实验室观点</span>
+              <span class="ev">作者推论 · 待验证</span>
+            </div>
+            <p id="lab-title" class="lab-text">{data.labView}</p>
+          </div>
+        </section>
+
+        <section class="block" aria-labelledby="community-title" data-contributions={question.id} data-open={String(open)}>
+          <div class="c-head">
+            <h2 class="block-title" id="community-title"><span class="mono">03</span>读者投稿</h2>
+            <span class="c-note">仅展示已审核内容</span>
+          </div>
+          <div class="c-state" data-c-state="loading">
+            <div class="skeleton"><i></i><i></i><i></i></div>
+            <div class="skeleton"><i></i><i></i></div>
+          </div>
+          <div class="c-state" data-c-state="empty" hidden>
+            <Icon name="message" size={24} />
+            <p>还没有已公开的读者投稿。{open ? '你可以成为第一位。' : ''}</p>
+          </div>
+          <div class="c-state" data-c-state="offline" hidden>
+            <Icon name="info" size={24} />
+            <p>讨论服务暂未连接，读者投稿稍后显示。文章与工具的阅读不受影响。</p>
+          </div>
+          <ol class="c-list" role="list" data-c-list hidden></ol>
+        </section>
+      </div>
+
+      <aside class="side">
+        {
+          open ? (
+            <form class="card compose" data-compose={question.id} novalidate>
+              <div class="compose-head">
+                <h2 class="h3">提交你的观察</h2>
+                <p>无需注册，不收集姓名或邮箱。</p>
+              </div>
+
+              <fieldset class="kinds">
+                <legend class="lbl">投稿类型</legend>
+                <div class="seg" data-kind-seg>
+                  <span class="seg-pill" aria-hidden="true" />
+                  {kinds.map(([k, label], i) => (
+                    <label>
+                      <input type="radio" name="kind" value={k} checked={i === 0} data-hint={kindHints[k]} />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <p class="kind-hint" data-kind-hint>
+                  {kindHints.opinion}
+                </p>
+              </fieldset>
+
+              <div class="field">
+                <label class="lbl" for="c-body">
+                  内容
+                </label>
+                <textarea
+                  id="c-body"
+                  name="body"
+                  rows="7"
+                  minlength={BODY_MIN}
+                  maxlength={BODY_MAX}
+                  required
+                  aria-describedby="c-count c-error"
+                  placeholder="写下你的观察、理由或场景…"
+                />
+                <div class="field-foot">
+                  <p class="error" id="c-error" aria-live="polite" data-error />
+                  <p class="count mono" id="c-count" data-count>
+                    0 / {BODY_MAX}
+                  </p>
+                </div>
+              </div>
+
+              <div class="hp" aria-hidden="true">
+                <label>
+                  网站 <input type="text" name="website" tabindex="-1" autocomplete="off" />
+                </label>
+              </div>
+
+              <div class="privacy">
+                <Icon name="shield" size={18} />
+                <p>
+                  请不要写入可识别的<strong>组织名称、人名、联系方式</strong>
+                  或其他敏感信息。涉及真实企业实践时，请先确认你有权分享。
+                </p>
+              </div>
+
+              <label class="consent">
+                <input type="checkbox" name="consent" required />
+                <span class="box" aria-hidden="true">
+                  <Icon name="check" size={12} stroke={2.6} />
+                </span>
+                <span>我已去除可识别信息，并同意投稿在审核后公开展示。</span>
+              </label>
+
+              <button type="submit" class="btn submit" data-submit>
+                <span class="spinner" aria-hidden="true" />
+                <span class="label">提交审核</span>
+              </button>
+
+              <div class="done" hidden data-done tabindex="-1">
+                <span class="done-ic">
+                  <Icon name="check" size={22} stroke={2.4} />
+                </span>
+                <h3 class="h3">已收到，谢谢你。</h3>
+                <p>投稿已进入待审核状态。审核通过后，它会出现在本页的读者投稿中。</p>
+                <button type="button" class="btn btn-ghost btn-sm" data-again>
+                  再写一条
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div class="card soon">
+              <Icon name="clock" size={22} />
+              <h2 class="h3">即将开放投稿</h2>
+              <p>这个问题将随第 {lesson?.no ?? '—'} 课一起开放讨论。你可以先从已发布的课程开始。</p>
+              <a class="link-arrow" href="/learn">
+                查看学习路径 <Icon name="arrow-right" />
+              </a>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 58rem;
+    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 4vw, 6rem));
+    padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 0.6rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--a-ink);
+  }
+
+  .state {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .opened {
+    font-size: 0.75rem;
+    color: var(--c-ink-4);
+  }
+
+  .title {
+    line-height: 1.3;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .main {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  .block {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .block-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.375rem;
+  }
+
+  .block-title .mono {
+    font-size: 0.75rem;
+    color: var(--a-ink);
+  }
+
+  .angles {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .angles li {
+    display: flex;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--r-md);
+    background: var(--c-mist);
+    line-height: 1.75;
+    color: var(--c-ink-2);
+  }
+
+  .angles .mono {
+    padding-top: 0.2rem;
+    font-size: 0.75rem;
+    color: var(--a-ink);
+  }
+
+  .lab-card {
+    position: relative;
+    padding: 1.75rem;
+    border-radius: var(--r-lg);
+    background: linear-gradient(135deg, var(--c-violet-soft), var(--c-bg) 80%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-violet) 22%, transparent) inset;
+  }
+
+  .lab-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .badge {
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--r-pill);
+    background: var(--c-ink);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .ev {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: var(--c-violet-ink);
+  }
+
+  .lab-text {
+    font-family: var(--f-display);
+    font-size: 1.1875rem;
+    line-height: 1.75;
+    color: var(--c-ink);
+  }
+
+  .c-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .c-note {
+    font-size: 0.75rem;
+    color: var(--c-ink-4);
+  }
+
+  .c-state {
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    padding: 2.5rem 1.5rem;
+    border-radius: var(--r-lg);
+    background: var(--c-mist);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+    color: var(--c-ink-3);
+    font-size: 0.9375rem;
+    text-align: center;
+  }
+
+  .c-state[hidden] {
+    display: none;
+  }
+
+  .c-state[data-c-state='loading'] {
+    justify-items: stretch;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: none;
+    box-shadow: none;
+  }
+
+  .skeleton {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    border-radius: var(--r-md);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+  }
+
+  .skeleton i {
+    height: 10px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--c-mist-2), var(--c-mist), var(--c-mist-2));
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+  }
+
+  .skeleton i:nth-child(1) {
+    width: 30%;
+  }
+  .skeleton i:nth-child(3) {
+    width: 70%;
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .c-list {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .c-list[hidden] {
+    display: none;
+  }
+
+  .c-list :global(li) {
+    padding: 1.35rem 1.5rem;
+    border-radius: var(--r-md);
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-1);
+  }
+
+  .c-list :global(.c-meta) {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    color: var(--c-ink-4);
+  }
+
+  .c-list :global(.c-kind) {
+    padding: 0.1rem 0.55rem;
+    border-radius: var(--r-pill);
+    background: var(--c-orange-soft);
+    color: var(--c-orange-ink);
+    font-weight: 600;
+  }
+
+  .c-list :global(.c-body) {
+    white-space: pre-line;
+    line-height: 1.85;
+    color: var(--c-ink-2);
+  }
+
+  .c-list :global(.c-resp) {
+    margin-top: 0.9rem;
+    padding: 0.9rem 1rem;
+    border-radius: var(--r-sm);
+    background: var(--c-violet-soft);
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--c-ink-2);
+  }
+
+  /* Compose */
+  .side {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+  }
+
+  .compose,
+  .soon {
+    display: grid;
+    gap: 1.35rem;
+    padding: 1.75rem;
+    border-radius: var(--r-xl);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-3);
+  }
+
+  .compose-head p,
+  .soon p {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--c-ink-3);
+    line-height: 1.7;
+  }
+
+  .soon {
+    justify-items: start;
+    color: var(--c-ink-2);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-1);
+  }
+
+  .lbl {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--c-ink);
+  }
+
+  .kinds {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .seg {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 3px;
+    border-radius: var(--r-pill);
+    background: var(--c-mist-2);
+  }
+
+  .seg-pill {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc((100% - 6px) / 3);
+    border-radius: var(--r-pill);
+    background: var(--c-bg);
+    box-shadow: var(--shadow-1);
+    transform: translateX(calc(var(--k, 0) * 100%));
+    transition: transform 480ms var(--ease-spring);
+  }
+
+  .seg label {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 38px;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    color: var(--c-ink-3);
+    cursor: pointer;
+    border-radius: var(--r-pill);
+  }
+
+  .seg input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .seg label:has(input:checked) {
+    color: var(--c-ink);
+  }
+
+  .seg label:has(input:focus-visible) {
+    outline: 2px solid var(--c-blue);
+    outline-offset: -2px;
+  }
+
+  .kind-hint {
+    margin-top: 0.6rem;
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    color: var(--c-ink-3);
+  }
+
+  textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 0;
+    border-radius: var(--r-md);
+    background: var(--c-mist);
+    box-shadow: 0 0 0 1px var(--c-line) inset;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    resize: vertical;
+    min-height: 10rem;
+    transition:
+      box-shadow var(--d-base) var(--ease-out),
+      background-color var(--d-base) var(--ease-out);
+  }
+
+  textarea:focus {
+    outline: none;
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1.5px var(--a) inset,
+      0 0 0 5px color-mix(in srgb, var(--a) 14%, transparent);
+  }
+
+  textarea[aria-invalid='true'] {
+    box-shadow: 0 0 0 1.5px #d93636 inset;
+  }
+
+  .field-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.4rem;
+    min-height: 1.3em;
+  }
+
+  .error {
+    font-size: 0.8125rem;
+    color: #c02a2a;
+  }
+
+  .count {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    color: var(--c-ink-4);
+    transition: color var(--d-base) var(--ease-out);
+  }
+
+  .count.warn {
+    color: var(--c-orange-ink);
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .privacy {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: var(--r-md);
+    background: var(--c-teal-soft);
+    color: var(--c-teal-ink);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+  }
+
+  .privacy :global(svg) {
+    flex: none;
+    margin-top: 0.15rem;
+  }
+
+  .privacy strong {
+    font-weight: 650;
+  }
+
+  .consent {
+    position: relative;
+    display: flex;
+    gap: 0.7rem;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--c-ink-2);
+    cursor: pointer;
+  }
+
+  .consent input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .consent .box {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 0.1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1.5px var(--c-line-3) inset;
+    color: #fff;
+    transition: background-color 250ms var(--ease-out);
+  }
+
+  .consent .box :global(svg) {
+    transform: scale(0);
+    transition: transform 400ms var(--ease-spring);
+  }
+
+  .consent input:checked ~ .box {
+    background: var(--c-ink);
+    box-shadow: none;
+  }
+
+  .consent input:checked ~ .box :global(svg) {
+    transform: scale(1);
+  }
+
+  .consent input:focus-visible ~ .box {
+    outline: 2px solid var(--c-blue);
+    outline-offset: 2px;
+  }
+
+  .consent.invalid .box {
+    box-shadow: 0 0 0 1.5px #d93636 inset;
+  }
+
+  .submit {
+    width: 100%;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgb(255 255 255 / 0.3);
+    border-top-color: #fff;
+    display: none;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .submit.is-loading .spinner {
+    display: block;
+  }
+
+  .submit.is-loading {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .done {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    padding: 1rem 0;
+    text-align: center;
+    outline: none;
+  }
+
+  .done[hidden] {
+    display: none;
+  }
+
+  .done p {
+    font-size: 0.875rem;
+    color: var(--c-ink-3);
+    line-height: 1.7;
+  }
+
+  .done-ic {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--c-teal);
+    color: #fff;
+    box-shadow: 0 0 0 8px var(--c-teal-soft);
+    animation: pop 700ms var(--ease-spring) both;
+  }
+
+  @keyframes pop {
+    from {
+      transform: scale(0.4);
+      opacity: 0;
+    }
+  }
+
+  :global(.compose.is-sent) > :not(.done) {
+    display: none;
+  }
+
+  @media (max-width: 1000px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .side {
+      position: static;
+    }
+  }
+</style>
+
+<script>
+  import {
+    ApiError,
+    BODY_MAX,
+    BODY_MIN,
+    createContribution,
+    kindLabels,
+    listContributions,
+    type ContributionKind,
+  } from '../../lib/api';
+
+  /* ---------- Published contributions ---------- */
+  const section = document.querySelector<HTMLElement>('[data-contributions]');
+  if (section) {
+    const slug = section.dataset.contributions!;
+    const show = (state: string) =>
+      section.querySelectorAll<HTMLElement>('[data-c-state]').forEach((el) => (el.hidden = el.dataset.cState !== state));
+    const list = section.querySelector<HTMLOListElement>('[data-c-list]')!;
+    const dateFmt = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    listContributions(slug)
+      .then(({ items }) => {
+        if (!items.length) return show('empty');
+        show('none');
+        list.hidden = false;
+        for (const item of items) {
+          const li = document.createElement('li');
+          const meta = document.createElement('div');
+          meta.className = 'c-meta';
+          const kind = document.createElement('span');
+          kind.className = 'c-kind';
+          kind.textContent = kindLabels[item.kind] ?? '投稿';
+          const time = document.createElement('time');
+          time.dateTime = item.published_at;
+          time.textContent = dateFmt.format(new Date(item.published_at));
+          meta.append(kind, time);
+          const body = document.createElement('p');
+          body.className = 'c-body';
+          body.textContent = item.body;
+          li.append(meta, body);
+          if (item.lab_response) {
+            const resp = document.createElement('p');
+            resp.className = 'c-resp';
+            resp.textContent = `实验室回应：${item.lab_response}`;
+            li.append(resp);
+          }
+          list.append(li);
+        }
+      })
+      .catch(() => show('offline'));
+  }
+
+  /* ---------- Compose ---------- */
+  const form = document.querySelector<HTMLFormElement>('[data-compose]');
+  if (form) {
+    const slug = form.dataset.compose!;
+    const body = form.querySelector<HTMLTextAreaElement>('textarea[name="body"]')!;
+    const count = form.querySelector<HTMLElement>('[data-count]')!;
+    const error = form.querySelector<HTMLElement>('[data-error]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const consent = form.querySelector<HTMLInputElement>('input[name="consent"]')!;
+    const done = form.querySelector<HTMLElement>('[data-done]')!;
+    const seg = form.querySelector<HTMLElement>('[data-kind-seg]')!;
+    const hint = form.querySelector<HTMLElement>('[data-kind-hint]')!;
+    const radios = [...form.querySelectorAll<HTMLInputElement>('input[name="kind"]')];
+
+    const syncKind = () => {
+      const i = radios.findIndex((r) => r.checked);
+      seg.style.setProperty('--k', String(Math.max(0, i)));
+      hint.textContent = radios[i]?.dataset.hint ?? '';
+    };
+    radios.forEach((r) => r.addEventListener('change', syncKind));
+    syncKind();
+
+    const setError = (msg: string, invalid = Boolean(msg)) => {
+      error.textContent = msg;
+      body.setAttribute('aria-invalid', String(invalid));
+    };
+
+    body.addEventListener('input', () => {
+      const n = body.value.length;
+      count.textContent = `${n} / ${BODY_MAX}`;
+      count.classList.toggle('warn', n > BODY_MAX * 0.9);
+      if (error.textContent && body.value.trim().length >= BODY_MIN) setError('');
+    });
+    consent.addEventListener('change', () => consent.closest('.consent')?.classList.remove('invalid'));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = body.value.trim();
+      if (text.length < BODY_MIN) {
+        setError(`请至少写 ${BODY_MIN} 个字，让观点更容易被理解。`);
+        body.focus();
+        return;
+      }
+      if (!consent.checked) {
+        consent.closest('.consent')?.classList.add('invalid');
+        consent.focus();
+        return;
+      }
+      setError('');
+      submit.classList.add('is-loading');
+      submit.querySelector('.label')!.textContent = '正在提交…';
+      try {
+        await createContribution(slug, {
+          kind: (radios.find((r) => r.checked)?.value ?? 'opinion') as ContributionKind,
+          body: text,
+          website: (form.elements.namedItem('website') as HTMLInputElement).value,
+        });
+        form.classList.add('is-sent');
+        done.hidden = false;
+        done.focus();
+      } catch (err) {
+        const status = err instanceof ApiError ? err.status : 0;
+        setError(
+          status === 429
+            ? '提交太频繁了，请稍后再试。'
+            : status === 422
+              ? '内容未通过校验，请检查长度与格式。'
+              : '讨论服务暂时无法连接，你的内容仍保留在输入框中，请稍后再试。',
+          status === 422,
+        );
+      } finally {
+        submit.classList.remove('is-loading');
+        submit.querySelector('.label')!.textContent = '提交审核';
+      }
+    });
+
+    form.querySelector('[data-again]')?.addEventListener('click', () => {
+      form.reset();
+      form.classList.remove('is-sent');
+      done.hidden = true;
+      count.textContent = `0 / ${BODY_MAX}`;
+      syncKind();
+      body.focus();
+    });
+  }
+</script>

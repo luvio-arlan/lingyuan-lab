@@ -1,0 +1,93 @@
+---
+import type { Accent } from '../../data/site';
+
+type Segment = { t: string; accent?: Accent };
+
+const segments: Segment[] = [
+  { t: 'AI 原生组织，是一个' },
+  { t: '研究问题', accent: 'blue' },
+  { t: '，而不是一个标准答案。我们从组织发展的经典知识出发，把' },
+  { t: '研究证据', accent: 'blue' },
+  { t: '、' },
+  { t: '案例观察', accent: 'teal' },
+  { t: '、' },
+  { t: '作者推论', accent: 'violet' },
+  { t: '与' },
+  { t: '待验证假设', accent: 'orange' },
+  { t: '分开写清楚，和你一起辨认：AI 正在改变的，究竟是任务、流程、协作关系，还是组织本身。' },
+];
+
+const plain = segments.map((s) => s.t).join('');
+// Keep Latin words intact so they do not animate letter by letter.
+const tokens = (text: string) => text.match(/[A-Za-z]+|\s+|./gu) ?? [];
+---
+
+<section class="manifesto" id="manifesto" data-manifesto>
+  <div class="container inner">
+    <p class="eyebrow" data-accent="blue" data-reveal>我们的研究主张</p>
+    <p class="visually-hidden">{plain}</p>
+    <p class="text" aria-hidden="true" data-manifesto-text>
+      {
+        segments.map((seg) => (
+          <span class:list={['seg', seg.accent && 'hl']} data-accent={seg.accent}>
+            {tokens(seg.t).map((tk) => (/^\s+$/.test(tk) ? tk : <span class="ch">{tk}</span>))}
+          </span>
+        ))
+      }
+    </p>
+    <div class="sign" data-reveal>
+      <span class="line" aria-hidden="true"></span>
+      <span class="en">Lingyuan Lab · Research Principles</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    padding-block: clamp(7rem, 5rem + 10vw, 14rem);
+  }
+
+  .inner {
+    display: grid;
+    gap: 2.5rem;
+    max-width: 62rem;
+  }
+
+  .text {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-synthesis: none;
+    font-size: clamp(1.625rem, 0.9rem + 2.7vw, 3.25rem);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    color: var(--c-ink);
+    text-wrap: pretty;
+  }
+
+  .hl {
+    color: var(--a-ink);
+  }
+
+  .hl .ch {
+    background-image: linear-gradient(transparent 82%, color-mix(in srgb, var(--a) 22%, transparent) 82%);
+  }
+
+  /* Initial dimmed state is applied only when the scroll animation runs. */
+  :global(.manifesto-armed) .ch {
+    opacity: 0.14;
+  }
+
+  .sign {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--c-ink-3);
+    font-size: 1.125rem;
+  }
+
+  .sign .line {
+    width: 48px;
+    height: 1px;
+    background: var(--c-line-3);
+  }
+</style>

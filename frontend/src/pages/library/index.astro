@@ -1,0 +1,342 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import TermCard from '../../components/TermCard.astro';
+import Icon from '../../components/Icon.astro';
+import { lessons } from '../../data/path';
+
+const lessonOrder = (slug?: string) => lessons.findIndex((l) => l.slug === slug);
+const articles = (await getCollection('articles')).sort(
+  (a, b) => lessonOrder(a.data.lesson) - lessonOrder(b.data.lesson),
+);
+const terms = await getCollection('terms');
+
+const filters = [
+  { id: 'all', label: '全部', count: articles.length + terms.length },
+  { id: 'article', label: '文章', count: articles.length },
+  { id: 'term', label: '术语', count: terms.length },
+];
+---
+
+<BaseLayout title="知识库" description="有来源、证据状态与修订记录的概念文章和术语卡片。">
+  <PageHero
+    eyebrow="知识库 · Library"
+    title={'概念、来源与术语，\n都在这里。'}
+    lead="每篇文章都写明研究问题、适用边界、来源与修订记录；术语卡帮你区分那些容易混用的词。"
+    accent="violet"
+  />
+
+  <section class="container lib" data-library>
+    <div class="toolbar" role="search">
+      <label class="search">
+        <Icon name="search" size={18} />
+        <span class="visually-hidden">搜索文章与术语</span>
+        <input type="search" placeholder="搜索文章与术语…" autocomplete="off" data-q />
+        <kbd class="mono" aria-hidden="true">/</kbd>
+      </label>
+      <div class="seg" role="radiogroup" aria-label="内容类型" data-seg>
+        <span class="seg-pill" aria-hidden="true" data-seg-pill></span>
+        {
+          filters.map((f, i) => (
+            <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-filter={f.id}>
+              {f.label}
+              <span class="mono c">{f.count}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <p class="count" aria-live="polite" data-count></p>
+
+    <div class="group" data-group="article">
+      <h2 class="group-title"><span class="mono">01</span>文章</h2>
+      <div class="articles">
+        {articles.map((a, i) => <ArticleCard article={a} index={i} />)}
+      </div>
+    </div>
+
+    <div class="group" data-group="term">
+      <h2 class="group-title"><span class="mono">02</span>术语</h2>
+      <div class="terms">
+        {terms.map((t, i) => <TermCard term={t} index={i % 3} />)}
+      </div>
+    </div>
+
+    <div class="empty" hidden data-empty>
+      <Icon name="search" size={28} />
+      <p>没有找到相关内容。</p>
+      <p class="muted">换一个关键词试试，或者到研究讨论里提出这个问题。</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lib {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .toolbar {
+    position: sticky;
+    top: calc(var(--header-h) + 12px);
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: var(--r-pill);
+    background: rgb(255 255 255 / 0.8);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow:
+      0 0 0 1px var(--c-line-2) inset,
+      var(--shadow-2);
+    transition: top 520ms var(--ease-out);
+  }
+
+  :global(html.header-hidden) .toolbar {
+    top: 12px;
+  }
+
+  .search {
+    flex: 1 1 260px;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    height: 44px;
+    padding: 0 0.75rem 0 1rem;
+    border-radius: var(--r-pill);
+    color: var(--c-ink-3);
+    transition: box-shadow var(--d-base) var(--ease-out);
+  }
+
+  .search:focus-within {
+    box-shadow: 0 0 0 2px var(--c-violet) inset;
+  }
+
+  .search input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: none;
+    outline: none;
+    font-size: 0.9375rem;
+    color: var(--c-ink);
+  }
+
+  .search input::placeholder {
+    color: var(--c-ink-4);
+  }
+
+  kbd {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+    box-shadow: 0 0 0 1px var(--c-line-2) inset;
+  }
+
+  .seg {
+    position: relative;
+    display: flex;
+    padding: 3px;
+    border-radius: var(--r-pill);
+    background: var(--c-mist-2);
+  }
+
+  .seg-pill {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    height: calc(100% - 6px);
+    width: var(--w, 0px);
+    transform: translateX(var(--x, 3px));
+    border-radius: var(--r-pill);
+    background: var(--c-bg);
+    box-shadow: var(--shadow-1);
+    transition:
+      transform 480ms var(--ease-spring),
+      width 480ms var(--ease-spring);
+  }
+
+  .seg button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 38px;
+    padding: 0 1rem;
+    border-radius: var(--r-pill);
+    font-size: 0.875rem;
+    font-weight: 550;
+    color: var(--c-ink-3);
+    transition: color var(--d-base) var(--ease-out);
+  }
+
+  .seg button[aria-checked='true'] {
+    color: var(--c-ink);
+  }
+
+  .seg .c {
+    font-size: 0.6875rem;
+    color: var(--c-ink-4);
+  }
+
+  .count {
+    min-height: 1.5em;
+    margin-top: -1rem;
+    padding-left: 1rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  .group {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .group[hidden] {
+    display: none;
+  }
+
+  .group-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    font-family: var(--f-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .group-title .mono {
+    font-size: 0.75rem;
+    color: var(--c-violet-ink);
+  }
+
+  .articles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 1.25rem;
+  }
+
+  .terms {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 1.25rem;
+  }
+
+  :global([data-library] .is-filtered) {
+    display: none;
+  }
+
+  .empty {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    padding: 5rem 1rem;
+    text-align: center;
+    color: var(--c-ink-2);
+  }
+
+  .empty[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .toolbar {
+      border-radius: var(--r-lg);
+    }
+    .seg {
+      width: 100%;
+    }
+    .seg button {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-library]');
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>('[data-q]')!;
+    const seg = root.querySelector<HTMLElement>('[data-seg]')!;
+    const pill = root.querySelector<HTMLElement>('[data-seg-pill]')!;
+    const buttons = [...seg.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const items = [...root.querySelectorAll<HTMLElement>('[data-search]')];
+    const groups = [...root.querySelectorAll<HTMLElement>('[data-group]')];
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    let filter = 'all';
+
+    const params = new URLSearchParams(location.search);
+    if (params.get('q')) input.value = params.get('q')!;
+    if (params.get('type')) filter = params.get('type')!;
+
+    const movePill = () => {
+      const active = buttons.find((b) => b.dataset.filter === filter) ?? buttons[0];
+      pill.style.setProperty('--x', `${active.offsetLeft}px`);
+      pill.style.setProperty('--w', `${active.offsetWidth}px`);
+    };
+
+    const apply = () => {
+      const q = input.value.trim().toLowerCase();
+      let visible = 0;
+      for (const el of items) {
+        const kindOk = filter === 'all' || el.dataset.kind === filter;
+        const textOk = !q || el.dataset.search!.toLowerCase().includes(q);
+        const show = kindOk && textOk;
+        el.classList.toggle('is-filtered', !show);
+        if (show) {
+          visible++;
+          el.classList.add('is-in');
+        }
+      }
+      groups.forEach((g) => {
+        g.hidden = !g.querySelector('[data-search]:not(.is-filtered)');
+      });
+      empty.hidden = visible > 0;
+      count.textContent = q || filter !== 'all' ? `找到 ${visible} 项内容` : '';
+      buttons.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.filter === filter)));
+      movePill();
+
+      const url = new URL(location.href);
+      q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+      filter !== 'all' ? url.searchParams.set('type', filter) : url.searchParams.delete('type');
+      history.replaceState(null, '', url);
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        filter = b.dataset.filter!;
+        apply();
+      }),
+    );
+    seg.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const i = buttons.findIndex((b) => b.dataset.filter === filter);
+      const next = buttons[(i + (e.key === 'ArrowRight' ? 1 : buttons.length - 1)) % buttons.length];
+      filter = next.dataset.filter!;
+      next.focus();
+      apply();
+    });
+    input.addEventListener('input', apply);
+    document.addEventListener('keydown', (e) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        e.preventDefault();
+        input.focus();
+      }
+    });
+    window.addEventListener('resize', movePill);
+    document.fonts?.ready.then(movePill);
+    apply();
+  }
+</script>

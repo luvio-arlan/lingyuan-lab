@@ -1,0 +1,431 @@
+---
+import { getEntries, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon, { type IconName } from '../../components/Icon.astro';
+import Arrow from '../../components/Arrow.astro';
+import TermCard from '../../components/TermCard.astro';
+import { lessons, orbitOf, type Lesson } from '../../data/path';
+import type { Accent } from '../../data/site';
+import { readingMinutes } from '../../lib/format';
+
+export function getStaticPaths() {
+  return lessons.filter((l) => l.status === 'available').map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
+}
+
+const { lesson } = Astro.props as { lesson: Lesson };
+const orbit = orbitOf(lesson.orbit);
+const article = lesson.article ? await getEntry('articles', lesson.article) : undefined;
+const tool = lesson.tool ? await getEntry('tools', lesson.tool) : undefined;
+const discussion = lesson.discussion ? await getEntry('questions', lesson.discussion) : undefined;
+const terms = article ? await getEntries(article.data.terms) : [];
+const diagram = lesson.slug === 'od-foundations' ? 'OD 计划变革循环' : '星型模型五要素';
+
+const idx = lessons.findIndex((l) => l.slug === lesson.slug);
+const prev = lessons[idx - 1];
+const next = lessons[idx + 1];
+
+const steps: { icon: IconName; k: string; title: string; text: string; href?: string; meta: string; accent: Accent }[] = [
+  {
+    icon: 'book',
+    k: '读一篇解释',
+    title: article?.data.title ?? '',
+    text: article?.data.dek ?? '',
+    href: article ? `/library/${article.id}` : undefined,
+    meta: article ? `约 ${readingMinutes(article.body)} 分钟阅读` : '',
+    accent: 'blue',
+  },
+  {
+    icon: 'network',
+    k: '看一张关系图',
+    title: diagram,
+    text: '文章中的可交互图解：点击节点，查看各部分的作用和彼此的关联。',
+    href: article ? `/library/${article.id}#diagram` : undefined,
+    meta: '文章内图解',
+    accent: 'violet',
+  },
+  {
+    icon: 'clipboard',
+    k: '完成一份练习',
+    title: tool?.data.title ?? '',
+    text: tool?.data.summary ?? '',
+    href: tool ? `/tools/${tool.id}` : undefined,
+    meta: tool ? `${tool.data.format} · 约 ${tool.data.minutes} 分钟` : '',
+    accent: 'teal',
+  },
+  {
+    icon: 'pen',
+    k: '提出一个观点',
+    title: discussion?.data.title ?? '',
+    text: discussion?.data.summary ?? '',
+    href: discussion ? `/questions/${discussion.id}` : undefined,
+    meta: discussion?.data.state === 'open' ? '征集观点中' : '即将开放',
+    accent: 'orange',
+  },
+];
+---
+
+<BaseLayout title={`第 ${lesson.no} 课 · ${lesson.question}`} description={article?.data.dek}>
+  <section class="hero" data-accent={orbit.accent}>
+    <div class="bg" aria-hidden="true">
+      <span class="huge figure">{lesson.no}</span>
+    </div>
+    <div class="container inner">
+      <nav class="crumbs" aria-label="面包屑">
+        <a href="/learn">学习路径</a>
+        <span aria-hidden="true">/</span>
+        <span>{orbit.label}</span>
+      </nav>
+      <p class="eyebrow">第 {lesson.no} 课 · {lesson.title}</p>
+      <h1 class="display">{lesson.question}</h1>
+      {article && <p class="lead">{article.data.dek}</p>}
+      <div class="actions">
+        {
+          article && (
+            <a class="btn" href={`/library/${article.id}`}>
+              开始阅读 <Arrow />
+            </a>
+          )
+        }
+        <a class="btn btn-ghost" href="#loop">查看本课闭环</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container loop" id="loop" aria-labelledby="loop-title">
+    <header class="loop-head">
+      <p class="eyebrow" data-accent="blue" data-reveal>本课闭环</p>
+      <h2 class="h1" id="loop-title" data-reveal style="--i:1">读、看、练、议。</h2>
+    </header>
+    <ol class="steps" role="list">
+      {
+        steps.map((s, i) => (
+          <li data-reveal style={`--i:${i}`}>
+            <a class="card spotlight step" href={s.href} data-accent={s.accent}>
+              <span class="step-top">
+                <span class="ic">
+                  <Icon name={s.icon} size={20} />
+                </span>
+                <span class="mono n">0{i + 1}</span>
+              </span>
+              <span class="k">{s.k}</span>
+              <span class="t">{s.title}</span>
+              <span class="x">{s.text}</span>
+              <span class="m">
+                {s.meta}
+                <Icon name="arrow-right" size={16} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  {
+    terms.length > 0 && (
+      <section class="container terms-sec" aria-labelledby="terms-title">
+        <h2 class="h2" id="terms-title" data-reveal>
+          本课术语
+        </h2>
+        <div class="terms">
+          {terms.map((t, i) => (
+            <TermCard term={t} index={i} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <nav class="container pager" aria-label="课程导航">
+    {
+      prev ? (
+        <a class="pg card is-interactive" href={`/learn/${prev.slug}`}>
+          <span class="dir">
+            <Icon name="arrow-left" size={16} /> 上一课
+          </span>
+          <span class="pq">
+            {prev.no} · {prev.question}
+          </span>
+        </a>
+      ) : (
+        <a class="pg card is-interactive" href="/learn">
+          <span class="dir">
+            <Icon name="arrow-left" size={16} /> 返回
+          </span>
+          <span class="pq">学习路径总览</span>
+        </a>
+      )
+    }
+    {
+      next && (
+        <a
+          class:list={['pg card next', next.status === 'available' ? 'is-interactive' : 'soon']}
+          href={next.status === 'available' ? `/learn/${next.slug}` : '/learn'}
+        >
+          <span class="dir">
+            {next.status === 'available' ? '下一课' : '下一课 · 筹备中'} <Icon name="arrow-right" size={16} />
+          </span>
+          <span class="pq">
+            {next.no} · {next.question}
+          </span>
+        </a>
+      )
+    }
+  </nav>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    padding: calc(var(--header-h) + clamp(4rem, 3rem + 5vw, 7rem)) 0 clamp(4rem, 3rem + 4vw, 6rem);
+    overflow: clip;
+    background: radial-gradient(70% 90% at 90% 0%, var(--a-soft), transparent 70%);
+  }
+
+  .bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .huge {
+    position: absolute;
+    right: -2vw;
+    top: 50%;
+    translate: 0 -46%;
+    font-size: clamp(14rem, 10rem + 22vw, 34rem);
+    font-weight: 200;
+    line-height: 0.8;
+    letter-spacing: -0.08em;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--a) 26%, transparent);
+    animation: huge-in 1.6s var(--ease-out) both;
+  }
+
+  @keyframes huge-in {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+  }
+
+  .inner {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+
+  .inner > * {
+    animation: up 1s var(--ease-out) both;
+  }
+  .inner > :nth-child(2) {
+    animation-delay: 80ms;
+  }
+  .inner > :nth-child(3) {
+    animation-delay: 160ms;
+  }
+  .inner > :nth-child(4) {
+    animation-delay: 240ms;
+  }
+  .inner > :nth-child(5) {
+    animation-delay: 320ms;
+  }
+
+  @keyframes up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(4px);
+    }
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 0.6rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--a-ink);
+  }
+
+  .display {
+    max-width: 12em;
+  }
+
+  .lead {
+    max-width: 40rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .loop {
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+  }
+
+  .loop-head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    counter-reset: step;
+  }
+
+  .steps li {
+    display: grid;
+  }
+
+  .step {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    min-height: 340px;
+  }
+
+  .step-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .ic {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--a-soft);
+    color: var(--a-ink);
+    transition: transform 600ms var(--ease-spring);
+  }
+
+  .step:hover .ic {
+    transform: rotate(-6deg) scale(1.06);
+  }
+
+  .n {
+    font-size: 0.75rem;
+    color: var(--c-ink-4);
+  }
+
+  .k {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--a-ink);
+  }
+
+  .t {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.45;
+  }
+
+  .x {
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--c-ink-3);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .m {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-line);
+    font-size: 0.75rem;
+    color: var(--c-ink-3);
+  }
+
+  .m :global(svg) {
+    color: var(--a-ink);
+    transition: transform var(--d-base) var(--ease-spring);
+  }
+
+  .step:hover .m :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .terms-sec {
+    display: grid;
+    gap: 2rem;
+    padding-bottom: clamp(4rem, 3rem + 4vw, 6rem);
+  }
+
+  .terms {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 1rem;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .pg {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .pg.next {
+    text-align: right;
+    justify-items: end;
+  }
+
+  .pg.soon {
+    background: var(--c-mist);
+  }
+
+  .dir {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+
+  .pq {
+    font-family: var(--f-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 1000px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .steps,
+    .pager {
+      grid-template-columns: 1fr;
+    }
+    .step {
+      min-height: 0;
+    }
+  }
+</style>

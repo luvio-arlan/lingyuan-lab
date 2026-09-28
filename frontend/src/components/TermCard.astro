@@ -1,0 +1,118 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  term: CollectionEntry<'terms'>;
+  index?: number;
+  compact?: boolean;
+}
+
+const { term, index = 0, compact = false } = Astro.props;
+const { data } = term;
+---
+
+<article
+  class:list={['card term-card', { compact }]}
+  id={`term-${term.id}`}
+  data-accent={data.accent}
+  data-reveal
+  style={`--i:${index}`}
+  data-kind="term"
+  data-search={`${data.term} ${data.en} ${data.short} ${data.distinct ?? ''}`}
+>
+  <header>
+    <span class="kicker mono">TERM</span>
+    <h3 class="name">{data.term}</h3>
+    <p class="en">{data.en}</p>
+  </header>
+  <p class="short">{data.short}</p>
+  {
+    data.distinct && !compact && (
+      <p class="distinct">
+        <span>辨析</span>
+        {data.distinct}
+      </p>
+    )
+  }
+  {data.source && <p class="src mono">{data.source}</p>}
+</article>
+
+<style>
+  .term-card {
+    display: grid;
+    align-content: start;
+    gap: 0.85rem;
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+
+  .term-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    background: linear-gradient(90deg, var(--a), transparent 70%);
+    opacity: 0.8;
+  }
+
+  .term-card:target {
+    box-shadow:
+      0 0 0 2px var(--a) inset,
+      var(--shadow-3);
+  }
+
+  .kicker {
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    color: var(--a-ink);
+  }
+
+  .name {
+    margin-top: 0.35rem;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.3125rem;
+    line-height: 1.35;
+  }
+
+  header .en {
+    font-size: 1rem;
+    color: var(--c-ink-3);
+  }
+
+  .short {
+    font-size: 0.9375rem;
+    line-height: 1.85;
+    color: var(--c-ink-2);
+  }
+
+  .distinct {
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--r-sm);
+    background: var(--c-mist);
+    font-size: 0.8125rem;
+    line-height: 1.75;
+    color: var(--c-ink-3);
+  }
+
+  .distinct span {
+    margin-right: 0.5em;
+    font-weight: 600;
+    color: var(--a-ink);
+  }
+
+  .src {
+    font-size: 0.6875rem;
+    color: var(--c-ink-4);
+  }
+
+  .compact {
+    padding: 1.25rem;
+  }
+
+  .compact .short {
+    font-size: 0.875rem;
+  }
+</style>

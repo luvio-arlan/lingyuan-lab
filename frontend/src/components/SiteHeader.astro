@@ -1,0 +1,437 @@
+---
+import Logo from './Logo.astro';
+import Arrow from './Arrow.astro';
+import { nav } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="site-header" data-header>
+  <div class="bar container-wide">
+    <a class="brand" href="/" aria-label="灵鸢实验室首页">
+      <Logo height={38} eager />
+    </a>
+
+    <nav class="nav" aria-label="主导航" data-nav>
+      <span class="nav-pill" aria-hidden="true" data-pill></span>
+      <ul role="list" class="nav-list">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="nav-link"
+                data-accent={item.accent}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="btn btn-sm cta" href="/learn/od-foundations">
+        开始学习
+        <Arrow />
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="visually-hidden">打开菜单</span>
+        <span class="bars" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet" id="mobile-menu" data-sheet hidden>
+    <nav aria-label="移动端导航">
+      <ol role="list">
+        {
+          nav.map((item, i) => (
+            <li style={`--i:${i}`}>
+              <a href={item.href} data-accent={item.accent} aria-current={isActive(item.href) ? 'page' : undefined}>
+                <span class="idx mono">0{i + 1}</span>
+                <span class="lbl">{item.label}</span>
+                <span class="en">{item.en}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <a class="btn sheet-cta" href="/learn/od-foundations" style={`--i:${nav.length}`}>
+      从第 01 课开始
+      <Arrow />
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    view-transition-name: site-header;
+    transition: transform 520ms var(--ease-out);
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(255 255 255 / 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 1px 0 var(--c-line);
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  :global(html.is-scrolled) .site-header::before,
+  :global(html.menu-open) .site-header::before {
+    opacity: 1;
+  }
+
+  :global(html.header-hidden) .site-header {
+    transform: translateY(-100%);
+  }
+
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: var(--header-h);
+  }
+
+  .brand {
+    justify-self: start;
+    display: inline-flex;
+    padding: 4px 6px;
+    margin-left: -6px;
+    border-radius: 8px;
+    transition: opacity var(--d-base) var(--ease-out);
+  }
+
+  .brand:hover {
+    opacity: 0.72;
+  }
+
+  .brand :global(.logo) {
+    height: 34px;
+    width: auto;
+  }
+
+  .nav {
+    position: relative;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: 2px;
+    margin: 0;
+    padding: 4px;
+    border-radius: var(--r-pill);
+  }
+
+  .nav-pill {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: calc(100% - 8px);
+    width: var(--pw, 0px);
+    transform: translateX(var(--px, 0px));
+    border-radius: var(--r-pill);
+    background: var(--c-mist-2);
+    opacity: 0;
+    transition:
+      transform 420ms var(--ease-spring),
+      width 420ms var(--ease-spring),
+      opacity 240ms var(--ease-out);
+  }
+
+  .nav-pill.is-on {
+    opacity: 1;
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 0.95rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--c-ink-2);
+    border-radius: var(--r-pill);
+    transition: color var(--d-base) var(--ease-out);
+  }
+
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    color: var(--c-ink);
+  }
+
+  .nav-link[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: var(--a);
+  }
+
+  .actions {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    place-items: center;
+    transition: background-color var(--d-base) var(--ease-out);
+  }
+
+  .menu-toggle:hover {
+    background: var(--c-mist-2);
+  }
+
+  .bars {
+    position: relative;
+    display: block;
+    width: 18px;
+    height: 10px;
+  }
+
+  .bars i {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--c-ink);
+    transition:
+      transform 480ms var(--ease-spring),
+      top 480ms var(--ease-spring);
+  }
+
+  .bars i:first-child {
+    top: 0;
+  }
+  .bars i:last-child {
+    top: calc(100% - 1.5px);
+  }
+
+  [aria-expanded='true'] .bars i:first-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(45deg);
+  }
+  [aria-expanded='true'] .bars i:last-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(-45deg);
+  }
+
+  /* Mobile sheet */
+  .sheet {
+    position: fixed;
+    inset: var(--header-h) 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.5rem var(--gutter) calc(2rem + env(safe-area-inset-bottom));
+    background: rgb(255 255 255 / 0.97);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 360ms var(--ease-out);
+  }
+
+  .sheet[hidden] {
+    display: none;
+  }
+
+  .sheet.is-open {
+    opacity: 1;
+  }
+
+  .sheet ol {
+    margin: 0;
+    display: grid;
+  }
+
+  .sheet li,
+  .sheet-cta {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 600ms var(--ease-out),
+      transform 700ms var(--ease-out);
+    transition-delay: calc(var(--i) * 55ms + 60ms);
+  }
+
+  .sheet.is-open li,
+  .sheet.is-open .sheet-cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sheet li a {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: baseline;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .sheet .idx {
+    font-size: var(--t-micro);
+    color: var(--a-ink);
+  }
+
+  .sheet .lbl {
+    font-family: var(--f-display);
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .sheet .en {
+    font-size: 1.125rem;
+    color: var(--c-ink-4);
+  }
+
+  .sheet-cta {
+    align-self: stretch;
+  }
+
+  @media (max-width: 960px) {
+    .bar {
+      grid-template-columns: 1fr auto;
+    }
+    .nav {
+      display: none;
+    }
+    .menu-toggle {
+      display: grid;
+    }
+    .cta {
+      display: none;
+    }
+  }
+
+  @media (min-width: 961px) {
+    .sheet {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const list = document.querySelector<HTMLElement>('[data-nav]');
+  const pill = document.querySelector<HTMLElement>('[data-pill]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const sheet = document.querySelector<HTMLElement>('[data-sheet]');
+
+  // Scroll state: frosted background after leaving top, hide when scrolling down.
+  let lastY = window.scrollY;
+  let ticking = false;
+  const onScroll = () => {
+    const y = window.scrollY;
+    root.classList.toggle('is-scrolled', y > 8);
+    const goingDown = y > lastY + 4;
+    const goingUp = y < lastY - 4;
+    if (goingDown && y > 480 && !root.classList.contains('menu-open')) root.classList.add('header-hidden');
+    else if (goingUp || y < 120) root.classList.remove('header-hidden');
+    lastY = y;
+    ticking = false;
+  };
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(onScroll);
+      }
+    },
+    { passive: true },
+  );
+  onScroll();
+
+  // Show header when keyboard focus moves into it.
+  document.querySelector('[data-header]')?.addEventListener('focusin', () => root.classList.remove('header-hidden'));
+
+  // Sliding pill that follows hover and rests on the current page.
+  if (list && pill) {
+    const links = [...list.querySelectorAll<HTMLAnchorElement>('.nav-link')];
+    const current = links.find((l) => l.getAttribute('aria-current') === 'page');
+    const moveTo = (el?: HTMLElement) => {
+      if (!el) {
+        pill.classList.remove('is-on');
+        return;
+      }
+      pill.style.setProperty('--px', `${el.offsetLeft}px`);
+      pill.style.setProperty('--pw', `${el.offsetWidth}px`);
+      pill.classList.add('is-on');
+    };
+    if (current) {
+      pill.style.transition = 'none';
+      moveTo(current);
+      requestAnimationFrame(() => (pill.style.transition = ''));
+    }
+    links.forEach((link) => {
+      link.addEventListener('pointerenter', () => moveTo(link));
+      link.addEventListener('focus', () => moveTo(link));
+    });
+    list.addEventListener('pointerleave', () => moveTo(current));
+    list.addEventListener('focusout', (e) => {
+      if (!list.contains(e.relatedTarget as Node)) moveTo(current);
+    });
+  }
+
+  // Mobile menu
+  if (toggle && sheet) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.querySelector('.visually-hidden')!.textContent = open ? '关闭菜单' : '打开菜单';
+      root.classList.toggle('menu-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        sheet.hidden = false;
+        requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('is-open')));
+        sheet.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+      } else {
+        sheet.classList.remove('is-open');
+        window.setTimeout(() => {
+          if (!sheet.classList.contains('is-open')) sheet.hidden = true;
+        }, 360);
+      }
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && root.classList.contains('menu-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 961px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  }
+</script>

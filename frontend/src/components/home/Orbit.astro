@@ -1,0 +1,543 @@
+---
+import { lessons, orbits } from '../../data/path';
+import Icon from '../Icon.astro';
+
+const C = 320;
+const R = 232;
+const angles = [-135, -45, 45, 135];
+const nodes = orbits.map((o, i) => {
+  const rad = (angles[i] * Math.PI) / 180;
+  return { ...o, x: C + R * Math.cos(rad), y: C + R * Math.sin(rad), index: i };
+});
+const arc = (a: (typeof nodes)[number], b: (typeof nodes)[number]) =>
+  `M${a.x.toFixed(1)} ${a.y.toFixed(1)} A${R} ${R} 0 0 1 ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+const arcs = nodes.map((n, i) => ({ d: arc(n, nodes[(i + 1) % nodes.length]), accent: nodes[(i + 1) % 4].accent }));
+const labelBelow = (i: number) => i >= 2;
+---
+
+<section class="orbit" data-orbit aria-labelledby="orbit-title">
+  <div class="stage" data-orbit-stage data-step="4">
+    <div class="container layout">
+      <div class="copy">
+        <p class="eyebrow" data-accent="violet">知识轨道 · Knowledge Orbit</p>
+        <h2 class="h1" id="orbit-title">四个层次，<br />一条研究轨道。</h2>
+        <p class="lead intro">
+          从经典的组织发展理论出发，经过工作与 AI，最后回到组织本身。每一层都指向同一个中心问题。
+        </p>
+
+        <ol class="panels" role="list">
+          {
+            nodes.map((n) => {
+              const ls = lessons.filter((l) => l.orbit === n.id);
+              return (
+                <li class="panel" data-accent={n.accent} data-panel={n.index}>
+                  <div class="panel-head">
+                    <span class="mono idx">0{n.index + 1} / 04</span>
+                    <span class="en">{n.en}</span>
+                  </div>
+                  <h3 class="h2">{n.label}</h3>
+                  <p class="summary">{n.summary}</p>
+                  <ul role="list" class="ls">
+                    {ls.map((l) => (
+                      <li>
+                        {l.status === 'available' ? (
+                          <a href={`/learn/${l.slug}`}>
+                            <span class="mono">{l.no}</span>
+                            {l.question}
+                            <Icon name="arrow-right" size={16} />
+                          </a>
+                        ) : (
+                          <span class="soon">
+                            <span class="mono">{l.no}</span>
+                            {l.question}
+                            <span class="tag">筹备中</span>
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })
+          }
+        </ol>
+
+        <div class="progress" aria-hidden="true">
+          {nodes.map((n) => <span data-accent={n.accent}><i></i></span>)}
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 640 640" role="img" aria-labelledby="orbit-svg-title" data-orbit-svg>
+          <title id="orbit-svg-title">组织发展、工作、人工智能、组织四个层次围绕“AI 原生组织”这一研究问题相互关联</title>
+          <defs>
+            <radialGradient id="core-grad" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#ffffff"></stop>
+              <stop offset="100%" stop-color="#f1f4f9"></stop>
+            </radialGradient>
+            <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0b1220" flood-opacity="0.12"></feDropShadow>
+            </filter>
+            <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="6"></feGaussianBlur>
+            </filter>
+          </defs>
+
+          <g class="rings">
+            <circle cx={C} cy={C} r="120" class="ring"></circle>
+            <circle cx={C} cy={C} r="176" class="ring dashed spin"></circle>
+            <circle cx={C} cy={C} r={R} class="ring track"></circle>
+            <circle cx={C} cy={C} r="292" class="ring faint spin-rev"></circle>
+          </g>
+
+          <g class="spokes">
+            {nodes.map((n) => <line x1={C} y1={C} x2={n.x} y2={n.y} class="spoke" data-accent={n.accent} data-spoke={n.index} />)}
+          </g>
+
+          <g class="arcs">
+            {arcs.map((a, i) => <path d={a.d} pathLength="1" class="arc" data-accent={a.accent} data-arc={i} />)}
+          </g>
+
+          <g class="core" filter="url(#soft)">
+            <circle cx={C} cy={C} r="84" fill="url(#core-grad)" class="core-disc"></circle>
+          </g>
+          <circle cx={C} cy={C} r="84" class="core-ring"></circle>
+          <circle cx={C} cy={C} r="84" class="core-pulse"></circle>
+          <text x={C} y={C - 6} class="core-t1" text-anchor="middle">AI 原生组织</text>
+          <text x={C} y={C + 24} class="core-t2" text-anchor="middle">Research Question</text>
+
+          {
+            nodes.map((n) => (
+              <g class="node" data-accent={n.accent} data-node={n.index} style={`--x:${n.x}px;--y:${n.y}px`}>
+                <circle cx={n.x} cy={n.y} r="46" class="halo" />
+                <circle cx={n.x} cy={n.y} r="30" class="disc" />
+                <circle cx={n.x} cy={n.y} r="7" class="dot" />
+                <text
+                  x={n.x}
+                  y={labelBelow(n.index) ? n.y + 62 : n.y - 70}
+                  class="label"
+                  text-anchor="middle"
+                >
+                  {n.label}
+                </text>
+                <text
+                  x={n.x}
+                  y={labelBelow(n.index) ? n.y + 82 : n.y - 50}
+                  class="label-en"
+                  text-anchor="middle"
+                >
+                  {n.id === 'od' ? 'OD' : n.id === 'ai' ? 'AI' : n.en}
+                </text>
+              </g>
+            ))
+          }
+
+          <g class="comet" data-comet>
+            <circle r="10" class="comet-glow" filter="url(#glow)"></circle>
+            <circle r="4.5" class="comet-core"></circle>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .orbit {
+    position: relative;
+    background:
+      radial-gradient(60% 50% at 75% 50%, rgb(124 92 255 / 0.05), transparent 70%),
+      linear-gradient(to bottom, var(--c-bg), var(--c-mist) 50%, var(--c-bg));
+  }
+
+  .stage {
+    padding-block: var(--section);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+  }
+
+  .copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .intro {
+    max-width: 30rem;
+  }
+
+  /* Panels — stacked list by default; crossfade when pinned */
+  .panels {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+  }
+
+  .panel {
+    padding: 1.5rem 1.5rem 1.35rem;
+    border-radius: var(--r-lg);
+    background: var(--c-bg);
+    box-shadow:
+      0 0 0 1px var(--c-line) inset,
+      var(--shadow-1);
+  }
+
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel .idx {
+    font-size: var(--t-micro);
+    color: var(--a-ink);
+    letter-spacing: 0.08em;
+  }
+
+  .panel .en {
+    color: var(--c-ink-4);
+    font-size: 1.0625rem;
+  }
+
+  .panel .h2 {
+    color: var(--c-ink);
+  }
+
+  .summary {
+    margin-top: 0.6rem;
+    color: var(--c-ink-3);
+    line-height: 1.8;
+  }
+
+  .ls {
+    display: grid;
+    gap: 0.25rem;
+    margin: 1.1rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .ls a,
+  .ls .soon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 40px;
+    font-size: 0.9375rem;
+    color: var(--c-ink-2);
+  }
+
+  .ls a {
+    font-weight: 550;
+    color: var(--c-ink);
+  }
+
+  .ls a :global(svg) {
+    margin-left: auto;
+    color: var(--a-ink);
+    transition: transform var(--d-base) var(--ease-spring);
+  }
+
+  .ls a:hover :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .ls .mono {
+    font-size: var(--t-micro);
+    color: var(--a-ink);
+  }
+
+  .tag {
+    margin-left: auto;
+    font-size: var(--t-micro);
+    color: var(--c-ink-4);
+  }
+
+  .progress {
+    display: none;
+  }
+
+  /* ---- Pinned mode (desktop, motion allowed) ---- */
+  :global(.orbit-pinned) .stage {
+    height: 100svh;
+    padding-block: calc(var(--header-h) + 1rem) 2rem;
+    display: grid;
+    align-items: center;
+  }
+
+  :global(.orbit-pinned) .panels {
+    display: grid;
+    grid-template-areas: 'stack';
+  }
+
+  :global(.orbit-pinned) .panel {
+    grid-area: stack;
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+    pointer-events: none;
+    transition:
+      opacity 600ms var(--ease-out),
+      transform 800ms var(--ease-out),
+      filter 600ms var(--ease-out);
+  }
+
+  :global(.orbit-pinned) .panel.is-active {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    pointer-events: auto;
+  }
+
+  :global(.orbit-pinned) .panel.is-past {
+    transform: translateY(-24px);
+  }
+
+  :global(.orbit-pinned) .progress {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    max-width: 18rem;
+    margin-top: 0.5rem;
+  }
+
+  .progress span {
+    height: 3px;
+    border-radius: 3px;
+    background: var(--c-line-2);
+    overflow: hidden;
+  }
+
+  .progress i {
+    display: block;
+    height: 100%;
+    background: var(--a);
+    transform-origin: left;
+    transform: scaleX(var(--fill, 0));
+  }
+
+  /* ---- Diagram ---- */
+  .diagram {
+    position: relative;
+  }
+
+  .diagram svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .ring {
+    fill: none;
+    stroke: var(--c-line-2);
+    stroke-width: 1;
+  }
+
+  .ring.dashed {
+    stroke-dasharray: 2 7;
+    stroke: var(--c-line-3);
+  }
+
+  .ring.faint {
+    stroke: var(--c-line);
+    stroke-dasharray: 1 5;
+  }
+
+  .ring.track {
+    stroke: var(--c-line-2);
+  }
+
+  .spin,
+  .spin-rev {
+    transform-origin: 320px 320px;
+    animation: spin 90s linear infinite;
+  }
+
+  .spin-rev {
+    animation-direction: reverse;
+    animation-duration: 140s;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spoke {
+    stroke: var(--a);
+    stroke-width: 1;
+    stroke-dasharray: 3 5;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+  }
+
+  .arc {
+    fill: none;
+    stroke: var(--a);
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1100ms var(--ease-in-out);
+  }
+
+  .arc[data-arc='3'] {
+    stroke-width: 1.5;
+    stroke-dasharray: 0.006 0.014;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+  }
+
+  .arc[data-arc='3'].is-reached {
+    opacity: 0.9;
+  }
+
+  .core-ring {
+    fill: none;
+    stroke: var(--c-line-2);
+  }
+
+  .core-pulse {
+    fill: none;
+    stroke: var(--c-violet);
+    stroke-width: 1;
+    transform-origin: 320px 320px;
+    opacity: 0;
+    animation: core-pulse 3.6s var(--ease-out) infinite;
+  }
+
+  @keyframes core-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .core-t1 {
+    font-family: var(--f-display);
+    font-size: 21px;
+    font-weight: 600;
+    fill: var(--c-ink);
+  }
+
+  .core-t2 {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 15px;
+    fill: var(--c-ink-3);
+  }
+
+  .node .disc {
+    fill: var(--c-bg);
+    stroke: var(--c-line-3);
+    stroke-width: 1;
+    transition:
+      stroke 600ms var(--ease-out),
+      stroke-width 600ms var(--ease-out);
+  }
+
+  .node .dot {
+    fill: var(--c-ink-faint);
+    transition: fill 600ms var(--ease-out);
+  }
+
+  .node .halo {
+    fill: var(--a);
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.6);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 900ms var(--ease-spring);
+  }
+
+  .node .label {
+    font-family: var(--f-display);
+    font-size: 20px;
+    font-weight: 600;
+    fill: var(--c-ink-4);
+    transition: fill 600ms var(--ease-out);
+  }
+
+  .node .label-en {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 15px;
+    fill: var(--c-ink-4);
+  }
+
+  .node.is-reached .disc {
+    stroke: var(--a);
+    stroke-width: 1.5;
+  }
+
+  .node.is-reached .dot {
+    fill: var(--a);
+  }
+
+  .node.is-reached .label {
+    fill: var(--c-ink);
+  }
+
+  .node.is-active .halo {
+    opacity: 0.14;
+    transform: scale(1);
+  }
+
+  .spoke.is-reached {
+    opacity: 0.55;
+  }
+
+  .arc.is-reached {
+    stroke-dashoffset: 0;
+  }
+
+  .comet {
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  :global(.orbit-pinned) .comet {
+    opacity: 1;
+  }
+
+  .comet-glow {
+    fill: var(--comet, var(--c-blue));
+    opacity: 0.5;
+  }
+
+  .comet-core {
+    fill: var(--comet, var(--c-blue));
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .diagram {
+      order: -1;
+      max-width: 520px;
+      margin-inline: auto;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Static fallback: every layer reached. The home timeline overrides this when pinned.
+  document.querySelectorAll<SVGElement>('[data-orbit] .node, [data-orbit] .spoke, [data-orbit] .arc').forEach((el) =>
+    el.classList.add('is-reached'),
+  );
+</script>
