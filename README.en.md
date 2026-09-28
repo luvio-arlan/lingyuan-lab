@@ -1,6 +1,6 @@
 # Lingyuan Lab · 灵鸢实验室
 
-![Lingyuan Lab logo](assets/logo/lingyuan-lockup-light.svg)
+![Lingyuan Lab logo](assets/logo/lingyuan-wordmark.svg)
 
 **Researching Work and Organizations in the Age of AI**
 

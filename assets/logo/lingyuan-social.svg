@@ -1,22 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
   <title id="title">灵鸢实验室 · Lingyuan Lab</title>
-  <desc id="desc">研究 AI 如何改变工作、决策、组织设计与人才系统</desc>
-  <rect width="1200" height="630" fill="#152137"/>
-  <circle cx="1035" cy="70" r="310" fill="none" stroke="#294058" stroke-width="2"/>
-  <circle cx="1035" cy="70" r="445" fill="none" stroke="#294058" stroke-width="2"/>
-  <circle cx="1077" cy="377" r="8" fill="#D9AC73"/>
-  <circle cx="732" cy="395" r="5" fill="#7CB6C8"/>
-  <g transform="translate(82 102) scale(1.15)">
-    <rect width="240" height="240" rx="54" fill="#243650" stroke="#3A4D66" stroke-width="2"/>
-    <path d="M38 165 C81 151 123 112 150 53 C154 94 177 117 215 120 C196 142 168 156 141 147 C115 138 80 153 38 165 Z" fill="#F6F5F1"/>
-    <path d="M58 184 C100 169 140 160 188 170" fill="none" stroke="#7CB6C8" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="60" cy="183" r="5" fill="#D9AC73"/>
-    <circle cx="124" cy="165" r="5" fill="#F6F5F1"/>
-    <circle cx="188" cy="170" r="5" fill="#D9AC73"/>
-    <path d="M198 54 L202 65 L213 69 L202 73 L198 84 L194 73 L183 69 L194 65 Z" fill="#D9AC73"/>
+  <desc id="desc">研究 AI 如何改变工作与组织的项目封面</desc>
+  <rect width="1200" height="630" fill="#FBFAF7"/>
+  <g transform="translate(100 95) scale(1.15)">
+    <path d="M28 70 C58 112 97 138 124 139 C161 141 198 101 234 58 C216 114 183 159 148 165 C140 179 134 193 129 209 C124 191 118 177 110 163 C72 156 43 115 28 70 Z" fill="#17212D"/>
   </g>
-  <text x="398" y="183" fill="#F6F5F1" font-family="PingFang SC, Noto Sans CJK SC, sans-serif" font-size="78" font-weight="600" letter-spacing="5">灵鸢实验室</text>
-  <text x="404" y="246" fill="#AFC2D0" font-family="Avenir Next, Helvetica Neue, sans-serif" font-size="31" font-weight="600" letter-spacing="5">LINGYUAN LAB</text>
-  <text x="89" y="475" fill="#D9AC73" font-family="Avenir Next, Helvetica Neue, sans-serif" font-size="25" font-weight="600" letter-spacing="2.2">AI-NATIVE ORGANIZATION RESEARCH</text>
-  <text x="89" y="534" fill="#F6F5F1" font-family="PingFang SC, Noto Sans CJK SC, sans-serif" font-size="32" letter-spacing="1.5">看见工作如何改变，探索组织如何生长。</text>
+  <text x="420" y="210" fill="#17212D" font-family="Songti SC, STSong, serif" font-size="100" font-weight="600" letter-spacing="7">灵鸢</text>
+  <text x="716" y="204" fill="#17212D" font-family="Songti SC, STSong, serif" font-size="47" font-weight="500" letter-spacing="5">实验室</text>
+  <text x="426" y="280" fill="#17212D" font-family="Avenir Next, Helvetica Neue, sans-serif" font-size="32" font-weight="500" letter-spacing="6">LINGYUAN LAB</text>
+  <text x="426" y="338" fill="#55616C" font-family="Avenir Next, Helvetica Neue, sans-serif" font-size="21" font-weight="500" letter-spacing="2.2">AI-NATIVE ORGANIZATION RESEARCH</text>
+  <path d="M102 448 L1095 448" stroke="#DADAD5" stroke-width="1"/>
+  <text x="102" y="526" fill="#17212D" font-family="Songti SC, STSong, serif" font-size="33" letter-spacing="1.5">看见工作如何改变，探索组织如何生长。</text>
 </svg>
