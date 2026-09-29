@@ -4,9 +4,9 @@ dek: 组织不是一张组织架构图，而是战略、结构、流程、奖励
 kind: concept
 lesson: how-organizations-work
 accent: blue
-status: draft
-published: 2026-09-28
-revised: 2026-09-28
+status: published
+published: 2026-09-29
+revised: 2026-09-29
 question: 战略、结构、流程、奖励与人员如何相互作用？为什么只改变其中一个往往不够？
 scope: 本文以星型模型为主要框架介绍组织设计的要素与匹配，并简要对照其他诊断框架；不讨论某一行业的具体组织形态。
 terms:
@@ -17,43 +17,58 @@ terms:
 sources:
   - id: galbraith-star
     authors: Jay R. Galbraith
-    title: The Star Model
-    year: 年份待核对
-    url: https://jaygalbraith.com/services/star-model/
-    verified: false
-    note: 各要素的表述需对照 Galbraith 原著核对
-  - id: trist-1951
-    authors: E. L. Trist, K. W. Bamforth
-    title: 'Some Social and Psychological Consequences of the Longwall Method of Coal-Getting'
-    year: 1951
-    venue: Human Relations, 4(1)
-    doi: 10.1177/001872675100400101
-    url: https://doi.org/10.1177/001872675100400101
-    verified: false
+    title: The Evolution of Enterprise Organization Designs
+    year: 2012
+    venue: Journal of Organization Design, 1(2), 1–13
+    doi: 10.7146/jod.1.2.6342
+    url: https://jaygalbraith.com/wp-content/uploads/2024/03/EvolEnterpriseOrgDesign.pdf
+    accessed: 2026-09-29
+    verified: true
+    note: 已核对原作者 2012 年论文第 3 页的星型模型图和匹配关系，并对照其原作者说明 PDF（https://jaygalbraith.com/wp-content/uploads/2024/03/StarModel.pdf）第 1–5 页；不把 PDF 上传路径当作出版年份。
+  - id: guest-knox-warhurst-2022
+    authors: David Guest, Angela Knox, Chris Warhurst
+    title: 'Humanizing work in the digital age: Lessons from socio-technical systems and quality of working life initiatives'
+    year: 2022
+    venue: Human Relations, 75(8), 1461–1482
+    doi: 10.1177/00187267221092674
+    url: https://journals.sagepub.com/doi/pdf/10.1177/00187267221092674?download=true
+    accessed: 2026-09-29
+    verified: true
+    note: 已核对该综述原文第 1462–1463 页对 Trist 与 Bamforth 1951 年煤矿研究的回顾；不把综述误写成已直读 1951 年原文。
   - id: weisbord-1976
     authors: Marvin R. Weisbord
     title: 'Organizational Diagnosis: Six Places to Look for Trouble with or without a Theory'
     year: 1976
-    venue: Group & Organization Studies, 1(4)
-    verified: false
+    venue: Group & Organization Studies, 1(4), 430–447
+    doi: 10.1177/105960117600100405
+    url: https://journals.sagepub.com/doi/abs/10.1177/105960117600100405
+    accessed: 2026-09-29
+    verified: true
+    note: 已核对期刊页的摘要与出版信息；六个类别直接列于作者摘要。
   - id: nadler-tushman-1980
     authors: David A. Nadler, Michael L. Tushman
     title: A Model for Diagnosing Organizational Behavior
     year: 1980
-    venue: Organizational Dynamics, 9(2)
-    verified: false
+    venue: Organizational Dynamics, 9(2), 35–51
+    doi: 10.1016/0090-2616(80)90039-X
+    url: https://www.sciencedirect.com/science/article/abs/pii/009026168090039X
+    accessed: 2026-09-29
+    verified: true
+    note: 已核对出版社元数据，以及原文扫描件第 43–46 页（https://agilecongruence.com/wp-content/uploads/2025/04/nadler-tushman_congruence.pdf）。
 revisions:
   - date: 2026-09-28
     note: 首版草稿，来源与引文待人工逐条核对。
+  - date: 2026-09-29
+    note: 按用户授权完成工具辅助逐条核对；补齐出处与 DOI，以可直读的 2022 年综述承载对 1951 年煤矿研究的回顾，收紧模型表述。
 tool: organization-observation-sheet
 discussion: which-element-moves
 ---
 
 ## 为什么同一个做法，换个组织就失效了
 
-很多人都见过这样的情况：一种在 A 公司非常成功的管理做法，被原样搬到 B 公司后却收效甚微，甚至引发新的问题。
+设想这样一种情况：一项在 A 公司表现不错的管理做法，被原样搬到 B 公司后却收效甚微，甚至引发新的问题。
 
-一个常见的解释是“执行不到位”。但组织设计的研究提供了另一种解释：**这个做法之所以在 A 公司有效，是因为它和 A 公司的其他安排相互匹配**。把它单独移植出来，匹配关系就被打破了。
+一种解释是“执行不到位”。组织设计框架提示了另一种待检查的可能：**这个做法在 A 公司与其他安排相互匹配，搬到 B 公司后未必仍然匹配**。
 
 ## 组织是一套相互匹配的安排
 
@@ -63,29 +78,31 @@ Jay Galbraith 的星型模型把组织设计拆为五个要素：战略、结构
 
 <StarModel />
 
-这五个要素中，只有“结构”会出现在组织架构图上。其余四个，尤其是流程与奖励，往往是看不见的，却同样决定了组织实际如何运转。
+组织架构图主要呈现“结构”。流程、奖励与人员等安排即使没有画在图上，也会影响组织如何运转。
 
 <KeyIdea>
-组织架构图只画出了五分之一。真正决定组织如何运转的，是五个要素之间是否匹配。
+组织架构图主要呈现结构；要理解组织设计，还需要一起看其他要素怎样配合。
 </KeyIdea>
 
 ## 匹配：为什么只改一个要素往往不够
 
 <Claim type="research" n={1}>
-星型模型的核心主张之一是：各要素需要彼此匹配。当一个要素改变而其他要素没有随之调整时，组织就可能出现摩擦与低效。
+星型模型主张让各项设计政策相互匹配。按这个模型推论，若只调整其中一项，原有的匹配关系可能受到影响；具体后果仍需在组织中观察。
 </Claim>
 
 <Claim type="inference">
-举例来说，如果一个组织引入了强调跨团队协作的新流程，却仍然只按个人业绩发放奖励，那么成员很可能在口头上支持协作，行动上仍然优先完成自己的指标。问题并不出在流程本身，而出在流程与奖励之间的不匹配。
+举例来说，如果一个组织引入强调跨团队协作的新流程，却仍然只按个人业绩发放奖励，那么成员可能在口头上支持协作，行动上仍优先完成个人指标。流程与奖励之间的不匹配，是此时值得检查的一种解释。
 </Claim>
 
 ## 技术与人的协作需要一起设计
 
 <Claim type="research" n={2}>
-Trist 与 Bamforth 在 1951 年发表的研究考察了英国煤矿引入长壁采煤法后的变化。他们观察到，新的技术安排打乱了原有小型工作群体的协作与自我调节方式，并伴随一系列社会与心理层面的后果。
+Guest、Knox 与 Warhurst 在 2022 年回顾 Trist 与 Bamforth 的 1951 年煤矿研究时指出：机械化采煤与工作群体的组织方式共同影响了工作结果。同一种技术也可能配合不同的工作组织方式；不能把后果单独归因于技术。
 </Claim>
 
-这项研究后来成为“社会技术系统”思想的重要来源之一：技术系统与社会系统需要**共同优化**，只优化其中一个，往往无法得到预期的效果。
+<Claim type="research" n={2}>
+这篇综述把该研究列为“社会技术系统”思想的重要来源之一，并将**共同优化社会与技术安排**概括为这一传统的核心主张。
+</Claim>
 
 ## 其他框架：我们也可以这样看
 
@@ -100,7 +117,13 @@ Nadler 与 Tushman 提出的一致性模型，则强调工作、人员、正式�
 </Claim>
 
 <Claim type="inference">
-这些框架并不互相排斥。星型模型更适合讨论“如何设计”，而六盒模型和一致性模型在“诊断哪里出了问题”时，更容易把关系和非正式规范纳入视野。本站在后续讨论 AI 与协作关系时，会同时参照多个框架。
+这些框架并不互相排斥。本站用星型模型讨论设计选择；诊断关系和非正式规范时，六盒模型与一致性模型提供了额外的提问角度。后续讨论 AI 与协作关系时，也会同时参照多个框架。
+</Claim>
+
+## 竞争性解释与质疑
+
+<Claim type="inference">
+当一项新流程效果不佳时，要素不匹配只是一个可能解释。目标本身不清楚、实施时间太短，或外部需求变化，也可能造成同样的现象。使用星型模型时，应把这些解释一并检查，不能看到摩擦就断定原因是奖励或结构。
 </Claim>
 
 ## 对 AI 时代的启发

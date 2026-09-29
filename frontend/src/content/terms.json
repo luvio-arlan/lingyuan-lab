@@ -4,9 +4,9 @@
     "term": "组织发展",
     "en": "Organization Development (OD)",
     "accent": "blue",
-    "short": "运用行为科学知识，有计划地、在组织整体层面改进组织效能与健康状况的长期努力。重点在于组织的“过程”：人们如何沟通、决策、协作与解决问题。",
-    "distinct": "不同于一次性的重组或培训项目；OD 强调诊断、参与和反馈的循环。",
-    "source": "Beckhard (1969)；Cummings & Worley"
+    "short": "运用行为科学知识，理解并改变组织的战略、结构与过程，以改善组织运作。",
+    "distinct": "本站强调先诊断、再干预并检验结果；这一循环是教学归纳，并非所有 OD 实践的固定步骤。",
+    "source": "Cummings & Worley, Organization Development and Change, 12th ed.（Cengage 出版社简介与目录）；OD Network, What is Organization Development?"
   },
   {
     "id": "organization-design",
@@ -15,32 +15,34 @@
     "accent": "blue",
     "short": "对组织的结构、流程、奖励、人员等要素进行安排，使它们共同支撑战略。",
     "distinct": "组织设计回答“如何安排”，OD 更关注“如何在参与中改变并持续学习”。二者常常配合使用。",
-    "source": "Galbraith, Star Model"
+    "source": "Galbraith (2012), 图 2；The Star Model, pp. 1–5（原作者 PDF）；OD Network, What is Organization Development?"
   },
   {
     "id": "work-design",
     "term": "工作设计",
     "en": "Work Design",
     "accent": "teal",
-    "short": "对具体任务、职责、自主性与协作方式的安排，关注“一个人或一个小组每天实际在做什么”。",
-    "distinct": "组织设计关注整体架构；工作设计关注任务层面。AI 往往首先作用于任务层面。"
+    "short": "对具体任务、职责与协作方式的安排，关注“一个人或一个小组每天实际在做什么”。",
+    "distinct": "组织设计关注整体安排；工作设计关注任务层面。AI 会先影响哪一层，需按具体场景观察。",
+    "source": "Nadler & Tushman (1980), pp. 43–44（任务与工作安排）"
   },
   {
     "id": "planned-change",
     "term": "计划变革",
     "en": "Planned Change",
     "accent": "blue",
-    "short": "有意识地发起、并按诊断—干预—评估的步骤推进的组织变化。",
-    "distinct": "与自然发生的、未经设计的组织变化相对。",
-    "source": "Cummings & Worley"
+    "short": "有意识地发起并推进的组织变化；诊断、干预和评估是本站用来梳理过程的一组问题。",
+    "distinct": "与未经事先设计的变化相对；实际过程不一定遵循固定顺序。",
+    "source": "Cummings & Worley, Organization Development and Change, 12th ed.（Cengage 目录第 2、4–7 章）"
   },
   {
     "id": "diagnosis",
     "term": "组织诊断",
     "en": "Organizational Diagnosis",
     "accent": "blue",
-    "short": "在干预之前，系统收集并解释关于组织现状的信息，以判断问题所在和变化的切入点。",
-    "distinct": "诊断不是给组织“下结论”，而是与组织成员共同理解现状。"
+    "short": "系统收集并解释关于组织现状的信息，以判断问题所在和变化的切入点。",
+    "distinct": "本站建议与受影响成员共同理解现状，而不是只由外部人员给组织“下结论”。",
+    "source": "OD Network, What is Organization Development?（Diagnostic OD）"
   },
   {
     "id": "intervention",
@@ -48,7 +50,8 @@
     "en": "Intervention",
     "accent": "blue",
     "short": "基于诊断而采取的、旨在改善组织运作的一组有计划的行动。",
-    "distinct": "干预的效果需要通过反馈来检验，而不是在实施时就被假定。"
+    "distinct": "干预的效果需要通过反馈来检验，而不是在实施时就被假定。",
+    "source": "OD Network, Essential Elements（intervention）；Cummings & Worley, 12th ed.（Cengage 目录第 6–7 章）"
   },
   {
     "id": "sociotechnical-system",
@@ -57,7 +60,7 @@
     "accent": "teal",
     "short": "把组织看作技术系统与社会系统的结合：技术安排与人的协作方式需要共同优化，而非单独设计。",
     "distinct": "与“只要技术先进，效率自然提高”的技术决定论相对。",
-    "source": "Trist & Bamforth (1951)"
+    "source": "Guest, Knox & Warhurst (2022), pp. 1462–1463（回顾 Trist & Bamforth 1951）"
   },
   {
     "id": "star-model",
@@ -65,8 +68,8 @@
     "en": "Star Model",
     "accent": "violet",
     "short": "Jay Galbraith 提出的组织设计框架，包含战略、结构、流程、奖励与人员五个相互关联的要素。",
-    "distinct": "它提醒我们：只改变一个要素而不调整其他要素，往往会导致不匹配。",
-    "source": "Galbraith, Star Model"
+    "distinct": "它提醒我们：调整一个要素时，也要检查其他要素是否仍然匹配。",
+    "source": "Galbraith (2012), 图 2；The Star Model, pp. 1–5（原作者 PDF）"
   },
   {
     "id": "ai-agent",
@@ -74,6 +77,7 @@
     "en": "AI Agent",
     "accent": "violet",
     "short": "能够在一定目标与约束下，自主规划并执行多个步骤、调用工具的 AI 系统。本站使用这个词时，会说明它在具体场景中被授予了哪些权限。",
-    "distinct": "不同于只回答单个问题的 AI 工具；Agent 会带来委派、复核与责任分配的新问题。"
+    "distinct": "不同于只回答单个问题的 AI 工具；Agent 会带来委派、复核与责任分配的新问题。",
+    "source": "OpenAI, A practical guide to building agents；Anthropic, Building effective agents"
   }
 ]
