@@ -13,3 +13,6 @@ deploy/Caddyfile
 deploy/backups/
 frontend/public/fonts.css
 frontend/public/fonts/
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
