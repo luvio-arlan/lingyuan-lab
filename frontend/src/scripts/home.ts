@@ -52,7 +52,7 @@ mm.add(
       manifesto.classList.add('manifesto-armed');
       gsap.fromTo(
         $$('.ch', text),
-        { opacity: 0.14 },
+        { opacity: (_i, target: Element) => (target.closest('.hl') ? 0.92 : 0.62) },
         {
           opacity: 1,
           ease: 'none',
@@ -92,6 +92,7 @@ mm.add(
         panels.forEach((p, i) => {
           p.classList.toggle('is-active', i === s);
           p.classList.toggle('is-past', i < s);
+          (p as HTMLElement).inert = i !== s;
         });
         comet?.style.setProperty('--comet', ACCENT_VARS[s]);
       };
@@ -144,7 +145,10 @@ mm.add(
           el.classList.add('is-reached');
           el.classList.remove('is-active');
         });
-        panels.forEach((p) => p.classList.remove('is-active', 'is-past'));
+        panels.forEach((p) => {
+          p.classList.remove('is-active', 'is-past');
+          (p as HTMLElement).inert = false;
+        });
       });
     }
 
@@ -157,7 +161,7 @@ mm.add(
     if (rail && railStage && track && viewport) {
       rail.classList.add('rail-pinned');
       const distance = () => Math.max(0, track.scrollWidth - document.documentElement.clientWidth);
-      gsap.to(track, {
+      const railTween = gsap.to(track, {
         x: () => -distance(),
         ease: 'none',
         scrollTrigger: {
@@ -171,13 +175,29 @@ mm.add(
           onUpdate: (self) => fill?.style.setProperty('--rail', String(0.1 + self.progress * 0.9)),
         },
       });
+      const focusRailCard = (event: FocusEvent) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const stop = target.closest<HTMLElement>('.stop');
+        const trigger = railTween.scrollTrigger;
+        if (!stop || !trigger) return;
+        const max = distance();
+        const gutter = parseFloat(getComputedStyle(track).paddingLeft) || 24;
+        const offset = gsap.utils.clamp(0, max, stop.offsetLeft - gutter);
+        const progress = max ? offset / max : 0;
+        requestAnimationFrame(() => {
+          if (document.activeElement !== target) return;
+          trigger.scroll(trigger.start + progress * (trigger.end - trigger.start));
+          railTween.progress(progress);
+        });
+      };
+      track.addEventListener('focusin', focusRailCard);
       $$('.stop', track).forEach((stop, i) => {
         gsap.fromTo(
           stop,
-          { y: 40 + (i % 3) * 16, opacity: 0.3 },
+          { y: 40 + (i % 3) * 16 },
           {
             y: 0,
-            opacity: 1,
             ease: 'none',
             scrollTrigger: {
               trigger: railStage,
@@ -188,7 +208,10 @@ mm.add(
           },
         );
       });
-      cleanups.push(() => rail.classList.remove('rail-pinned'));
+      cleanups.push(() => {
+        track.removeEventListener('focusin', focusRailCard);
+        rail.classList.remove('rail-pinned');
+      });
     }
 
     return () => cleanups.forEach((fn) => fn());

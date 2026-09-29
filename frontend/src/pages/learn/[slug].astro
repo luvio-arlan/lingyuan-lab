@@ -18,7 +18,7 @@ const article = lesson.article ? await getEntry('articles', lesson.article) : un
 const tool = lesson.tool ? await getEntry('tools', lesson.tool) : undefined;
 const discussion = lesson.discussion ? await getEntry('questions', lesson.discussion) : undefined;
 const terms = article ? await getEntries(article.data.terms) : [];
-const diagram = lesson.slug === 'od-foundations' ? 'OD 计划变革循环' : '星型模型五要素';
+const diagram = lesson.diagram ?? '本课关系图';
 
 const idx = lessons.findIndex((l) => l.slug === lesson.slug);
 const prev = lessons[idx - 1];

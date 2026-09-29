@@ -31,7 +31,7 @@ const kindHints: Record<string, string> = {
       <nav class="crumbs" aria-label="面包屑">
         <a href="/questions">研究讨论</a>
         <span aria-hidden="true">/</span>
-        {lesson ? <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a> : <span>研究问题</span>}
+        {lesson?.status === 'available' ? <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a> : <span>{lesson ? `第 ${lesson.no} 课 · 筹备中` : '研究问题'}</span>}
       </nav>
       <div class="state">
         <span class:list={['chip', !open && 'chip-outline']}>
@@ -683,6 +683,12 @@ const kindHints: Record<string, string> = {
     width: 100%;
   }
 
+  .submit:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   .spinner {
     width: 16px;
     height: 16px;
@@ -843,7 +849,7 @@ const kindHints: Record<string, string> = {
       const n = body.value.length;
       count.textContent = `${n} / ${BODY_MAX}`;
       count.classList.toggle('warn', n > BODY_MAX * 0.9);
-      if (error.textContent && body.value.trim().length >= BODY_MIN) setError('');
+      if (body.getAttribute('aria-invalid') === 'true' && body.value.trim().length >= BODY_MIN) setError('');
     });
     consent.addEventListener('change', () => consent.closest('.consent')?.classList.remove('invalid'));
 
@@ -875,13 +881,20 @@ const kindHints: Record<string, string> = {
       } catch (err) {
         const status = err instanceof ApiError ? err.status : 0;
         setError(
-          status === 429
-            ? '提交太频繁了，请稍后再试。'
-            : status === 422
-              ? '内容未通过校验，请检查长度与格式。'
-              : '讨论服务暂时无法连接，你的内容仍保留在输入框中，请稍后再试。',
+          status === 404
+            ? '这个问题暂不存在或已下线，投稿内容仍保留在输入框中。'
+            : status === 409
+              ? '这个问题暂未开放投稿，投稿内容仍保留在输入框中。'
+              : status === 429
+                ? '提交太频繁了，请稍后再试。'
+                : status === 422
+                  ? '内容未通过校验，请检查长度与格式。'
+                  : status === 0
+                    ? '讨论服务暂时无法连接，你的内容仍保留在输入框中，请稍后再试。'
+                    : '讨论服务暂时出错，你的内容仍保留在输入框中，请稍后再试。',
           status === 422,
         );
+        if (status === 404 || status === 409) submit.disabled = true;
       } finally {
         submit.classList.remove('is-loading');
         submit.querySelector('.label')!.textContent = '提交审核';

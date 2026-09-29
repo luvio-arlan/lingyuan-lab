@@ -50,6 +50,7 @@ export type Lesson = {
   article?: string;
   tool?: string;
   discussion?: string;
+  diagram?: string;
 };
 
 export const lessons: Lesson[] = [
@@ -64,6 +65,7 @@ export const lessons: Lesson[] = [
     article: 'what-does-od-change',
     tool: 'od-diagnostic-questions',
     discussion: 'what-changes-first',
+    diagram: 'OD 计划变革循环',
   },
   {
     no: '02',
@@ -76,6 +78,7 @@ export const lessons: Lesson[] = [
     article: 'how-organizations-work',
     tool: 'organization-observation-sheet',
     discussion: 'which-element-moves',
+    diagram: '星型模型五要素',
   },
   {
     no: '03',

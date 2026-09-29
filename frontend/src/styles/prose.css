@@ -28,29 +28,6 @@
   scroll-margin-top: calc(var(--header-h) + 32px);
 }
 
-.prose h2 .anchor {
-  position: absolute;
-  left: -1.4em;
-  top: 0;
-  width: 1.2em;
-  color: var(--c-ink-faint);
-  font-family: var(--f-mono);
-  font-size: 0.6em;
-  line-height: 2.3;
-  text-align: right;
-  opacity: 0;
-  transition: opacity var(--d-base) var(--ease-out), color var(--d-base) var(--ease-out);
-}
-
-.prose h2:hover .anchor,
-.prose h2 .anchor:focus-visible {
-  opacity: 1;
-}
-
-.prose h2 .anchor:hover {
-  color: var(--c-blue-ink);
-}
-
 .prose h3 {
   margin-top: 2.4em;
   font-family: var(--f-display);

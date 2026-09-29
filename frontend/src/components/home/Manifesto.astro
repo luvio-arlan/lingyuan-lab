@@ -74,7 +74,11 @@ const tokens = (text: string) => text.match(/[A-Za-z]+|\s+|./gu) ?? [];
 
   /* Initial dimmed state is applied only when the scroll animation runs. */
   :global(.manifesto-armed) .ch {
-    opacity: 0.14;
+    opacity: 0.62;
+  }
+
+  :global(.manifesto-armed) .hl .ch {
+    opacity: 0.92;
   }
 
   .sign {

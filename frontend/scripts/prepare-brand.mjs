@@ -10,6 +10,7 @@ const source = resolve(root, '../assets/logo/lingyuan-logo.png');
 const outDir = resolve(root, 'src/assets/brand');
 const trimmed = resolve(outDir, 'lingyuan-logo-trim.png');
 const favicon = resolve(root, 'public/favicon.png');
+const share = resolve(root, 'public/og-image.png');
 
 async function isFresh(target) {
   try {
@@ -45,4 +46,17 @@ if (!(await isFresh(favicon))) {
     .toBuffer();
   await sharp(square).resize(128, 128).png().toFile(favicon);
   console.log('brand: favicon generated');
+}
+
+if (!(await isFresh(share))) {
+  const { data, info } = await sharp(source)
+    .trim({ threshold: 1 })
+    .resize({ width: 900, height: 480, fit: 'inside' })
+    .png()
+    .toBuffer({ resolveWithObject: true });
+  await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#ffffff' } })
+    .composite([{ input: data, left: Math.floor((1200 - info.width) / 2), top: Math.floor((630 - info.height) / 2) }])
+    .png({ compressionLevel: 9 })
+    .toFile(share);
+  console.log('brand: 1200×630 sharing image generated');
 }

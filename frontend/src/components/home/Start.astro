@@ -4,9 +4,11 @@ import Arrow from '../Arrow.astro';
 import type { Accent } from '../../data/site';
 import { getEntry } from 'astro:content';
 import { readingMinutes } from '../../lib/format';
+import { lessons } from '../../data/path';
 
-const article = await getEntry('articles', 'what-does-od-change');
-const tool = await getEntry('tools', 'od-diagnostic-questions');
+const lesson = lessons.find((item) => item.status === 'available');
+const article = lesson?.article ? await getEntry('articles', lesson.article) : undefined;
+const tool = lesson?.tool ? await getEntry('tools', lesson.tool) : undefined;
 const timing = `约 ${readingMinutes(article?.body)} 分钟阅读 + ${tool?.data.minutes ?? 0} 分钟练习`;
 
 const steps: { icon: IconName; title: string; text: string; accent: Accent }[] = [
@@ -40,18 +42,18 @@ const steps: { icon: IconName; title: string; text: string; accent: Accent }[] =
       }
     </ol>
 
-    <div class="cta card" data-reveal="scale">
+    {lesson && <div class="cta card" data-reveal="scale">
       <div class="cta-bg" aria-hidden="true"></div>
       <div class="cta-copy">
-        <p class="mono kicker">LESSON 01 · {timing}</p>
-        <h3 class="h1">OD 到底在改变什么？</h3>
-        <p class="lead">从组织发展的基本定义出发，理解“发展”与一次管理动作的区别，并带着一份诊断问题清单回到你的团队。</p>
+        <p class="mono kicker">LESSON {lesson.no} · {timing}</p>
+        <h3 class="h1">{lesson.question}</h3>
+        <p class="lead">{article?.data.dek ?? lesson.title}</p>
       </div>
       <div class="cta-actions">
-        <a class="btn" href="/learn/od-foundations">开始第 01 课 <Arrow /></a>
+        <a class="btn" href={`/learn/${lesson.slug}`}>开始第 {lesson.no} 课 <Arrow /></a>
         <a class="btn btn-ghost" href="/about">了解研究方法</a>
       </div>
-    </div>
+    </div>}
   </div>
 </section>
 
