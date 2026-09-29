@@ -1,4 +1,4 @@
-# WP6 质量体系与持续集成（进行中）
+# WP6 质量体系与持续集成
 
 日期：2026-09-29。
 
@@ -10,4 +10,6 @@
 - `uv run mypy src` 通过。临时文件里 `def broken() -> int: return "no"` 使 mypy 以退出码 1 失败，该文件未进入仓库。
 - Playwright 1.63 在 Chromium 与 WebKit 上 28 项通过：五个一级页面、文章来源角标、工具答案刷新保留、模拟 API 的投稿成功与失败、390px 菜单与 Esc。axe 覆盖首页、学习路径、知识库、一篇文章、工具箱、一份工具、研究讨论、一个问题页和关于页，没有 serious 或 critical。
 
-GitHub Actions 是否在默认分支全绿，等本次推送的检查结果写入本记录后再勾选。
+## GitHub Actions
+
+`main` 的 [CI 运行 36549606007](https://github.com/luvio-arlan/lingyuan-lab/actions/runs/36549606007) 通过。后端约 26 秒，前端约 1 分 48 秒。失效链接和对比度不足由 CI 里的 `test:links`、`test:contrast` 用夹具断言检查器会失败；类型错误用同一条 `uv run mypy` 在临时文件上得到退出码 1。这三处缺陷没有留在默认分支上。
