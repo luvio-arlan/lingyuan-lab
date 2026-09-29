@@ -5,8 +5,9 @@
   "version": "0.1.0",
   "scripts": {
     "brand": "node scripts/prepare-brand.mjs",
-    "dev": "npm run brand && astro dev",
-    "build": "npm run brand && astro build",
+    "fonts": "node scripts/prepare-fonts.mjs",
+    "dev": "npm run brand && npm run fonts && astro dev",
+    "build": "npm run brand && npm run fonts && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "check:links": "node scripts/check-links.mjs",

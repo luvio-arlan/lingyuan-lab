@@ -1,0 +1,10 @@
+[Unit]
+Description=Lingyuan Lab PostgreSQL backup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+User=lingyuan
+EnvironmentFile=-/etc/lingyuan/backup-monitor.env
+ExecStart=/opt/lingyuan-lab/deploy/backup-and-alert.sh

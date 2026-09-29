@@ -1,0 +1,40 @@
+[project]
+name = "lingyuan-api"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "pydantic-settings>=2,<3",
+  "psycopg[binary,pool]>=3.2,<4",
+  "pyyaml>=6,<7",
+  "typer>=0.15,<1",
+  "uvicorn>=0.34,<1",
+]
+
+[dependency-groups]
+dev = ["httpx>=0.28,<1", "mypy>=1.15,<2", "pytest>=8,<9", "ruff>=0.11,<1", "types-PyYAML>=6,<7"]
+
+[project.scripts]
+lingyuan-admin = "lingyuan_api.admin:app"
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lingyuan_api"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["lingyuan_api"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

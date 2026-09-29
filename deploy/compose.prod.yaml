@@ -1,0 +1,7 @@
+services:
+  web:
+    environment:
+      SITE_ADDRESS: ly.echoxai.net
+    ports:
+      - "80:80"
+      - "443:443"

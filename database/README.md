@@ -19,7 +19,7 @@ createdb "$PGDATABASE"
 
 ## 迁移与讨论主题
 
-迁移归 `database/migrations/` 所有，按 `0001_xxx.sql` 的字典序执行，并在 `schema_migrations` 记录版本。应用启动时不改表。WP4 的 `lingyuan-admin migrate` 将成为正式迁移入口；在 WP3 阶段可直接执行：
+迁移归 `database/migrations/` 所有，按 `0001_xxx.sql` 的字典序执行，并在 `schema_migrations` 记录版本。应用启动时不改表。正式入口为 WP4 的 `lingyuan-admin migrate`；下面的直接 SQL 命令保留给数据库层单独排查：
 
 ```sh
 psql -X -v ON_ERROR_STOP=1 -d "$PGDATABASE" -f database/migrations/0001_init.sql
@@ -27,15 +27,15 @@ psql -X -v ON_ERROR_STOP=1 -d "$PGDATABASE" -f database/tests/verify.sql
 psql -X -At -d "$PGDATABASE" -c 'SELECT version, count(*) FROM schema_migrations GROUP BY version ORDER BY version'
 ```
 
-`0001_init.sql` 是一个事务，重复执行不会报错或重复记录版本。以后的迁移由 WP4 管理命令按版本跳过；已应用的 SQL 文件不可修改。`database/tests/verify.sql` 会检查表、边界值及拒绝非法数据，最后回滚所有测试数据。
+`0001_init.sql` 是一个事务，重复执行不会报错或重复记录版本。后续迁移由管理命令按版本跳过；每个迁移文件须自带事务并记录自身版本，已应用的 SQL 文件不可修改。`database/tests/verify.sql` 会检查表、边界值及拒绝非法数据，最后回滚所有测试数据。
 
-WP3 提供一份当前四个问题的引导种子数据；首次迁移后运行：
+WP3 提供一份当前四个问题的引导种子数据；数据库层独立验收时可运行：
 
 ```sh
 psql -X -v ON_ERROR_STOP=1 -d "$PGDATABASE" -f database/seeds/topics.sql
 ```
 
-它取自 `frontend/src/content/questions/*.md` 与学习路径顺序，只插入缺失的 slug，重复运行不会覆盖运行中的主题状态。WP4 将实现 `lingyuan-admin sync-topics frontend/src/content/questions`，以文件名和 frontmatter 为来源同步 slug、`open`/`planned` 状态及排序。问题文件更改后不要手工维护种子 SQL，改用该管理命令。备份演练使用独立临时库中的测试行。
+它取自 `frontend/src/content/questions/*.md` 与学习路径顺序，只插入缺失的 slug，重复运行不会覆盖运行中的主题状态。正式同步使用 `cd backend && uv run lingyuan-admin sync-topics ../frontend/src/content/questions`，以文件名、frontmatter 的 `state` 和 `frontend/src/data/path.ts` 的课程序号同步 slug、`open`/`planned` 状态及排序。问题文件更改后不要手工维护种子 SQL。备份演练使用独立临时库中的测试行。
 
 ## 每日备份与保留
 
@@ -83,5 +83,7 @@ psql -X -At -d lingyuan_restore -c \
 | 日期 | 环境与步骤 | 原库行数 | 恢复库行数 | 结果 |
 | --- | --- | --- | --- | --- |
 | 2026-09-29 | 本机 PostgreSQL 16.14 临时实例；空库应用 `0001_init.sql`，插入 1 个测试主题、2 条测试投稿、1 条审核事件；运行 `backup.sh` 后在另一空库执行 `pg_restore --exit-on-error --single-transaction` | 1 / 1 / 2 / 1 | 1 / 1 / 2 / 1 | 恢复成功，四表行数一致 |
+| 2026-09-29 | WP5 本地 Docker Compose；经页面投稿并审核发布后，在 `backup` 容器运行 `backup.sh`，归档恢复到新建的 `lingyuan_restore_wp5` 空库 | 1 / 4 / 1 / 1 | 1 / 4 / 1 / 1 | 恢复成功，四表行数一致；这不是生产恢复演练 |
+| 2026-09-29 | 阿里云杭州生产目标主机 `120.26.147.100` 的 Docker Compose PostgreSQL 16.15；投稿经审核发布后撤回，使用 `backup` 容器生成 `lingyuan-20260929T075403Z-1.dump`，恢复到新建空库 `lingyuan_restore_wp5_server`，执行 `pg_restore --exit-on-error --single-transaction --no-owner --no-privileges` 后逐表核对；演练库随后删除 | 1 / 4 / 1 / 2 | 1 / 4 / 1 / 2 | 恢复成功，四表行数一致；备份文件保留在 `/var/backups/lingyuan`，站点仍处于公网维护状态，尚未完成上线验收 |
 
-这里的测试数据只在临时实例里，未进入仓库或正式数据库。公网部署后的恢复演练另见 WP5 验收项。
+前两项测试数据只在临时实例里，未进入仓库或正式数据库。第三项在目标生产主机运行；验收投稿仍保留在数据库及审核事件中，但已撤回，不会通过公开接口显示。

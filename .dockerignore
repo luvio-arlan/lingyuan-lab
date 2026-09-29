@@ -1,0 +1,14 @@
+.git
+**/node_modules
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+frontend/dist
+frontend/public/fonts.css
+frontend/public/fonts
+deploy/.env
+deploy/Caddyfile
+deploy/backups
+*.dump

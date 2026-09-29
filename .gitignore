@@ -2,4 +2,14 @@
 *.swp
 *.tmp
 node_modules/
-
+backend/.venv/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+__pycache__/
+*.py[cod]
+deploy/.env
+deploy/Caddyfile
+deploy/backups/
+frontend/public/fonts.css
+frontend/public/fonts/

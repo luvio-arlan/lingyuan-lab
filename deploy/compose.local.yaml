@@ -1,0 +1,6 @@
+services:
+  web:
+    environment:
+      SITE_ADDRESS: ":80"
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8080}:80"

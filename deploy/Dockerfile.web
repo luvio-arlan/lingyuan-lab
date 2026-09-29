@@ -1,0 +1,12 @@
+FROM node:24-bookworm-slim AS build
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./frontend/
+RUN npm ci --prefix frontend
+COPY frontend ./frontend
+COPY assets/logo/lingyuan-logo.png ./assets/logo/lingyuan-logo.png
+COPY deploy/Caddyfile.template deploy/generate-caddy.mjs ./deploy/
+RUN npm run build --prefix frontend && node deploy/generate-caddy.mjs
+
+FROM caddy:2-alpine
+COPY --from=build /app/frontend/dist /srv
+COPY --from=build /app/deploy/Caddyfile /etc/caddy/Caddyfile

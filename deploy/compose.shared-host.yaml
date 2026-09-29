@@ -1,0 +1,9 @@
+services:
+  api:
+    image: lingyuan-api:wp5-20260929
+  web:
+    image: lingyuan-web:wp5-20260929
+    environment:
+      SITE_ADDRESS: ":80"
+    ports:
+      - "127.0.0.1:8081:80"
