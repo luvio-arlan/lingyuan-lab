@@ -27,6 +27,42 @@
     "source": "Nadler & Tushman (1980), pp. 43–44（任务与工作安排）"
   },
   {
+    "id": "task",
+    "term": "任务",
+    "en": "Task",
+    "accent": "teal",
+    "short": "产生产出的一个工作活动单位。它描述的是做什么，而不是谁的头衔。",
+    "distinct": "岗位是一个人承担的一组任务与职责；任务本身可以被重新分派，而不必先改变职业类别。",
+    "source": "Autor (2013), task approach overview（task 为产生产出的工作活动单位）"
+  },
+  {
+    "id": "job",
+    "term": "岗位",
+    "en": "Job",
+    "accent": "teal",
+    "short": "由一个人执行或应当执行的一组任务和职责，包括受雇或自雇。",
+    "distinct": "职业是主要任务高度相似的一组岗位，用来归类和比较；岗位是这一个人实际承担的集合。",
+    "source": "ILO, Meeting of Experts on Labour Statistics, 6 December 2007, 决议第 2–3 段"
+  },
+  {
+    "id": "work-process",
+    "term": "工作流程",
+    "en": "Work Process",
+    "accent": "violet",
+    "short": "一组相互关联的活动，把输入转化为输出，并需要分配人员与其他资源。",
+    "distinct": "从输入、活动与交接观察工作；与星型模型中的横向协调相交，并非互不相干的两种流程。",
+    "source": "ISO/TC 176/SC 2/N 544R3, 第 2 节（配合 ISO 9001:2008 的过程方法指南）"
+  },
+  {
+    "id": "work-outcome",
+    "term": "工作结果",
+    "en": "Work Outcome",
+    "accent": "orange",
+    "short": "需要同时说明直接交付物及其投入使用后产生的成效；例如需求报告与据此形成的可执行方案。",
+    "distinct": "本站教学口径：产出量可以是指标，但不能单独代表使用成效；成效也可能受执行者控制范围之外的因素影响。",
+    "source": "本站教学区分；ISO/TC 176/SC 2/N 544R3 第 2、4 节支持过程与输出部分，不是 outcome 的术语出处。"
+  },
+  {
     "id": "planned-change",
     "term": "计划变革",
     "en": "Planned Change",
@@ -79,5 +115,32 @@
     "short": "能够在一定目标与约束下，自主规划并执行多个步骤、调用工具的 AI 系统。本站使用这个词时，会说明它在具体场景中被授予了哪些权限。",
     "distinct": "不同于只回答单个问题的 AI 工具；Agent 会带来委派、复核与责任分配的新问题。",
     "source": "OpenAI, A practical guide to building agents；Anthropic, Building effective agents"
+  },
+  {
+    "id": "task-level-change",
+    "term": "任务层变化",
+    "en": "Task-level change",
+    "accent": "teal",
+    "short": "某一步工作的做法变了，前后的交接和谁依赖谁可以仍保持原样。",
+    "distinct": "与流程层变化不同：后者改的是顺序或交接，不是单步内部的做法。",
+    "source": "本站观察区分；任务一词沿用 Autor (2013) 对 task 的界定"
+  },
+  {
+    "id": "coordination",
+    "term": "协调",
+    "en": "Coordination",
+    "accent": "violet",
+    "short": "管理活动之间的依赖，例如谁先做完、谁使用谁的产出、哪些事必须同时发生。",
+    "distinct": "不是“大家一起干活”的客气说法。依赖没变，只是某一步换了工具，协调就可以没变。",
+    "source": "Malone & Crowston (1994), ACM Computing Surveys 26(1)"
+  },
+  {
+    "id": "working-relationship",
+    "term": "协作关系",
+    "en": "Working relationship",
+    "accent": "orange",
+    "short": "谁依赖谁的产出，以及谁可以退回或修改这份产出。",
+    "distinct": "人选未变，依赖方式、裁量空间或修改权也可能改变；应观察实际交接，不能只数沟通次数。",
+    "source": "本站在 Malone & Crowston 的依赖定义上，收窄到可观察的依赖与修改权"
   }
 ]

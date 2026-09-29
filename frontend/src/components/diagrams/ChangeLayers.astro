@@ -1,0 +1,161 @@
+---
+const layers = [
+  {
+    id: 'task',
+    label: '任务',
+    en: 'Task',
+    accent: 'teal',
+    text: '某一步的做法变了。前后交给谁、谁依赖谁的产出，可以仍和原来一样。',
+  },
+  {
+    id: 'process',
+    label: '流程',
+    en: 'Process',
+    accent: 'violet',
+    text: '顺序、输入从哪里来，或输出交给谁变了。单步更快，仍可能没有改变交接与等待。',
+  },
+  {
+    id: 'relation',
+    label: '协作关系',
+    en: 'Working relationship',
+    accent: 'orange',
+    text: '谁依赖谁的产出、谁可以改谁的工作变了。这不是提示词里出现了“和同事沟通”，而是依赖方式或修改权发生了变化，人选可以不变。',
+  },
+] as const;
+---
+
+<figure class="changes" id="diagram" data-changes>
+  <div class="stack" role="group" aria-label="三种变化">
+    {
+      layers.map((layer) => (
+        <button type="button" data-layer={layer.id} data-accent={layer.accent} aria-pressed="false">
+          <span class="lbl">{layer.label}</span>
+          <span class="en">{layer.en}</span>
+        </button>
+      ))
+    }
+  </div>
+  <div class="panel" aria-live="polite">
+    <p data-text="default">三层可能同时变化。选择一层，查看应观察的事实。</p>
+    {
+      layers.map((layer) => (
+        <p data-text={layer.id} data-accent={layer.accent} hidden>
+          <strong>{layer.label}</strong>
+          {layer.text}
+        </p>
+      ))
+    }
+  </div>
+  <figcaption>图 · 任务、流程与协作关系（本站用来观察的三层，不是某一份报告的分类）。</figcaption>
+</figure>
+
+<style>
+  .changes {
+    margin: 2.75em 0;
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(120% 80% at 100% 0%, var(--c-mist), transparent 55%),
+      var(--c-bg);
+    box-shadow: var(--shadow-1);
+  }
+
+  .stack {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  button {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--c-line-2);
+    border-radius: var(--r-md);
+    background: var(--c-bg);
+    color: var(--c-ink);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  button:hover,
+  button:focus-visible {
+    border-color: var(--a);
+  }
+
+  button[aria-pressed='true'] {
+    background: var(--a-soft);
+    border-color: transparent;
+    box-shadow: 0 0 0 1px var(--a);
+  }
+
+  .lbl {
+    font-family: var(--f-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .en {
+    color: var(--c-ink-3);
+    font-size: 0.8125rem;
+  }
+
+  .panel {
+    max-width: 34rem;
+    min-height: 4.5em;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    color: var(--c-ink-2);
+    line-height: 1.85;
+  }
+
+  .panel p {
+    animation: in 500ms var(--ease-out);
+  }
+
+  .panel strong {
+    margin-right: 0.5em;
+    color: var(--a-ink);
+  }
+
+  @keyframes in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel p {
+      animation: none;
+    }
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-changes]').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
+    const texts = root.querySelectorAll<HTMLElement>('[data-text]');
+    const select = (id: string | null) => {
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.layer === id)));
+      texts.forEach((text) => (text.hidden = text.dataset.text !== (id ?? 'default')));
+    };
+    buttons.forEach((button) =>
+      button.addEventListener('click', () =>
+        select(button.getAttribute('aria-pressed') === 'true' ? null : button.dataset.layer!),
+      ),
+    );
+  });
+</script>

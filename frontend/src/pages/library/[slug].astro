@@ -7,6 +7,8 @@ import Claim from '../../components/mdx/Claim.astro';
 import KeyIdea from '../../components/mdx/KeyIdea.astro';
 import OdCycle from '../../components/diagrams/OdCycle.astro';
 import StarModel from '../../components/diagrams/StarModel.astro';
+import WorkLayers from '../../components/diagrams/WorkLayers.astro';
+import ChangeLayers from '../../components/diagrams/ChangeLayers.astro';
 import { contentStatus, evidenceTypes } from '../../data/site';
 import { lessonBySlug } from '../../data/path';
 import { formatDate, isoDate, readingMinutes } from '../../lib/format';
@@ -43,7 +45,11 @@ const pending = data.sources.filter((s) => !s.verified).length;
           lesson && (
             <>
               <span aria-hidden="true">/</span>
-              <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a>
+              {lesson.status === 'available' ? (
+                <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a>
+              ) : (
+                <span>第 {lesson.no} 课 · 筹备中</span>
+              )}
             </>
           )
         }
@@ -119,7 +125,7 @@ const pending = data.sources.filter((s) => !s.verified).length;
       </aside>
 
       <div class="prose" data-prose>
-        <Content components={{ Claim, KeyIdea, OdCycle, StarModel }} />
+        <Content components={{ Claim, KeyIdea, OdCycle, StarModel, WorkLayers, ChangeLayers }} />
       </div>
     </div>
 

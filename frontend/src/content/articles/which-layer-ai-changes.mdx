@@ -1,0 +1,125 @@
+---
+title: AI 改变的是任务、流程还是协作关系？
+dek: “用上了 AI”可以只是某一步换了做法，也可以是交接变了，或者谁依赖谁变了。这三件事经常被说成一件事。
+kind: concept
+lesson: which-layer-ai-changes
+accent: violet
+status: draft
+published: 2026-09-29
+revised: 2026-09-29
+question: 怎样区分 AI 带来的任务层变化、流程层变化和协作关系的变化？
+scope: 本文给出一个观察用的三分法，并说明两份厂商研究实际量到了什么。不估计采用率，也不推断未使用这些产品的组织。
+terms:
+  - task-level-change
+  - coordination
+  - working-relationship
+  - ai-agent
+sources:
+  - id: malone-crowston-1994
+    authors: Thomas W. Malone, Kevin Crowston
+    title: The Interdisciplinary Study of Coordination
+    year: 1994
+    venue: ACM Computing Surveys, 26(1), 87–119
+    doi: 10.1145/174666.174668
+    url: https://crowston.syr.edu/sites/default/files/acmcs94.pdf
+    accessed: 2026-09-29
+    verified: false
+    note: 本次直读作者公开期刊 PDF 第 1 页（印刷页 87）的摘要与定义。三层观察法是本站归纳，非原论文量表。
+  - id: microsoft-wti-2026
+    authors: Microsoft WorkLab
+    title: '2026 Work Trend Index: Agents, human agency, and the opportunity for every organization'
+    year: 2026
+    venue: Microsoft Work Trend Index annual report, 5 May 2026
+    url: https://www.microsoft.com/en-us/worklab/work-trend-index/agents-human-agency-and-the-opportunity-for-every-organization
+    accessed: 2026-09-29
+    verified: false
+    note: 已读报告网页的方法说明。调查对象是在工作中使用生成式 AI 的知识工作者，不用者被筛掉。Copilot 分类是用户目标的份额，不是工时。文中“Frontier”等说法是微软的框架。同一页上调查截止日期有两处写法，引用时各从其注释。
+  - id: anthropic-ei-2026-06
+    authors: Anthropic
+    title: 'Anthropic Economic Index report: Cadences'
+    year: 2026
+    venue: Anthropic research report, 26 June 2026
+    url: https://www.anthropic.com/research/economic-index-june-2026-report
+    accessed: 2026-09-29
+    verified: false
+    note: 已读报告正文对样本的说明。观察的是 Claude 产品中的会话和产出类型，不是组织里的岗位或汇报关系。关联调查约为 9700 名 Claude 用户，不是劳动力抽样。
+revisions:
+  - date: 2026-09-29
+    note: 首版草稿，来源与引文待人工逐条核对。
+  - date: 2026-09-29
+    note: 重写贯穿案例与三层观察法；移除对旧任务分类的当代套用和无助于判断的统计堆叠，明确三层可同时变化。
+tool: three-change-sheet
+discussion: task-process-or-relationship
+---
+
+## 一封回信，三种改法
+
+<Claim type="inference">
+售后团队开始用 AI 整理客户来信。第一周，客服请它写回复草稿，自己核对后发送。第二周，主管允许常见问题跳过逐件审批，只把例外送来复核。第三周，团队发现，知识库维护者写的一条规则开始影响所有客服的回复，大家越来越依赖她及时修正错误。（示意）三周里，改变的对象并不相同。
+</Claim>
+
+<Claim type="inference">
+第一周主要改了任务做法；第二周改了流转路径；第三周出现了新的依赖。后两种也可能在同一天发生。本文用“任务、流程、协作关系”帮助定位变化，不要求把每件事塞进唯一一个格子。岗位调整和业务成效要另外观察，不能由这三个标签代替。
+</Claim>
+
+<Claim type="inference">
+下文若说 Agent，指可在授权范围内连续执行多步的软件。在这个售后示意场景中，它可以读指定知识库、归类来信、起草回复和提交复核；没有自行发送、退款或修改规则的权限。写作助手是否被接入执行权限，会改变本课要观察的交接位置。
+</Claim>
+
+## 从动作一路追到依赖
+
+<Claim type="research" n={1}>
+Malone 与 Crowston 的协调研究，把协调理解为对活动之间依赖的管理，讨论了共享资源、生产者与使用者等不同依赖。这给了我们一个具体的观察入口：一项工作要继续，需要另一方先提供什么？它并没有给出一套判定“AI 原生团队”的标准。
+</Claim>
+
+<Claim type="inference">
+看任务，比较同一步怎样完成：客服原来自己组织语言，现在检查草稿。看流程，比较顺序与交接：哪些来信先分类，哪些必须审批，退回后交给谁。看协作关系，比较谁掌握别人必需的信息、资源或修改权：知识库维护者是否成了多个客服共同等待的人。这三个问题可以对着同一张工单逐项回答。
+</Claim>
+
+<Claim type="inference">
+关系变化也不一定表现为“换了一个人”。仍是原来的客服与主管，如果主管从逐件批准转为制定例外规则，双方的依赖方式和裁量空间已经改变。相反，软件里多出一个叫“数字同事”的头像，也不证明团队权责发生了变化。要追到实际的请求、批准、退回与修正。
+</Claim>
+
+<ChangeLayers />
+
+<KeyIdea>
+先记下动作与交接，再解释组织变化。一件事可以同时改变三层；没有看见变化，也不等于已证明它没有发生。
+</KeyIdea>
+
+## 两份报告，能帮我们看到多远？
+
+<Claim type="research" n={2}>
+微软 2026 年 Work Trend Index 的在线调查覆盖十个市场的两万名知识工作者，方法节所列时间为 2 月 18 日至 4 月 7 日，且筛除了工作中不使用生成式 AI 的人。报告另用 2 月某一周北美商业客户的 Copilot 样本，对会话里的用户目标分类；该口径不是员工工时分配。调查与产品遥测不能混成一个样本。
+</Claim>
+
+<Claim type="research" n={3}>
+Anthropic 的 2026 年 6 月报告连接了用户调查与 5 月中至 6 月初的产品使用记录，关联样本约 9700 人；每人最多抽取二十次会话，少于五次的用户不纳入。报告明确说该样本不代表一般人口。会话中的文档、解释等产出分类，描述的是产品使用，不能直接当成团队交接图。
+</Claim>
+
+<Claim type="inference">
+两份报告都来自销售相关产品的厂商。它们有助于提出调查线索，例如去找哪些工作已由助手起草、哪些用户开始连续委派任务。但“用户说协作更顺畅”与“团队减少了一次等待”，需要不同的证据。前者值得听，后者还要看工单、版本记录或参与者对同一次交接的描述。
+</Claim>
+
+## 收益会不会只是转移到了别人的账上？
+
+<Claim type="inference">
+回到售后案例。客服的起草时间缩短，知识库维护者却每天花更多时间解释规则，主管也增加了抽查。（示意）若只统计客服，就会漏掉这些新增工作。一次比较至少应覆盖执行、复核、返工和等待，并记录问题难度与业务量是否相近；否则，挑了容易工单做试点，也会看起来进步很大。
+</Claim>
+
+<Claim type="inference">
+还有竞争性解释：团队可能同时清理了旧知识库、改了审批规则，或新增了一位主管。即使周期变短，也不能把全部改善归给模型。若没有可比对照，诚实的结论可以是“这组调整后出现了改善”，并保留对单项作用的疑问。把原因说准，会影响下一轮究竟该买软件、修规则还是补人手。
+</Claim>
+
+## 做一次能被反驳的观察
+
+<Claim type="hypothesis">
+在一个范围有限、可以撤回的试点中，分别记录任务耗时、完整处理周期和复核负荷，再访谈交接双方。我们预期，三项一起看比只看助手使用量更容易发现成本转移。如果完整周期和质量同步改善，复核负荷也未上升，这个担忧就没有在该试点得到支持；应保留这个反例。
+</Claim>
+
+填写[三类变化观察表](/tools/three-change-sheet)，再讨论[你观察到的 AI 变化发生在哪些层？](/questions/task-process-or-relationship) 第 05 课将继续追问：当连续执行被委派出去，谁来接住例外？
+
+## 尚待回答的问题
+
+- 工单不记录同事间的口头求助时，怎样避免漏掉隐性的复核劳动？
+- 规则维护权变得重要以后，维护者是否获得了相应时间与决定权？
+- 试点的新鲜感消退、任务难度提高后，最初的改善还能保留多少？

@@ -31,7 +31,12 @@ const total = data.sections.reduce((n, s) => n + s.items.length, 0);
       <h1 class="display">{data.title}</h1>
       <p class="lead">{data.summary}</p>
       <div class="meta">
-        {lesson && <a class="chip" href={`/learn/${lesson.slug}`}>配合第 {lesson.no} 课</a>}
+        {lesson &&
+          (lesson.status === 'available' ? (
+            <a class="chip" href={`/learn/${lesson.slug}`}>配合第 {lesson.no} 课</a>
+          ) : (
+            <span class="chip chip-outline">配合第 {lesson.no} 课 · 筹备中</span>
+          ))}
         <span class="chip chip-outline">{total} 个问题 · 约 {data.minutes} 分钟</span>
         <span class="chip chip-outline">{contentStatus[data.status].label}</span>
         <span class="chip chip-outline mono">

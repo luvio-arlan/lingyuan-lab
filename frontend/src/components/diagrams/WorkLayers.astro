@@ -1,0 +1,184 @@
+---
+const layers = [
+  {
+    id: 'task',
+    label: '任务',
+    en: 'Task',
+    accent: 'teal',
+    text: '一个产生产出的工作活动单位。它可以被一个人完成，也可以在后来改由另一个人或设备完成。',
+  },
+  {
+    id: 'job',
+    label: '岗位',
+    en: 'Job',
+    accent: 'blue',
+    text: '同一个人执行或应当执行的一组任务和职责。它不是职业类别，也不是把任务简单加总后的别名。',
+  },
+  {
+    id: 'process',
+    label: '流程',
+    en: 'Process',
+    accent: 'violet',
+    text: '相互关联的活动如何把输入转化为输出：顺序、交接和资源都在这一层，而不在单个人的任务清单里。',
+  },
+  {
+    id: 'result',
+    label: '结果',
+    en: 'Result',
+    accent: 'orange',
+    text: '先看直接交付物，再看它被使用后产生的成效；两者都要写清验收依据与影响因素。',
+  },
+] as const;
+---
+
+
+<figure class="layers" id="diagram" data-layers>
+  <div class="stack" role="group" aria-label="工作的四个层次">
+    {
+      layers.map((layer, index) => (
+        <button type="button" data-layer={layer.id} data-accent={layer.accent} aria-pressed="false">
+          <span class="idx mono">0{index + 1}</span>
+          <span class="name">
+            <span class="lbl">{layer.label}</span>
+            <span class="en">{layer.en}</span>
+          </span>
+        </button>
+      ))
+    }
+  </div>
+  <div class="panel" aria-live="polite">
+    <p data-text="default">这四层回答的不是同一个问题。选择一层，查看它和相邻层的差别。</p>
+    {
+      layers.map((layer) => (
+        <p data-text={layer.id} data-accent={layer.accent} hidden>
+          <strong>{layer.label}</strong>
+          {layer.text}
+        </p>
+      ))
+    }
+  </div>
+  <figcaption>图 · 任务、岗位、流程与结果（依据国际劳工统计、任务方法和过程方法整理，文字为本站概括）。</figcaption>
+</figure>
+
+<style>
+  .layers {
+    margin: 2.75em 0;
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(120% 80% at 0% 0%, var(--c-mist), transparent 60%),
+      var(--c-bg);
+    box-shadow: var(--shadow-1);
+  }
+
+  .stack {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--c-line-2);
+    border-radius: var(--r-md);
+    background: var(--c-bg);
+    color: var(--c-ink);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  button:hover,
+  button:focus-visible {
+    border-color: var(--a);
+  }
+
+  button[aria-pressed='true'] {
+    background: var(--a-soft);
+    border-color: transparent;
+    box-shadow: 0 0 0 1px var(--a);
+  }
+
+  .idx {
+    color: var(--a-ink);
+    font-size: 0.75rem;
+  }
+
+  .name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem 0.7rem;
+    min-width: 0;
+  }
+
+  .lbl {
+    font-family: var(--f-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .en {
+    color: var(--c-ink-3);
+    font-size: 0.8125rem;
+  }
+
+  .panel {
+    max-width: 34rem;
+    min-height: 4.5em;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    color: var(--c-ink-2);
+    line-height: 1.85;
+  }
+
+  .panel p {
+    animation: in 500ms var(--ease-out);
+  }
+
+  .panel strong {
+    margin-right: 0.5em;
+    color: var(--a-ink);
+  }
+
+  @keyframes in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel p {
+      animation: none;
+    }
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--c-ink-3);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-layers]').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
+    const texts = root.querySelectorAll<HTMLElement>('[data-text]');
+    const select = (id: string | null) => {
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.layer === id)));
+      texts.forEach((text) => (text.hidden = text.dataset.text !== (id ?? 'default')));
+    };
+    buttons.forEach((button) =>
+      button.addEventListener('click', () =>
+        select(button.getAttribute('aria-pressed') === 'true' ? null : button.dataset.layer!),
+      ),
+    );
+  });
+</script>

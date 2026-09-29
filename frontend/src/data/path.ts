@@ -88,6 +88,10 @@ export const lessons: Lesson[] = [
     question: '任务、岗位、流程和结果有什么不同？',
     outputs: ['岗位任务拆解模板'],
     status: 'upcoming',
+    article: 'task-job-process-outcome',
+    tool: 'job-task-breakdown',
+    discussion: 'which-layer-changed',
+    diagram: '任务、岗位、流程与结果',
   },
   {
     no: '04',
@@ -97,7 +101,10 @@ export const lessons: Lesson[] = [
     question: 'AI 改变的是任务、流程还是协作关系？',
     outputs: ['三类变化观察表'],
     status: 'upcoming',
+    article: 'which-layer-ai-changes',
+    tool: 'three-change-sheet',
     discussion: 'task-process-or-relationship',
+    diagram: '任务、流程与协作关系',
   },
   {
     no: '05',
