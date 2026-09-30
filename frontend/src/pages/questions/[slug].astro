@@ -32,7 +32,11 @@ const kindHints: Record<string, string> = {
         <a href="/questions">研究讨论</a>
         <span aria-hidden="true">/</span>
         {lesson?.status === 'available' ? <a href={`/learn/${lesson.slug}`}>第 {lesson.no} 课</a> : <span>{lesson ? `第 ${lesson.no} 课 · 筹备中` : '研究问题'}</span>}
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">讨论详情</span>
       </nav>
+      <h1 class="h1 title" style={`view-transition-name: q-${question.id}`}>{data.title}</h1>
+      <p class="lead">{data.summary}</p>
       <div class="state">
         <span class:list={['chip', !open && 'chip-outline']}>
           {open && <span class="dot" />}
@@ -42,14 +46,17 @@ const kindHints: Record<string, string> = {
           开放于 <time datetime={isoDate(data.opened)}>{formatDate(data.opened)}</time>
         </span>
       </div>
-      <h1 class="h1 title" style={`view-transition-name: q-${question.id}`}>{data.title}</h1>
-      <p class="lead">{data.summary}</p>
+      <nav class="jump-links" aria-label="讨论页导航">
+        <a href="#question-background">问题背景</a>
+        <a href="#community-title">读者投稿</a>
+        {open && <a href="#compose-title">写下观察 <Icon name="arrow-right" size={14} /></a>}
+      </nav>
     </header>
 
     <div class="container layout">
       <div class="main">
         <section class="block">
-          <h2 class="block-title"><span class="mono">01</span>问题背景</h2>
+          <h2 class="block-title" id="question-background"><span class="mono">01</span>问题背景</h2>
           <div class="prose"><Content /></div>
         </section>
 
@@ -101,9 +108,9 @@ const kindHints: Record<string, string> = {
       <aside class="side">
         {
           open ? (
-            <form class="card compose" data-compose={question.id} novalidate>
+            <form class="card compose" data-compose={question.id} aria-labelledby="compose-title" novalidate>
               <div class="compose-head">
-                <h2 class="h3">提交你的观察</h2>
+                <h2 class="h3" id="compose-title" tabindex="-1">提交你的观察</h2>
                 <p>无需注册，不收集姓名或邮箱。</p>
               </div>
 
@@ -200,19 +207,44 @@ const kindHints: Record<string, string> = {
 </BaseLayout>
 
 <style>
+  .q-page {
+    --discussion-side: 22rem;
+    --discussion-gap: 3rem;
+  }
+
+  .layout {
+    max-width: var(--max);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--discussion-side);
+    column-gap: var(--discussion-gap);
+  }
+
   .head {
     display: grid;
-    gap: 1.25rem;
-    max-width: 58rem;
-    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 4vw, 6rem));
-    padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+    gap: clamp(1.5rem, 2.5vw, 2.5rem);
+    max-width: var(--max);
+    padding-top: calc(var(--header-h) + clamp(3rem, 5vw, 5rem));
+    padding-bottom: clamp(3rem, 4vw, 4rem);
+  }
+
+  .head > * {
+    min-width: 0;
   }
 
   .crumbs {
     display: flex;
-    gap: 0.6rem;
-    font-size: 0.8125rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.6rem;
+    font-size: var(--t-small);
     color: var(--c-ink-3);
+  }
+
+  .crumbs a {
+    padding-block: 0.35rem;
+    text-decoration: underline;
+    text-decoration-color: var(--c-line-3);
+    text-underline-offset: 0.25em;
   }
 
   .crumbs a:hover {
@@ -222,7 +254,8 @@ const kindHints: Record<string, string> = {
   .state {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
   }
 
   .opened {
@@ -231,19 +264,48 @@ const kindHints: Record<string, string> = {
   }
 
   .title {
+    font-size: var(--t-h1);
     line-height: 1.3;
   }
 
+  .head .lead {
+    max-width: 56rem;
+    font-size: var(--t-lead);
+  }
+
+  .jump-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .jump-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding-block: 0.5rem;
+    font-size: var(--t-small);
+    color: var(--a-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
   .layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
-    gap: clamp(2rem, 1rem + 4vw, 5rem);
     align-items: start;
+    row-gap: 2.5rem;
+  }
+
+  .block-title,
+  #compose-title {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
   }
 
   .main {
     display: grid;
-    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+    gap: 2.5rem;
+    min-width: 0;
   }
 
   .block {
@@ -285,11 +347,12 @@ const kindHints: Record<string, string> = {
     padding-top: 0.2rem;
     font-size: 0.75rem;
     color: var(--a-ink);
+    flex: none;
   }
 
   .lab-card {
     position: relative;
-    padding: 1.75rem;
+    padding: 1.5rem;
     border-radius: var(--r-lg);
     background: linear-gradient(135deg, var(--c-violet-soft), var(--c-bg) 80%);
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-violet) 22%, transparent) inset;
@@ -328,6 +391,8 @@ const kindHints: Record<string, string> = {
 
   .c-head {
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
     justify-content: space-between;
     align-items: baseline;
   }
@@ -445,19 +510,18 @@ const kindHints: Record<string, string> = {
 
   /* Compose */
   .side {
-    position: sticky;
-    top: calc(var(--header-h) + 1.5rem);
+    min-width: 0;
   }
 
   .compose,
   .soon {
     display: grid;
     gap: 1.35rem;
-    padding: 1.75rem;
-    border-radius: var(--r-xl);
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
     box-shadow:
       0 0 0 1px var(--c-line) inset,
-      var(--shadow-3);
+      var(--shadow-1);
   }
 
   .compose-head p,
@@ -553,7 +617,7 @@ const kindHints: Record<string, string> = {
     border-radius: var(--r-md);
     background: var(--c-mist);
     box-shadow: 0 0 0 1px var(--c-line) inset;
-    font-size: 0.9375rem;
+    font-size: var(--t-body);
     line-height: 1.75;
     resize: vertical;
     min-height: 10rem;
@@ -588,6 +652,7 @@ const kindHints: Record<string, string> = {
   }
 
   .count {
+    flex: none;
     margin-left: auto;
     font-size: 0.6875rem;
     color: var(--c-ink-4);
@@ -756,12 +821,35 @@ const kindHints: Record<string, string> = {
     display: none;
   }
 
-  @media (max-width: 1000px) {
-    .layout {
-      grid-template-columns: 1fr;
-    }
+  @media (min-width: 1101px) and (min-height: 1000px) {
     .side {
-      position: static;
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .title {
+      font-size: min(var(--t-h1), 1.75rem);
+    }
+    .head {
+      gap: 1.5rem;
+      padding-top: calc(var(--header-h) + 2rem);
+    }
+    .compose,
+    .soon,
+    .lab-card {
+      padding: 1.25rem;
+    }
+    .angles li {
+      gap: 0.75rem;
+      padding: 1rem;
     }
   }
 </style>

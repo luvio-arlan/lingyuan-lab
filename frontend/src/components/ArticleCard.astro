@@ -26,7 +26,7 @@ const status = articleStatus(data.status, data.sources);
   data-search={`${data.title} ${data.dek} ${data.question}`}
 >
   <div class="meta">
-    <span class="chip"><span class="dot"></span>{data.kind === 'concept' ? '概念文' : '研究文章'}</span>
+    <span class="chip"><span class="dot"></span>{data.kind === 'concept' ? '知识解读' : '研究文章'}</span>
     {lesson && <span class="mono no">LESSON {lesson.no}</span>}
   </div>
   <h3 class="h3 title" style={`view-transition-name: article-${article.id}`}>{data.title}</h3>

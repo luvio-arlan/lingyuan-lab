@@ -60,7 +60,7 @@ export const lessons: Lesson[] = [
     orbit: 'od',
     title: 'OD 基础',
     question: 'OD 到底在改变什么？',
-    outputs: ['概念文', '术语卡', '诊断问题清单'],
+    outputs: ['知识解读', '术语卡', '诊断问题清单'],
     status: 'available',
     article: 'what-does-od-change',
     tool: 'od-diagnostic-questions',

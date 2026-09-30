@@ -12,7 +12,7 @@ const tool = lesson?.tool ? await getEntry('tools', lesson.tool) : undefined;
 const timing = `约 ${readingMinutes(article?.body)} 分钟阅读 + ${tool?.data.minutes ?? 0} 分钟练习`;
 
 const steps: { icon: IconName; title: string; text: string; accent: Accent }[] = [
-  { icon: 'book', title: '读一篇解释', text: '一个问题，一篇有来源的概念文。', accent: 'blue' },
+  { icon: 'book', title: '读一篇解释', text: '一个问题，一篇有来源的知识解读。', accent: 'blue' },
   { icon: 'network', title: '看一张关系图', text: '把概念放进可点击的结构里。', accent: 'violet' },
   { icon: 'clipboard', title: '完成一份练习', text: '用问题清单审视你熟悉的组织。', accent: 'teal' },
   { icon: 'pen', title: '提出一个观点', text: '对开放问题分享观察或反例。', accent: 'orange' },
