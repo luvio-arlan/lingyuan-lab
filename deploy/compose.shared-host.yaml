@@ -2,7 +2,7 @@ services:
   api:
     image: lingyuan-api:wp7-20260930
   web:
-    image: lingyuan-web:wp5-close-20260930
+    image: lingyuan-web:founder-20260930
     environment:
       SITE_ADDRESS: ":80"
     ports:

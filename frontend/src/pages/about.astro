@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Logo from '../components/Logo.astro';
+import { Image } from 'astro:assets';
+import founderPortrait from '../assets/people/cai-lu.png';
 import { author, evidenceTypes, site } from '../data/site';
 
 const standards = [
@@ -95,6 +97,18 @@ const readers = [
     <div>
       <h2 class="h2 sec-title" id="author-title" data-reveal>关于创始人</h2>
       <p class="muted" data-reveal>{author.role}</p>
+      <Image
+        class="founder-portrait"
+        src={founderPortrait}
+        alt={`${author.name}（${author.alias}），灵鸢实验室创始人`}
+        widths={[280, 560]}
+        sizes="(max-width: 520px) 240px, 280px"
+        width={280}
+        height={280}
+        format="webp"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
     <div class="license" data-reveal style="--i:1">
       <h3 class="h3">{author.name} · {author.alias}</h3>
@@ -250,6 +264,15 @@ const readers = [
     color: var(--c-ink-2);
   }
 
+  .founder-portrait {
+    display: block;
+    width: min(100%, 280px);
+    height: auto;
+    aspect-ratio: 1;
+    margin-top: 2rem;
+    border-radius: var(--r-xl);
+  }
+
   @media (max-width: 960px) {
     .brand,
     .split {
@@ -264,6 +287,9 @@ const readers = [
   }
 
   @media (max-width: 520px) {
+    .founder-portrait {
+      width: min(100%, 240px);
+    }
     .ev-grid {
       grid-template-columns: 1fr;
     }
