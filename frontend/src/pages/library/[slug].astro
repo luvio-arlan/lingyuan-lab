@@ -9,7 +9,11 @@ import OdCycle from '../../components/diagrams/OdCycle.astro';
 import StarModel from '../../components/diagrams/StarModel.astro';
 import WorkLayers from '../../components/diagrams/WorkLayers.astro';
 import ChangeLayers from '../../components/diagrams/ChangeLayers.astro';
-import { contentStatus, evidenceTypes } from '../../data/site';
+import AgentHandoff from '../../components/diagrams/AgentHandoff.astro';
+import DecisionRights from '../../components/diagrams/DecisionRights.astro';
+import TeamChoices from '../../components/diagrams/TeamChoices.astro';
+import TalentLoop from '../../components/diagrams/TalentLoop.astro';
+import { articleStatus, evidenceTypes } from '../../data/site';
 import { lessonBySlug } from '../../data/path';
 import { formatDate, isoDate, readingMinutes } from '../../lib/format';
 import '../../styles/prose.css';
@@ -27,7 +31,7 @@ const terms = await getEntries(data.terms);
 const tool = data.tool ? await getEntry(data.tool) : undefined;
 const discussion = data.discussion ? await getEntry(data.discussion) : undefined;
 const lesson = data.lesson ? lessonBySlug(data.lesson) : undefined;
-const status = contentStatus[data.status];
+const status = articleStatus(data.status, data.sources);
 const minutes = readingMinutes(article.body);
 const pending = data.sources.filter((s) => !s.verified).length;
 ---
@@ -59,7 +63,7 @@ const pending = data.sources.filter((s) => !s.verified).length;
 
       <dl class="meta">
         <div>
-          <dt>发布</dt>
+          <dt>{data.status === 'draft' ? '草稿建立' : '发布'}</dt>
           <dd class="mono"><time datetime={isoDate(data.published)}>{formatDate(data.published)}</time></dd>
         </div>
         <div>
@@ -125,7 +129,7 @@ const pending = data.sources.filter((s) => !s.verified).length;
       </aside>
 
       <div class="prose" data-prose>
-        <Content components={{ Claim, KeyIdea, OdCycle, StarModel, WorkLayers, ChangeLayers }} />
+        <Content components={{ Claim, KeyIdea, OdCycle, StarModel, WorkLayers, ChangeLayers, AgentHandoff, DecisionRights, TeamChoices, TalentLoop }} />
       </div>
     </div>
 

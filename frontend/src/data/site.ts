@@ -49,9 +49,17 @@ export const evidenceTypes = {
 export type EvidenceType = keyof typeof evidenceTypes;
 
 export const contentStatus = {
-  draft: { label: '草稿 · 来源待人工核对', accent: 'orange' },
+  draft: { label: '草稿 · 待验收', accent: 'orange' },
   reviewing: { label: '核对中', accent: 'violet' },
   published: { label: '已核对发布', accent: 'teal' },
 } as const satisfies Record<string, { label: string; accent: Accent }>;
 
 export type ContentStatus = keyof typeof contentStatus;
+
+// Draft acceptance and source verification are separate editorial states.
+export const articleStatus = (status: ContentStatus, sources: { verified: boolean }[]) => {
+  const base = contentStatus[status];
+  if (status !== 'draft') return base;
+  const checked = sources.length > 0 && sources.every((source) => source.verified);
+  return { ...base, label: checked ? '草稿 · 来源已核对' : '草稿 · 来源待核对' };
+};

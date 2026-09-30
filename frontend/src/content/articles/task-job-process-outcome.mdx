@@ -4,50 +4,43 @@ dek: 一份报告写得更快，客户的问题却未必解决。把任务、岗
 kind: concept
 lesson: what-is-work
 accent: teal
-status: draft
+status: published
 published: 2026-09-29
-revised: 2026-09-29
+revised: '2026-09-30'
 question: 任务、岗位、流程和结果分别指什么？为什么不能把它们当成同一个观察单位？
-scope: 本文用国际劳工统计、劳动经济学的任务方法和质量管理的过程方法，区分四个观察层次；不评估任何具体软件，也不推断所有组织正在如何变化。
+scope: 本文借助国际劳工统计与劳动经济学的任务方法，给出任务、岗位、流程和结果的观察口径；流程与结果部分是本站教学区分，不评估具体软件，不推断所有组织正在如何变化。
 terms:
-  - task
-  - job
-  - work-process
-  - work-outcome
+- task
+- job
+- work-process
+- work-outcome
 sources:
-  - id: ilo-isco-2007
-    authors: International Labour Organization
-    title: Resolution concerning updating the International Standard Classification of Occupations
-    year: 2007
-    venue: Meeting of Experts on Labour Statistics, Geneva, 6 December 2007
-    url: https://www.ilo.org/media/131031/download
-    accessed: 2026-09-29
-    verified: false
-    note: 本次直读会议报告 PDF 第 14 页（印刷页 7），决议第 2–3 段；仅引用统计定义，不以职业分类推导岗位设计方案。
-  - id: autor-2013
-    authors: David H. Autor
-    title: 'The “task approach” to labor markets: an overview'
-    year: 2013
-    venue: Journal for Labour Market Research, 46, 185–199
-    doi: 10.1007/s12651-013-0128-z
-    url: https://economics.mit.edu/sites/default/files/publications/the%20task%20approach%202013.pdf
-    accessed: 2026-09-29
-    verified: false
-    note: 本次直读作者 PDF 第 2 页，第 1 节末与第 2 节开头。用于任务与技能的区分，不把 2013 年技术能力判断套用于当前生成式 AI。
-  - id: iso-tc176-n544
-    authors: ISO/TC 176/SC 2
-    title: 'ISO 9000 Introduction and Support Package: Guidance on the Concept and Use of the Process Approach for management systems'
-    year: 2008
-    venue: Document ISO/TC 176/SC 2/N 544R3
-    url: https://www.iso.org/files/live/sites/isoorg/files/archive/pdf/en/04_concept_and_use_of_the_process_approach_for_management_systems.pdf
-    accessed: 2026-09-29
-    verified: false
-    note: 本次直读 2008 年指南第 3 页第 2 节、5–6 页第 4 节。它支持过程与输出的解释；正文对交付物和使用成效的进一步区分为本站教学口径，不冒充 ISO 定义。
+- id: ilo-isco-2007
+  authors: International Labour Organization
+  title: Resolution concerning updating the International Standard Classification of Occupations
+  year: 2007
+  venue: Meeting of Experts on Labour Statistics, Geneva, 6 December 2007
+  url: https://www.ilo.org/media/131031/download
+  accessed: '2026-09-30'
+  verified: true
+  note: 2026-09-30 工具核对：ILO 官方会议报告 PDF 第 14 页（印刷页 7），决议第 2–3 段支持 job / occupation 定义。会议于 2007 年召开，报告封面为 2008；本文引用决议年份。仅支持统计定义，不推导岗位设计。
+- id: autor-2013
+  authors: David H. Autor
+  title: 'The “task approach” to labor markets: an overview'
+  year: 2013
+  venue: Journal for Labour Market Research, 46, 185–199
+  doi: 10.1007/s12651-013-0128-z
+  url: https://economics.mit.edu/sites/default/files/publications/the%20task%20approach%202013.pdf
+  accessed: '2026-09-30'
+  verified: true
+  note: 2026-09-30 工具核对：MIT 作者公开 PDF 第 2 页，§2 明确区分 task 与 skill；元数据为 2013 / DOI 10.1007/s12651-013-0128-z。仅使用概念，未套用其历史技术判断。
 revisions:
-  - date: 2026-09-29
-    note: 首版草稿，来源与引文待人工逐条核对。
-  - date: 2026-09-29
-    note: 重审并重写；区分交付物与使用成效，修正对流程的割裂解释，补充贯穿案例与观察尺度。
+- date: 2026-09-29
+  note: 首版草稿，来源与引文待人工逐条核对。
+- date: 2026-09-29
+  note: 重审并重写；区分交付物与使用成效，修正对流程的割裂解释，补充贯穿案例与观察尺度。
+- date: '2026-09-30'
+  note: 按用户委托完成工具核对；证据范围、修订与局限见 plans/内容核对清单-03-08.md。来源支撑当前正文，课程保留本地验收草稿，未授权发布。
 tool: job-task-breakdown
 discussion: which-layer-changed
 ---
@@ -84,8 +77,8 @@ ILO 的 ISCO-08 更新决议把 job 界定为由一个人执行或应执行的�
 
 ## 流程：把交接和等待也画进去
 
-<Claim type="research" n={3}>
-ISO 的 2008 年过程方法指南，把过程解释为相互关联或相互作用、将输入转化为输出的活动。指南也关注跨职能接口：一个过程的输出可以成为另一个过程的输入。因此，流程既涉及活动之间的联系，也涉及部门之间怎样协调，不能与第 02 课的组织协调机制截然分开。
+<Claim type="inference">
+本课用“流程”观察输入经过哪些活动成为可使用的交付物，以及各步之间怎样衔接。一个环节的输出可能成为另一个环节的输入；交接、等待与退回都要记在图里。这是本站的教学口径，与第 02 课关注的协调机制可以重叠，不把它们截然分开。
 </Claim>
 
 <Claim type="inference">
@@ -95,7 +88,7 @@ ISO 的 2008 年过程方法指南，把过程解释为相互关联或相互作�
 ## 结果：交出了什么，又带来了什么
 
 <Claim type="inference">
-本文把“结果”作为一个需要继续拆开的提问：一是直接交付物，例如一份需求报告；二是交付物投入使用后的成效，例如交付团队能据此形成双方认可的方案。这是本站的教学区分，不是前述 ISO 指南给 outcome 下的定义。交付物可以验收合格，后续成效仍可能受预算、客户变更或其他环节影响。
+本文把“结果”作为一个需要继续拆开的提问：一是直接交付物，例如一份需求报告；二是交付物投入使用后的成效，例如交付团队能据此形成双方认可的方案。这是本站的教学区分，不作为某项标准给 outcome 下的正式定义。交付物可以验收合格，后续成效仍可能受预算、客户变更或其他环节影响。
 </Claim>
 
 <Claim type="inference">

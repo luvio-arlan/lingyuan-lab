@@ -1,53 +1,56 @@
 ---
 const layers = [
   {
-    id: 'task',
-    label: '任务',
-    en: 'Task',
-    accent: 'teal',
-    text: '一个产生产出的工作活动单位。它可以被一个人完成，也可以在后来改由另一个人或设备完成。',
+    "id": "delegate",
+    "label": "约定与授权",
+    "en": "Delegate",
+    "accent": "violet",
+    "text": "委派者写明目标、输入、允许动作和完成标准；系统仅开放对应权限。边界不清楚时不开始执行。"
   },
   {
-    id: 'job',
-    label: '岗位',
-    en: 'Job',
-    accent: 'blue',
-    text: '同一个人执行或应当执行的一组任务和职责。它不是职业类别，也不是把任务简单加总后的别名。',
+    "id": "execute",
+    "label": "执行与留证",
+    "en": "Execute",
+    "accent": "violet",
+    "text": "Agent 在许可范围内执行，保存输入出处、变更与操作记录。缺数据、依据冲突或越界时停下，不能靠猜测补齐。"
   },
   {
-    id: 'process',
-    label: '流程',
-    en: 'Process',
-    accent: 'violet',
-    text: '相互关联的活动如何把输入转化为输出：顺序、交接和资源都在这一层，而不在单个人的任务清单里。',
+    "id": "review",
+    "label": "复核与退回",
+    "en": "Review",
+    "accent": "teal",
+    "text": "复核者检查依据与拟执行动作，并有时间、访问权和退回权。未满足标准回到补证，不直接放行。"
   },
   {
-    id: 'result',
-    label: '结果',
-    en: 'Result',
-    accent: 'orange',
-    text: '先看直接交付物，再看它被使用后产生的成效；两者都要写清验收依据与影响因素。',
+    "id": "release",
+    "label": "放行与观察",
+    "en": "Release",
+    "accent": "teal",
+    "text": "有权角色批准约定范围内的执行，观察实际后果。放行不扩大原授权，也不终止纠正责任。"
   },
+  {
+    "id": "escalate",
+    "label": "暂停与接手",
+    "en": "Escalate",
+    "accent": "orange",
+    "text": "从任一步转入：打包已做、未做、冲突和待决定事项，交指定角色；超时找备用角色，无人接手保持暂停。恢复由有权者决定。"
+  }
 ] as const;
 ---
 
-
-<figure class="layers" id="diagram" data-layers>
-  <div class="stack" role="group" aria-label="工作的四个观察角度">
+<figure class="changes" id="diagram" data-handoff>
+  <div class="stack" role="group" aria-label="委派、复核与异常接手">
     {
-      layers.map((layer, index) => (
+      layers.map((layer) => (
         <button type="button" data-layer={layer.id} data-accent={layer.accent} aria-pressed="false">
-          <span class="idx mono">0{index + 1}</span>
-          <span class="name">
-            <span class="lbl">{layer.label}</span>
-            <span class="en">{layer.en}</span>
-          </span>
+          <span class="lbl">{layer.label}</span>
+          <span class="en">{layer.en}</span>
         </button>
       ))
     }
   </div>
   <div class="panel" aria-live="polite">
-    <p data-text="default">四个观察角度回答不同问题，并不是四级台阶。选择一个角度，查看它与其他角度的差别。</p>
+    <p data-text="default">按顺序查看委派 → 执行 → 复核 → 放行；任一步达到异常条件，就停止相关动作并转交接手。选择节点查看条件。</p>
     {
       layers.map((layer) => (
         <p data-text={layer.id} data-accent={layer.accent} hidden>
@@ -57,16 +60,16 @@ const layers = [
       ))
     }
   </div>
-  <figcaption>图 · 任务、岗位、流程与结果（任务与岗位依据任务方法、国际劳工统计概括；流程与结果为本站教学口径）。</figcaption>
+  <figcaption>图 · 委派、复核与异常接手（本站教学图解，非经过验证的量表）。</figcaption>
 </figure>
 
 <style>
-  .layers {
+  .changes {
     margin: 2.75em 0;
     padding: clamp(1rem, 0.5rem + 2vw, 2rem);
     border-radius: var(--r-xl);
     background:
-      radial-gradient(120% 80% at 0% 0%, var(--c-mist), transparent 60%),
+      radial-gradient(120% 80% at 100% 0%, var(--c-mist), transparent 55%),
       var(--c-bg);
     box-shadow: var(--shadow-1);
   }
@@ -80,10 +83,11 @@ const layers = [
 
   button {
     display: flex;
-    align-items: center;
-    gap: 0.9rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
     width: 100%;
-    padding: 0.85rem 1rem;
+    padding: 0.9rem 1rem;
     border: 1px solid var(--c-line-2);
     border-radius: var(--r-md);
     background: var(--c-bg);
@@ -103,23 +107,10 @@ const layers = [
     box-shadow: 0 0 0 1px var(--a);
   }
 
-  .idx {
-    color: var(--a-ink);
-    font-size: 0.75rem;
-  }
-
-  .name {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.45rem 0.7rem;
-    min-width: 0;
-  }
-
   .lbl {
     font-family: var(--f-display);
     font-size: 1.35rem;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.2;
   }
 
@@ -168,7 +159,7 @@ const layers = [
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-layers]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('[data-handoff]').forEach((root) => {
     const buttons = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
     const texts = root.querySelectorAll<HTMLElement>('[data-text]');
     const select = (id: string | null) => {

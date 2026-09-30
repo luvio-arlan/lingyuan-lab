@@ -68,8 +68,12 @@ def test_migration_and_sync_are_repeatable(database: str) -> None:
         ).fetchall() == [
             ("what-changes-first", "open", 1),
             ("which-element-moves", "open", 2),
-            ("task-process-or-relationship", "planned", 4),
-            ("who-owns-agent-output", "planned", 5),
+            ("which-layer-changed", "open", 3),
+            ("task-process-or-relationship", "open", 4),
+            ("who-owns-agent-output", "open", 5),
+            ("who-can-challenge-the-default", "open", 6),
+            ("which-boundary-should-move", "open", 7),
+            ("what-counts-as-learning", "open", 8),
         ]
 
 
@@ -80,6 +84,12 @@ def test_unmigrated_database_refuses_start(database: str) -> None:
 
 def test_submission_validation_and_honeypot(database: str) -> None:
     setup(database)
+    # Keep closed-topic rejection independent of which courses are published.
+    with psycopg.connect(database) as conn:
+        conn.execute(
+            "UPDATE discussion_topics SET state = %s WHERE slug = %s",
+            ("planned", "who-owns-agent-output"),
+        )
     with client(database) as web:
         good = post(web)
         assert good.status_code == 201

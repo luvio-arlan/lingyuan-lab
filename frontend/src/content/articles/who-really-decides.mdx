@@ -1,0 +1,117 @@
+---
+title: AI 参与后，决策权如何分配？
+dek: 最后点下批准的人，未必决定了问题怎样被提出、哪些选项被保留。决策权要沿着一整条过程去找。
+kind: concept
+lesson: decision-rights
+accent: violet
+status: published
+published: '2026-09-29'
+revised: '2026-09-30'
+question: AI 参与问题定义、备选方案与执行后，如何识别并调整实际决策权？
+scope: 讨论一般业务决策中的组织分工；不用于自动决定招聘、信贷、医疗等高影响事项，也不将经典委托关系模型当作 AI 的人格或法律地位判断。
+terms:
+- formal-authority
+- real-authority
+- decision-premise
+sources:
+- id: aghion-tirole-1997
+  authors: Philippe Aghion and Jean Tirole
+  title: Formal and Real Authority in Organizations
+  year: 1997
+  venue: Journal of Political Economy, 105(1), 1–29
+  url: https://www.journals.uchicago.edu/doi/10.1086/262063
+  accessed: '2026-09-30'
+  verified: true
+  note: 2026-09-30 工具核对：出版社摘要与 Information 区核对作者、1997、105(1)、1–29、DOI。摘要支持正式权威 / 实际权威与信息结构关系；付费全文未读，不引用具体模型结论，agent
+    不是 AI 软件。
+  doi: 10.1086/262063
+- id: dellacqua-frontier-2026
+  authors: Fabrizio Dell’Acqua, Edward McFowland III, Ethan Mollick, Hila Lifshitz, Katherine C. Kellogg, Saran
+    Rajendran, Lisa Krayer, François Candelon, Karim R. Lakhani
+  title: 'Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of Artificial
+    Intelligence on Knowledge Worker Productivity and Quality'
+  year: 2026
+  venue: Organization Science, Articles in Advance, 1–21
+  url: https://www.hbs.edu/ris/Publication%20Files/dell-acqua-et-al-2026-navigating-the-jagged-technological-frontier_5c589c8c-fbb5-458f-b285-c944746cd717.pdf
+  accessed: '2026-09-30'
+  verified: true
+  note: 2026-09-30 工具核对：HBS 作者提供的正式论文 PDF 第 2 页摘要、§4.2 及讨论；2026-03-11 在线发表，758 名 BCG 专业人员、GPT-4、任务间效果差异。边界外只测试一项任务，不推广到全部决策或当前模型。
+  doi: 10.1287/orsc.2025.21838
+revisions:
+- date: '2026-09-29'
+  note: 首版审校草稿；逐项查阅可访问原文，明确证据边界与本站推论，保留待人工核对状态。
+- date: '2026-09-30'
+  note: 按用户委托完成工具核对；证据范围、修订与局限见 plans/内容核对清单-03-08.md。来源支撑当前正文，课程保留本地验收草稿，未授权发布。
+tool: decision-scenario-sheet
+discussion: who-can-challenge-the-default
+---
+
+## 批准了一个从未真正比较过的方案
+
+<Claim type="inference">
+采购经理收到一页推荐：供应商甲总分最高，乙和丙列在后面。她检查了价格，批准甲。后来才知道，评分把“最快到货”权重设得很高，而团队更担心长期维修支持。（示意）经理确实作出了批准决定，但决定所依赖的题目、指标和候选范围，早已由别的环节塑形。
+</Claim>
+
+<Claim type="inference">
+在本课示意中，Agent 可以读取获准的报价与历史记录、整理比较表、起草采购建议；不能下单、签约或自行更改评价权重。第 05 课讨论执行如何委派，这一课再往前追一步：谁有权决定“什么值得被优化”？
+</Claim>
+
+## 签字权与实际影响，可能不在一处
+
+<Claim type="research" n={1}>
+Aghion 与 Tirole 在 1997 年区分正式权威和实际权威：前者指作出决定的权利，后者指对决定的实际控制。论文摘要把信息结构作为理解两者关系的重要条件。这是组织经济学理论，原文里的 agent 指委托关系中的代理人，并非今天的软件 Agent。
+</Claim>
+
+<Claim type="inference">
+借用这一视角，经理保留签字权，并不足以说明她仍有效控制了采购判断。如果她只能看到排名，看不到遗漏的候选者和权重来源，推翻建议的成本就很高。实际影响可能落到配置规则的人、提供数据的人，或设计默认选项的流程上。把这些影响笼统归给“AI 决定了”，会掩盖其中仍可调整的人为安排。
+</Claim>
+
+## 沿四个位置寻找决定权
+
+<Claim type="inference">
+第一处是定义问题：采购要优先保交期、控制成本，还是确保可维护性？第二处是形成选项：谁能进入候选池，谁被过滤？第三处是批准取舍：谁能要求补证、接受例外或否决建议？第四处是执行与纠正：谁可以下单、暂停、撤回并处理申诉？这四处是本站的分析切法，未必对应四个岗位。
+</Claim>
+
+<DecisionRights />
+
+<Claim type="inference">
+填表时，不只写“采购部负责”。要写到具体动作：业务负责人确认约束，采购人员检查候选覆盖，获授权的经理批准取舍，执行人员核对订单与批准内容。谁兼任哪些角色，可以按任务规模决定；但每个环节都应知道什么情况需要重新打开前一步，而不是一路把不完整材料向后传。
+</Claim>
+
+## 为什么更好的答案仍需要判断
+
+<Claim type="research" n={2}>
+Dell’Acqua 等人的预注册实验让 758 名 BCG 咨询人员在不同条件下完成工作任务，AI 条件使用 GPT-4。2026 年正式论文报告，AI 在能力边界内的任务上改善了表现，但在特意选择的一项边界外任务上降低了答对的概率。研究说明效果随任务变化；它没有测量企业采购权该怎样分配，也不能代表后来所有模型的能力。
+</Claim>
+
+<Claim type="inference">
+对采购的启发是，材料写得完整、上一次推荐也准确，不能替代对本次关键约束的检查。复核最好追问一个可检验的问题：如果把维修支持放回约束，排序会不会变？必要时让另一位熟悉现场的人先独立提出候选方案，再比较差异。这样检验的是建议遗漏了什么，而不只是表述是否可信。
+</Claim>
+
+<KeyIdea>
+决策权分布在问题定义、选项形成、批准与纠正之中。保留签字权以后，还要保留看见依据、提出异议和改变路径的能力。
+</KeyIdea>
+
+## 反例：把所有决定收回中心，也会损失信息
+
+<Claim type="inference">
+假设一线团队每天都要补充少量标准耗材，价格和供应商范围稳定，每一笔仍须等总部批准。（示意）集中审批可能错过现场时机，也把管理者淹没在重复判断里。对后果可控、规则清楚且能及时纠正的事项，有限授权值得测试。关键是明确例外、跟踪错误，并让一线有权报告规则已经不适用。
+</Claim>
+
+<Claim type="inference">
+但若授权后错误减少，也可能是试点只挑了最简单的订单；若错误增加，可能是数据不完整，而非一线能力不足。比较前后表现时，要控制任务范围，并记录拒绝建议是否会受到隐性惩罚。否则，表上写着可以否决，实际仍可能只有“同意”一条路。
+</Claim>
+
+## 试一次真正允许异议的复核
+
+<Claim type="hypothesis">
+在选定的一类决策中，同时交付推荐方案、关键依据、遗漏信息和一个合理的备选方案，给批准者足够时间提出异议。我们的假设是，这会提高发现错误前提的机会；代价可能是决策更慢。试点应同时记录纠错、延误与最终结果，避免以否决率高低单独评价复核质量。
+</Claim>
+
+用[决策场景分析表](/tools/decision-scenario-sheet)追踪一项已经发生的决定，再讨论[谁能挑战系统给出的默认选项？](/questions/who-can-challenge-the-default)
+
+## 尚待回答的问题
+
+- 当推荐看起来一直正确，组织怎样保留质疑所需的知识与时间？
+- 受决定影响的人，能否指出输入记录错误并请求重新处理？
+- 改动权重、换数据或更新模型之后，谁负责重新检验授权范围？

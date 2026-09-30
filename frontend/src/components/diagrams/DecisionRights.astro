@@ -1,53 +1,49 @@
 ---
 const layers = [
   {
-    id: 'task',
-    label: '任务',
-    en: 'Task',
-    accent: 'teal',
-    text: '一个产生产出的工作活动单位。它可以被一个人完成，也可以在后来改由另一个人或设备完成。',
+    "id": "frame",
+    "label": "定义问题",
+    "en": "Frame",
+    "accent": "violet",
+    "text": "谁确认目标、约束和权重？采购示意中先明确交期与维护的取舍，Agent 不能自行修改评价规则。"
   },
   {
-    id: 'job',
-    label: '岗位',
-    en: 'Job',
-    accent: 'blue',
-    text: '同一个人执行或应当执行的一组任务和职责。它不是职业类别，也不是把任务简单加总后的别名。',
+    "id": "options",
+    "label": "形成选项",
+    "en": "Options",
+    "accent": "violet",
+    "text": "谁决定候选范围并检查遗漏？把过滤规则、原始资料与合理备选一起交出，避免只提供排名。"
   },
   {
-    id: 'process',
-    label: '流程',
-    en: 'Process',
-    accent: 'violet',
-    text: '相互关联的活动如何把输入转化为输出：顺序、交接和资源都在这一层，而不在单个人的任务清单里。',
+    "id": "approve",
+    "label": "批准取舍",
+    "en": "Approve",
+    "accent": "teal",
+    "text": "谁正式批准，谁实际上最影响选择？批准者需要时间、依据与退回权；关键前提不成立时返回问题定义。"
   },
   {
-    id: 'result',
-    label: '结果',
-    en: 'Result',
-    accent: 'orange',
-    text: '先看直接交付物，再看它被使用后产生的成效；两者都要写清验收依据与影响因素。',
-  },
+    "id": "correct",
+    "label": "执行与纠正",
+    "en": "Correct",
+    "accent": "orange",
+    "text": "谁下单、暂停、撤回和受理异议？执行必须符合已批准内容；新证据出现时重新打开决定，而非机械沿用排名。"
+  }
 ] as const;
 ---
 
-
-<figure class="layers" id="diagram" data-layers>
-  <div class="stack" role="group" aria-label="工作的四个观察角度">
+<figure class="changes" id="diagram" data-rights>
+  <div class="stack" role="group" aria-label="决定权与信息的四个位置">
     {
-      layers.map((layer, index) => (
+      layers.map((layer) => (
         <button type="button" data-layer={layer.id} data-accent={layer.accent} aria-pressed="false">
-          <span class="idx mono">0{index + 1}</span>
-          <span class="name">
-            <span class="lbl">{layer.label}</span>
-            <span class="en">{layer.en}</span>
-          </span>
+          <span class="lbl">{layer.label}</span>
+          <span class="en">{layer.en}</span>
         </button>
       ))
     }
   </div>
   <div class="panel" aria-live="polite">
-    <p data-text="default">四个观察角度回答不同问题，并不是四级台阶。选择一个角度，查看它与其他角度的差别。</p>
+    <p data-text="default">问题定义 → 选项形成 → 批准取舍 → 执行纠正；每一处都可能退回前一步。选择节点，追踪权利和证据。</p>
     {
       layers.map((layer) => (
         <p data-text={layer.id} data-accent={layer.accent} hidden>
@@ -57,16 +53,16 @@ const layers = [
       ))
     }
   </div>
-  <figcaption>图 · 任务、岗位、流程与结果（任务与岗位依据任务方法、国际劳工统计概括；流程与结果为本站教学口径）。</figcaption>
+  <figcaption>图 · 决定权与信息的四个位置（本站教学图解，非经过验证的量表）。</figcaption>
 </figure>
 
 <style>
-  .layers {
+  .changes {
     margin: 2.75em 0;
     padding: clamp(1rem, 0.5rem + 2vw, 2rem);
     border-radius: var(--r-xl);
     background:
-      radial-gradient(120% 80% at 0% 0%, var(--c-mist), transparent 60%),
+      radial-gradient(120% 80% at 100% 0%, var(--c-mist), transparent 55%),
       var(--c-bg);
     box-shadow: var(--shadow-1);
   }
@@ -80,10 +76,11 @@ const layers = [
 
   button {
     display: flex;
-    align-items: center;
-    gap: 0.9rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
     width: 100%;
-    padding: 0.85rem 1rem;
+    padding: 0.9rem 1rem;
     border: 1px solid var(--c-line-2);
     border-radius: var(--r-md);
     background: var(--c-bg);
@@ -103,23 +100,10 @@ const layers = [
     box-shadow: 0 0 0 1px var(--a);
   }
 
-  .idx {
-    color: var(--a-ink);
-    font-size: 0.75rem;
-  }
-
-  .name {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.45rem 0.7rem;
-    min-width: 0;
-  }
-
   .lbl {
     font-family: var(--f-display);
     font-size: 1.35rem;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.2;
   }
 
@@ -168,7 +152,7 @@ const layers = [
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-layers]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('[data-rights]').forEach((root) => {
     const buttons = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
     const texts = root.querySelectorAll<HTMLElement>('[data-text]');
     const select = (id: string | null) => {

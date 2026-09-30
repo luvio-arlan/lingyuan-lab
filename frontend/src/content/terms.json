@@ -51,7 +51,7 @@
     "accent": "violet",
     "short": "一组相互关联的活动，把输入转化为输出，并需要分配人员与其他资源。",
     "distinct": "从输入、活动与交接观察工作；与星型模型中的横向协调相交，并非互不相干的两种流程。",
-    "source": "ISO/TC 176/SC 2/N 544R3, 第 2 节（配合 ISO 9001:2008 的过程方法指南）"
+    "source": "本站教学口径：沿输入、活动、输出和交接记录流程；与协调视角可以重叠，不作为 ISO 原文定义"
   },
   {
     "id": "work-outcome",
@@ -60,7 +60,7 @@
     "accent": "orange",
     "short": "需要同时说明直接交付物及其投入使用后产生的成效；例如需求报告与据此形成的可执行方案。",
     "distinct": "本站教学口径：产出量可以是指标，但不能单独代表使用成效；成效也可能受执行者控制范围之外的因素影响。",
-    "source": "本站教学区分；ISO/TC 176/SC 2/N 544R3 第 2、4 节支持过程与输出部分，不是 outcome 的术语出处。"
+    "source": "本站教学区分：直接交付物与投入使用后的成效，不作为 ISO outcome 的术语定义"
   },
   {
     "id": "planned-change",
@@ -114,7 +114,7 @@
     "accent": "violet",
     "short": "能够在一定目标与约束下，自主规划并执行多个步骤、调用工具的 AI 系统。本站使用这个词时，会说明它在具体场景中被授予了哪些权限。",
     "distinct": "不同于只回答单个问题的 AI 工具；Agent 会带来委派、复核与责任分配的新问题。",
-    "source": "OpenAI, A practical guide to building agents；Anthropic, Building effective agents"
+    "source": "Anthropic (2024), Building effective agents, What are agents?；本站逐场景说明权限，不把预设工作流一概称为 Agent"
   },
   {
     "id": "task-level-change",
@@ -142,5 +142,113 @@
     "short": "谁依赖谁的产出，以及谁可以退回或修改这份产出。",
     "distinct": "人选未变，依赖方式、裁量空间或修改权也可能改变；应观察实际交接，不能只数沟通次数。",
     "source": "本站在 Malone & Crowston 的依赖定义上，收窄到可观察的依赖与修改权"
+  },
+  {
+    "id": "delegation-boundary",
+    "term": "委派边界",
+    "en": "Delegation boundary",
+    "accent": "violet",
+    "short": "一项委派允许读取什么、执行什么，以及在什么条件下必须停止的约定。",
+    "distinct": "不同于目标：目标写要交付什么，边界限定可采取的动作；还需系统权限配合。",
+    "source": "本站设计用语；Anthropic (2024), What are agents? / Agents；不是原文量表"
+  },
+  {
+    "id": "reviewability",
+    "term": "可复核性",
+    "en": "Reviewability",
+    "accent": "violet",
+    "short": "接手者能取得必要依据、操作记录与验收标准，从而检查产出和拟执行动作的条件。",
+    "distinct": "不等于解释写得长；重点是可以对照原始证据，退回或停止执行。",
+    "source": "本站设计用语；参照 NIST AI RMF 1.0 (2023), GOVERN 2.1 / 3.2"
+  },
+  {
+    "id": "escalation",
+    "term": "异常升级",
+    "en": "Escalation",
+    "accent": "violet",
+    "short": "工作达到预定异常条件时，停止相应动作并把上下文转交有权限和能力接手的角色。",
+    "distinct": "不是一律向更高职级请示；要约定接手时限、备用角色和无人接手时的状态。",
+    "source": "本站操作定义；Anthropic (2024), Agents；参照 NIST (2023), GOVERN 2.1"
+  },
+  {
+    "id": "formal-authority",
+    "term": "正式权威",
+    "en": "Formal authority",
+    "accent": "violet",
+    "short": "制度赋予某个角色作出决定的权利。",
+    "distinct": "保留批准权，未必同时保留对候选方案和决定前提的实际控制。",
+    "source": "Aghion & Tirole (1997), 摘要；DOI 10.1086/262063"
+  },
+  {
+    "id": "real-authority",
+    "term": "实际权威",
+    "en": "Real authority",
+    "accent": "violet",
+    "short": "对决定的实际控制；谁掌握关键信息，会影响决定如何形成。",
+    "distinct": "不同于职级；原论文 agent 指委托关系中的代理人，不是 AI 软件。",
+    "source": "Aghion & Tirole (1997), 摘要；DOI 10.1086/262063"
+  },
+  {
+    "id": "decision-premise",
+    "term": "决策前提",
+    "en": "Decision premise",
+    "accent": "violet",
+    "short": "本课用来追踪问题定义、目标权重和候选范围等、在批准之前塑造选择的条件。",
+    "distinct": "不同于最终选项；前提改变，即使批准人不变，也可能得到不同决定。",
+    "source": "本站观察用语；借助 Aghion & Tirole 的信息结构视角，不作为其模型的原文术语"
+  },
+  {
+    "id": "team-boundary",
+    "term": "团队边界",
+    "en": "Team boundary",
+    "accent": "orange",
+    "short": "本课指谁围绕共同目标参与工作、承担共同判断与交付责任的范围。",
+    "distinct": "不只看汇报线；要追踪边界内外的信息、资源和产出依赖。",
+    "source": "本站操作定义；参照 Malone & Crowston (1994), 摘要的依赖视角"
+  },
+  {
+    "id": "pooled-expertise",
+    "term": "共享专业支持",
+    "en": "Pooled expertise",
+    "accent": "orange",
+    "short": "多个业务团队共同使用的专家支持、专业标准与知识维护安排。",
+    "distinct": "不等于把所有决定集中；业务情境判断仍可留在小组，排队容量必须单独检查。",
+    "source": "本站第 07 课设计假设，未作为任何论文证明的标准组织模式"
+  },
+  {
+    "id": "role-bundle",
+    "term": "岗位任务组合",
+    "en": "Role bundle",
+    "accent": "orange",
+    "short": "分配给一个人执行的任务和职责组合，包含复核、异常处理与知识维护。",
+    "distinct": "不同于职业类别；某个动作被自动化，不意味着整组职责同时消失。",
+    "source": "ILO (2007), ISCO-08 更新决议第 2–3 段；role bundle 为本站教学用语"
+  },
+  {
+    "id": "learning-transfer",
+    "term": "学习迁移",
+    "en": "Learning transfer",
+    "accent": "orange",
+    "short": "本课指在新的、相近的工作情境中仍能运用所学判断，而非重复已有答案。",
+    "distinct": "熟悉模板或有工具时产出提高，都不足以单独证明可迁移能力。",
+    "source": "本站操作定义；Brynjolfsson, Li & Raymond (2023, 11 月修订), §5.2 Worker Learning 的学习证据不等于跨场景迁移"
+  },
+  {
+    "id": "assisted-performance",
+    "term": "工具辅助表现",
+    "en": "Assisted performance",
+    "accent": "orange",
+    "short": "在特定任务与工具条件下完成工作的质量、时效和投入。",
+    "distinct": "不同于个人独立能力；须记录工具版本、任务难度与复核者投入。",
+    "source": "本站教学用语；参照 Brynjolfsson, Li & Raymond (2023), 研究设计与异质性结果"
+  },
+  {
+    "id": "evaluation-validity",
+    "term": "评价效度",
+    "en": "Evaluation validity",
+    "accent": "orange",
+    "short": "本课用来问：现有评价证据是否足以支持想作出的能力判断。",
+    "distinct": "不是指标越多越好；产量、使用频率与团队结果各自只能说明部分事情。",
+    "source": "本站提问口径，不是已验证的测量量表；参照 NIST AI RMF 1.0, GOVERN 2.2 的岗位职责培训要求"
   }
 ]
