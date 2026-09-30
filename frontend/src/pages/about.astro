@@ -93,9 +93,10 @@ const readers = [
     </ol>
   </section>
 
-  <section class="container sec split founder" aria-labelledby="author-title">
+  <section class="container sec split" aria-labelledby="author-title">
     <div>
       <h2 class="h2 sec-title" id="author-title" data-reveal>关于创始人</h2>
+      <p class="muted" data-reveal>{author.role}</p>
       <Image
         class="founder-portrait"
         src={founderPortrait}
@@ -111,12 +112,9 @@ const readers = [
     </div>
     <div class="license" data-reveal style="--i:1">
       <h3 class="h3">{author.name} · {author.alias}</h3>
-      <p class="founder-role">{author.role}</p>
-      <p class="founder-lead">我关心的是：当 AI 成为工作的参与者，人如何协作，组织如何重新找到自己的秩序。</p>
-      <p>我毕业于吉林大学，拥有软件工程与金融学双学位背景。曾在阿里云从事组织发展与 AI 产品实践，参与 OKR 智能化、动态角色与职责、人才培养及运营工具建设。这些经历，让我的关注始终落在具体的工作现场：一项任务如何交出去，一个决定由谁来做，一群人怎样把事情做成。</p>
-      <p>我的实践连接组织发展与产品开发：把组织问题转化为产品需求，通过跨团队协作、AI Agent 设计与开发，推进从场景分析到上线验收的完整过程。我希望研究中的概念，最终能成为人们理解工作、改善协作的工具。</p>
-      <p>因此，我创建了灵鸢实验室。这是我的独立学习与研究项目，也是一个持续提出问题、验证想法的地方。我把实践中的困惑带回理论，再把理论带回真实场景；期待和同样好奇的人一起，慢慢看清 AI 与组织之间正在发生的变化。</p>
-      <p class="founder-note">本站观点以个人研究与实践为基础，不代表任何任职或曾任职机构。</p>
+      <p>毕业于吉林大学，拥有软件工程与金融学双学位背景。曾在阿里云从事组织发展与 AI 产品实践，参与 OKR 智能化、动态角色与职责、人才培养及运营工具建设。</p>
+      <p>关注 AI 进入组织后，任务、协作、决策权与人才系统如何一起变化。擅长把组织问题转化为产品需求，结合跨团队协作、AI Agent 设计与开发，推进从场景分析到上线验收的完整过程。</p>
+      <p>灵鸢实验室是我的独立学习与研究项目。我希望把实践中的问题带回理论，也把概念整理成能用于观察、讨论和验证的工具。本站观点以个人研究与实践为基础，不代表任何任职或曾任职机构。</p>
       <p>研究交流、内容纠错或合作提议，欢迎联系：<a href={`mailto:${author.email}`}>{author.email}</a>。</p>
     </div>
   </section>
@@ -273,29 +271,6 @@ const readers = [
     aspect-ratio: 1;
     margin-top: 2rem;
     border-radius: var(--r-xl);
-  }
-
-  .founder {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
-  }
-
-  .founder .license {
-    max-width: 46rem;
-  }
-
-  .founder-role,
-  .founder-note {
-    color: var(--c-ink-3);
-    font-size: 0.9375rem;
-  }
-
-  .founder-lead {
-    font-family: var(--f-display);
-    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
-    color: var(--c-ink);
-    line-height: 1.7;
-    margin-block: 0.5rem;
   }
 
   @media (max-width: 960px) {
