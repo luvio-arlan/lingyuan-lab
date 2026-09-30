@@ -11,7 +11,7 @@ if [ ! -f .env ]; then
 POSTGRES_PASSWORD=$(random_hex 24)
 RATE_LIMIT_SALT=$(random_hex 32)
 BACKUP_DIR=$backup_dir
-WEB_PORT=8080
+WEB_PORT=${WEB_PORT:-8080}
 EOF
 fi
 
@@ -28,5 +28,5 @@ compose up -d --wait db
 compose run --rm api lingyuan-admin migrate
 compose run --rm api lingyuan-admin sync-topics /app/frontend/src/content/questions
 compose up -d --wait api web
-port=$(sed -n 's/^WEB_PORT=//p' .env | tail -n 1)
+port=${WEB_PORT:-$(sed -n 's/^WEB_PORT=//p' .env | tail -n 1)}
 printf 'Local site: http://localhost:%s\n' "${port:-8080}"

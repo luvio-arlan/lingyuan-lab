@@ -11,6 +11,8 @@ sh deploy/local-up.sh
 sh deploy/smoke.sh http://localhost:8080
 ```
 
+可以在首次运行前设置 `WEB_PORT=8082 sh deploy/local-up.sh` 选择未占用的端口；脚本会写入初始配置并打印实际使用的端口。已有 `.env` 时，环境变量按 Compose 的优先级覆盖配置文件。
+
 首次运行自动生成权限为 0600 的 `deploy/.env`，其中的数据库密码和限流盐均为随机十六进制值；备份放在仓库外的 `~/.local/share/lingyuan-lab/backups`。脚本按“构建 → 启动数据库 → 迁移 → 同步问题 → 启动 API 和 Caddy”的顺序执行。它可重复运行，不会清空数据库。若 8080 端口被占用，修改 `.env` 中 `WEB_PORT` 并相应修改冒烟测试 URL。
 
 本地人工闭环：打开 `/library/how-organizations-work/` 阅读文章，打开 `/tools/organization-observation-sheet/` 填写并刷新以确认草稿仍在，再到 `/questions/what-changes-first/` 提交一条至少 20 字的观察。审核仅使用本机管理命令：
@@ -29,7 +31,7 @@ docker compose --env-file .env -f compose.yaml -f compose.local.yaml run --rm ap
 
 1. 使用已确认的域名 `ly.echoxai.net`；将 A/AAAA 记录指向云主机，让 80、443 端口对公网开放。只开放管理所需 SSH 端口；不要开放 PostgreSQL 5432 或 API 8000。为 Caddy 的证书签发保留主机出站网络。
 2. 将仓库放到 `/opt/lingyuan-lab`，创建能运行 Docker Compose 的部署用户 `lingyuan`。建立仅该用户可读的 `/opt/lingyuan-lab/deploy/.env` 与 `/var/backups/lingyuan`（0700）。从 `.env.example` 复制，生成随机十六进制 `POSTGRES_PASSWORD` 与 `RATE_LIMIT_SALT`，把 `BACKUP_DIR` 写为 `/var/backups/lingyuan`。正式域名固定在 `compose.prod.yaml`；密码只能使用 URL 安全字符，不要将 `.env` 提交到 Git。
-3. 准备完整许可文本、作者介绍与联系方式并确认后，更新关于页与页脚。这是正式上线前的内容决策，当前页面仍标明“计划采用”许可。
+3. 关于页现已提供作者介绍和联系邮箱；`/license/` 提供 CC BY 4.0 的适用范围、署名示例和官方完整法律文本入口。第三方资料、品牌、源码和读者投稿不在本站原创文字许可范围内。取得备案号后再补充真实编号与工信部链接。
 
 Compose 默认让 API 只信任 Docker 私有网络的 `172.16.0.0/12` 来源。Caddy 直接面对公网，其 `reverse_proxy` 默认忽略客户端伪造的 `X-Forwarded-*` 值并设置可信的转发头。若主机的 Docker 地址池不在此范围，在 `.env` 设置实际私有网络 CIDR 为 `TRUSTED_PROXY_CIDR`；否则投稿限流可能把所有读者当成同一个客户端。
 

@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { nav, site } from '../data/site';
+import { author, nav, site } from '../data/site';
 import { lessons } from '../data/path';
 
 const available = lessons.filter((l) => l.status === 'available');
@@ -50,7 +50,7 @@ const available = lessons.filter((l) => l.status === 'available');
         © {new Date().getFullYear()} Lingyuan Lab · 灵鸢实验室 · v{site.version}
       </p>
       <p>
-        文字内容计划采用 CC BY 4.0 署名许可；品牌名称与标志不在内容许可范围内。完整许可说明将随正式上线提供。
+        原创文字内容采用 CC BY 4.0 · <a href="/license">许可与署名</a> · <a href={`mailto:${author.email}`}>联系创始人</a>
       </p>
     </div>
   </div>

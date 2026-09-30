@@ -63,3 +63,10 @@ export const articleStatus = (status: ContentStatus, sources: { verified: boolea
   const checked = sources.length > 0 && sources.every((source) => source.verified);
   return { ...base, label: checked ? '草稿 · 来源已核对' : '草稿 · 来源待核对' };
 };
+
+export const author = {
+  name: '蔡禄',
+  alias: 'Luvio',
+  email: 'luvio8888@gmail.com',
+  role: '灵鸢实验室创始人 · 组织发展与 AI 产品实践者',
+};

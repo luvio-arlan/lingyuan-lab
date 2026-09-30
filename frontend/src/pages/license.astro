@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { author } from '../data/site';
+import '../styles/prose.css';
+---
+<BaseLayout title="内容许可与署名" description="灵鸢实验室原创文字的 CC BY 4.0 许可、署名示例与第三方材料的权利边界。">
+  <PageHero eyebrow="许可 · License" title="内容许可与署名" lead="让知识能够被引用、讨论和继续发展，也让作者与材料来源被准确保留。" accent="blue" />
+  <article class="container license-body prose">
+    <h2>原创文字内容</h2>
+    <p>除单独标明其他许可的内容外，本站由{author.name}（{author.alias}）创作的文章正文、术语解释和工具中的原创文字说明，以<a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hans" rel="external">知识共享署名 4.0 国际许可（CC BY 4.0）</a>提供。你可以复制、分享、改编这些文字，包括用于商业用途，但须遵守许可中的署名条件。</p>
+    <h2>如何署名</h2>
+    <p>请保留作品标题、作者、原文链接和许可链接；对内容有删节、改写或翻译时，说明修改情况。署名不得暗示作者或实验室为使用者背书，也不得通过附加法律条款或技术措施限制许可已经允许的使用。</p>
+    <blockquote>《文章标题》，蔡禄 / Luvio · 灵鸢实验室，原文：对应文章网址，许可：CC BY 4.0。如有改动：注明删节、改编或翻译。</blockquote>
+    <h2>不包含在这份文字许可中的材料</h2>
+    <ul>
+      <li>“灵鸢实验室 / Lingyuan Lab”品牌名称与标志：保留权利。内容转载不等于获准以该品牌发布产品、宣传合作或暗示背书。</li>
+      <li>第三方研究、引用、图像和字体：权利归原作者或相应权利人，遵循其各自许可。本站的链接和来源说明不构成对第三方材料的重新授权。</li>
+      <li>读者投稿：权利归投稿者；同意审核后展示，不自动等于同意 CC BY 4.0 授权。若要转载或改编，请另向投稿者取得许可。</li>
+      <li>网站源代码、交互实现与图形材料：不因本页的文字许可自动获得授权。若有使用需求，请联系创始人确认范围。</li>
+    </ul>
+    <h2>完整许可文本</h2>
+    <p>本页说明本站的许可范围和署名方式，不替代 CC BY 4.0 的法律条款。请阅读<a href="https://creativecommons.org/licenses/by/4.0/legalcode.zh-hans" rel="external">完整法律文本</a>及<a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hans" rel="external">官方简明说明</a>。CC BY 4.0 对已依该许可获得的权利具有不可撤销性，以其完整条款为准。</p>
+    <h2>联系与纠错</h2>
+    <p>如有署名、权利或内容问题，请发邮件至 <a href={`mailto:${author.email}`}>{author.email}</a>，附上页面链接和需要核对的内容。</p>
+    <p class="muted">生效日期：2026 年 9 月 30 日。</p>
+  </article>
+</BaseLayout>
+<style>
+  .license-body { max-width: 52rem; padding-block: 1rem 3rem; }
+</style>

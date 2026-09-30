@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Logo from '../components/Logo.astro';
-import { evidenceTypes, site } from '../data/site';
+import { author, evidenceTypes, site } from '../data/site';
 
 const standards = [
   '写出具体研究问题、场景与适用边界。',
@@ -91,14 +91,25 @@ const readers = [
     </ol>
   </section>
 
+  <section class="container sec split" aria-labelledby="author-title">
+    <div>
+      <h2 class="h2 sec-title" id="author-title" data-reveal>关于创始人</h2>
+      <p class="muted" data-reveal>{author.role}</p>
+    </div>
+    <div class="license" data-reveal style="--i:1">
+      <h3 class="h3">{author.name} · {author.alias}</h3>
+      <p>毕业于吉林大学，拥有软件工程与金融学双学位背景。曾在阿里云从事组织发展与 AI 产品实践，参与 OKR 智能化、动态角色与职责、人才培养及运营工具建设。</p>
+      <p>关注 AI 进入组织后，任务、协作、决策权与人才系统如何一起变化。擅长把组织问题转化为产品需求，结合跨团队协作、AI Agent 设计与开发，推进从场景分析到上线验收的完整过程。</p>
+      <p>灵鸢实验室是我的独立学习与研究项目。我希望把实践中的问题带回理论，也把概念整理成能用于观察、讨论和验证的工具。本站观点以个人研究与实践为基础，不代表任何任职或曾任职机构。</p>
+      <p>研究交流、内容纠错或合作提议，欢迎联系：<a href={`mailto:${author.email}`}>{author.email}</a>。</p>
+    </div>
+  </section>
+
   <section class="container sec split" aria-labelledby="license-title">
     <h2 class="h2 sec-title" id="license-title" data-reveal>许可与署名</h2>
     <div class="license" data-reveal style="--i:1">
-      <p>
-        本站文字内容未来公开使用时，计划保留 <strong>CC BY 4.0</strong> 署名原则。品牌名称“灵鸢实验室 / Lingyuan
-        Lab”与标志不在内容许可范围内。正式上线时，站点将提供完整的许可说明。
-      </p>
-      <p class="muted">作者介绍与联系方式将在正式上线前补充。</p>
+      <p>本站原创文字内容采用 <strong>CC BY 4.0</strong> 署名许可。转载或改编时，请注明作者、原文链接、许可链接，并说明修改情况。</p>
+      <p>品牌名称与标志、第三方资料、源码及读者投稿有各自的权利边界。请阅读<a href="/license">完整的许可与署名说明</a>。</p>
     </div>
   </section>
 </BaseLayout>

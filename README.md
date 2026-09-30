@@ -192,20 +192,20 @@ The full, executable plan, with work packages and acceptance criteria, lives in 
 This project is built with humans and AI models working side by side, which makes it a small case study of its own subject.
 
 - **Agents** start with [`AGENTS.md`](AGENTS.md), then follow the work packages in `plans/`.
-- **No model may mark a source as verified or an article as published.** Verification is a human act.
+- **Source verification and publication require explicit authorization.** The current eight lessons were checked with tools under the owner’s explicit delegation; evidence and limitations are recorded in `plans/`.
 - The official wordmark in `assets/logo/` is never redrawn, recolored, or overlaid.
 
 ---
 
 ## A note on status
 
-This is a **research preview**. The first two lessons are complete drafts, and every source in them is still marked *pending verification* on the site itself. Treat the content as a work in progress, and please do cite the originals, not us, until verification is complete.
+All **eight lessons** are published, with verified source records, interactive diagrams, worksheets and moderated discussion. Verification supports the stated claims and their documented limits; it does not make them universal conclusions. The public site is at [ly.echoxai.net](https://ly.echoxai.net/).
 
 ---
 
 ## License
 
-Written content is intended to be released under **CC BY 4.0** once published; the full license text will ship with the public launch.
+Original written content is available under **CC BY 4.0**. See the [license and attribution policy](https://ly.echoxai.net/license/) and the [full legal terms](https://creativecommons.org/licenses/by/4.0/legalcode.en). Third-party materials, reader contributions and source code are not automatically licensed by this written-content policy.
 The names **Lingyuan Lab / 灵鸢实验室** and the wordmark are **not** covered by the content license and remain reserved.
 
 <br>
