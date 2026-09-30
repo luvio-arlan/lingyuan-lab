@@ -65,8 +65,8 @@ export const articleStatus = (status: ContentStatus, sources: { verified: boolea
 };
 
 export const author = {
-  name: '蔡禄',
-  alias: 'Luvio',
+  name: '阿兰',
+  alias: 'Arlan',
   email: 'luvio8888@gmail.com',
   role: '灵鸢实验室创始人 · 组织发展与 AI 产品实践者',
 };

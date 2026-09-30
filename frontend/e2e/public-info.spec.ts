@@ -7,7 +7,7 @@ for (const path of ['/about/', '/license/']) {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
     if (path === '/about/') {
-      await expect(page.getByRole('heading', { name: '蔡禄 · Luvio' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: '阿兰 · Arlan' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'luvio8888@gmail.com' }).first()).toHaveAttribute('href', 'mailto:luvio8888@gmail.com');
       await expect(page.locator('main')).toContainText('吉林大学');
       await expect(page.locator('main')).toContainText('阿里云');
