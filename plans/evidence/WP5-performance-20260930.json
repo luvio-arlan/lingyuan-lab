@@ -1,0 +1,180 @@
+{
+  "sourceCommit": "d64c0204740b60c9dd1677d31e589a2379c15084",
+  "method": "Six sequential cold Chrome runs against production HTTPS; simulated mobile 4G and 4x CPU slowdown.",
+  "runs": [
+    {
+      "page": "home",
+      "run": 1,
+      "url": "https://ly.echoxai.net/",
+      "fetchTime": "2026-09-30T03:48:54.795Z",
+      "lighthouseVersion": "13.5.0",
+      "performance": 97,
+      "lcpMs": 1684.5345,
+      "cls": 0.001166027564124056,
+      "runWarnings": [],
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "benchmarkIndex": 4283
+    },
+    {
+      "page": "home",
+      "run": 2,
+      "url": "https://ly.echoxai.net/",
+      "fetchTime": "2026-09-30T03:49:20.007Z",
+      "lighthouseVersion": "13.5.0",
+      "performance": 97,
+      "lcpMs": 1728.912,
+      "cls": 0.00003926043770414191,
+      "runWarnings": [],
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "benchmarkIndex": 4497.5
+    },
+    {
+      "page": "home",
+      "run": 3,
+      "url": "https://ly.echoxai.net/",
+      "fetchTime": "2026-09-30T03:49:42.269Z",
+      "lighthouseVersion": "13.5.0",
+      "performance": 97,
+      "lcpMs": 1727.208,
+      "cls": 0.0014627908377462143,
+      "runWarnings": [],
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "benchmarkIndex": 4486
+    },
+    {
+      "page": "article",
+      "run": 1,
+      "url": "https://ly.echoxai.net/library/how-organizations-work/",
+      "fetchTime": "2026-09-30T03:49:08.347Z",
+      "lighthouseVersion": "13.5.0",
+      "performance": 99,
+      "lcpMs": 2049.65,
+      "cls": 0.0001978072436353262,
+      "runWarnings": [],
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "benchmarkIndex": 4424.5
+    },
+    {
+      "page": "article",
+      "run": 2,
+      "url": "https://ly.echoxai.net/library/how-organizations-work/",
+      "fetchTime": "2026-09-30T03:49:31.444Z",
+      "lighthouseVersion": "13.5.0",
+      "performance": 100,
+      "lcpMs": 1736.255,
+      "cls": 0,
+      "runWarnings": [],
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "benchmarkIndex": 4492
+    },
+    {
+      "page": "article",
+      "run": 3,
+      "url": "https://ly.echoxai.net/library/how-organizations-work/",
+      "fetchTime": "2026-09-30T03:49:54.346Z",
+      "lighthouseVersion": "13.5.0",
+      "performance": 98,
+      "lcpMs": 2348.826,
+      "cls": 0.0001978072436353262,
+      "runWarnings": [],
+      "screenEmulation": {
+        "mobile": true,
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "disabled": false
+      },
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "throttlingMethod": "simulate",
+      "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "benchmarkIndex": 4467
+    }
+  ]
+}
