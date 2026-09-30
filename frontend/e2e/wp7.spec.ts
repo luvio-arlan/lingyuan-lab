@@ -32,7 +32,15 @@ for (const [no, article, tool, question] of courses) {
     expect(await diagram.locator('[aria-live] p:visible').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
     for (const width of [390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      const layout = await page.evaluate(() => ({
+        width: document.documentElement.scrollWidth,
+        overflow: [...document.querySelectorAll<HTMLElement>('body *')].map(el => ({
+          tag: el.tagName, cls: el.className, text: el.textContent?.slice(0, 60),
+          left: el.getBoundingClientRect().left, right: el.getBoundingClientRect().right,
+          minWidth: getComputedStyle(el).minWidth,
+        })).filter(el => el.right > innerWidth + 1 || el.left < -1),
+      }));
+      expect(layout.width, JSON.stringify(layout.overflow)).toBe(width);
     }
     await expect(page.locator(`a[href="/tools/${tool}"]`).first()).toBeVisible();
     await expect(page.locator(`a[href="/questions/${question}"]`).first()).toBeVisible();
@@ -67,7 +75,15 @@ for (const [no, article, tool, question] of courses) {
     await page.emulateMedia({ media: 'screen' });
     for (const width of [390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      const layout = await page.evaluate(() => ({
+        width: document.documentElement.scrollWidth,
+        overflow: [...document.querySelectorAll<HTMLElement>('body *')].map(el => ({
+          tag: el.tagName, cls: el.className, text: el.textContent?.slice(0, 60),
+          left: el.getBoundingClientRect().left, right: el.getBoundingClientRect().right,
+          minWidth: getComputedStyle(el).minWidth,
+        })).filter(el => el.right > innerWidth + 1 || el.left < -1),
+      }));
+      expect(layout.width, JSON.stringify(layout.overflow)).toBe(width);
     }
     await expect(page.locator(`a[href="/library/${article}"]`)).toBeVisible();
     const result = await new AxeBuilder({ page }).analyze();
@@ -88,7 +104,15 @@ for (const [no, article, tool, question] of courses) {
     await expect(body).toHaveValue(observation);
     for (const width of [390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      const layout = await page.evaluate(() => ({
+        width: document.documentElement.scrollWidth,
+        overflow: [...document.querySelectorAll<HTMLElement>('body *')].map(el => ({
+          tag: el.tagName, cls: el.className, text: el.textContent?.slice(0, 60),
+          left: el.getBoundingClientRect().left, right: el.getBoundingClientRect().right,
+          minWidth: getComputedStyle(el).minWidth,
+        })).filter(el => el.right > innerWidth + 1 || el.left < -1),
+      }));
+      expect(layout.width, JSON.stringify(layout.overflow)).toBe(width);
     }
     const result = await new AxeBuilder({ page }).analyze();
     expect(result.violations.filter(v => ['serious', 'critical'].includes(v.impact ?? '')), JSON.stringify(result.violations)).toEqual([]);
